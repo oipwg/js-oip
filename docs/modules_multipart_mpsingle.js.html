@@ -1,0 +1,598 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+      modules/multipart/mpsingle.js - Documentation
+  </title>
+
+  <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.3.0/highlightjs-line-numbers.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad();
+  </script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+  <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+  <link type="text/css" rel="stylesheet" href="styles/monokai-sublime.css">
+
+  
+
+  <!-- start Mixpanel -->
+  <script type="text/javascript">(function(e,a){if(!a.__SV){var b=window;try{var c,l,i,j=b.location,g=j.hash;c=function(a,b){return(l=a.match(RegExp(b+"=([^&]*)")))?l[1]:null};g&&c(g,"state")&&(i=JSON.parse(decodeURIComponent(c(g,"state"))),"mpeditor"===i.action&&(b.sessionStorage.setItem("_mpcehash",g),history.replaceState(i.desiredHash||"",e.title,j.pathname+j.search)))}catch(m){}var k,h;window.mixpanel=a;a._i=[];a.init=function(b,c,f){function e(b,a){var c=a.split(".");2==c.length&&(b=b[c[0]],a=c[1]);b[a]=function(){b.push([a].concat(Array.prototype.slice.call(arguments,
+  0)))}}var d=a;"undefined"!==typeof f?d=a[f]=[]:f="mixpanel";d.people=d.people||[];d.toString=function(b){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);b||(a+=" (stub)");return a};d.people.toString=function(){return d.toString(1)+".people (stub)"};k="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+  for(h=0;h<k.length;h++)e(d,k[h]);a._i.push([b,c,f])};a.__SV=1.2;b=e.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";c=e.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c)}})(document,window.mixpanel||[]);
+  mixpanel.init("1919205b2da72e4da3b9b6639b444d59");</script>
+  <!-- end Mixpanel -->
+</head>
+
+<body>
+  <svg style="display: none;">
+    <defs>
+      <symbol id="linkIcon" fill="#706d77" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0h24v24H0z" fill="none"/>
+          <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+  <label for="nav-trigger" class="navicon-button x">
+    <div class="navicon"></div>
+  </label>
+
+  <label for="nav-trigger" class="overlay"></label>
+
+  <div class="top-nav-wrapper">
+    <ul>
+      <li >
+        <a href="index.html">
+          
+            <svg fill="#6D6D6D" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+          
+          
+        </a>
+      </li>
+
+      
+
+    </ul>
+  </div>
+
+  <nav>
+    <h3 class="reference-title">
+      js-oip
+    </h3>
+
+    <h3>Classes</h3><ul><li id="Artifact-nav"><a href="Artifact.html">Artifact</a><ul class='methods'><li data-type="method" id="Artifact-getArtifactSubtype-nav"><a href="Artifact.html#.getArtifactSubtype">getArtifactSubtype</a></li><li data-type="method" id="Artifact-getArtifactType-nav"><a href="Artifact.html#.getArtifactType">getArtifactType</a></li><li data-type="method" id="Artifact-getTypeAndSubtype-nav"><a href="Artifact.html#.getTypeAndSubtype">getTypeAndSubtype</a></li><li data-type="method" id="Artifact-_getSource-nav"><a href="Artifact.html#_getSource">_getSource</a></li><li data-type="method" id="Artifact-_setSourceData-nav"><a href="Artifact.html#_setSourceData">_setSourceData</a></li><li data-type="method" id="Artifact-addFile-nav"><a href="Artifact.html#addFile">addFile</a></li><li data-type="method" id="Artifact-addSinglePaymentAddress-nav"><a href="Artifact.html#addSinglePaymentAddress">addSinglePaymentAddress</a></li><li data-type="method" id="Artifact-addTokenRule-nav"><a href="Artifact.html#addTokenRule">addTokenRule</a></li><li data-type="method" id="Artifact-fromJSON-nav"><a href="Artifact.html#fromJSON">fromJSON</a></li><li data-type="method" id="Artifact-getArtifact-nav"><a href="Artifact.html#getArtifact">getArtifact</a></li><li data-type="method" id="Artifact-getBlock-nav"><a href="Artifact.html#getBlock">getBlock</a></li><li data-type="method" id="Artifact-getBlockHash-nav"><a href="Artifact.html#getBlockHash">getBlockHash</a></li><li data-type="method" id="Artifact-getClassName-nav"><a href="Artifact.html#getClassName">getClassName</a></li><li data-type="method" id="Artifact-getDeactivated-nav"><a href="Artifact.html#getDeactivated">getDeactivated</a></li><li data-type="method" id="Artifact-getDescription-nav"><a href="Artifact.html#getDescription">getDescription</a></li><li data-type="method" id="Artifact-getDetail-nav"><a href="Artifact.html#getDetail">getDetail</a></li><li data-type="method" id="Artifact-getDuration-nav"><a href="Artifact.html#getDuration">getDuration</a></li><li data-type="method" id="Artifact-getFiles-nav"><a href="Artifact.html#getFiles">getFiles</a></li><li data-type="method" id="Artifact-getInternalTypeAndSubtype-nav"><a href="Artifact.html#getInternalTypeAndSubtype">getInternalTypeAndSubtype</a></li><li data-type="method" id="Artifact-getLocation-nav"><a href="Artifact.html#getLocation">getLocation</a></li><li data-type="method" id="Artifact-getMainAddress-nav"><a href="Artifact.html#getMainAddress">getMainAddress</a></li><li data-type="method" id="Artifact-getMaxDiscount-nav"><a href="Artifact.html#getMaxDiscount">getMaxDiscount</a></li><li data-type="method" id="Artifact-getMeta-nav"><a href="Artifact.html#getMeta">getMeta</a></li><li data-type="method" id="Artifact-getNetwork-nav"><a href="Artifact.html#getNetwork">getNetwork</a></li><li data-type="method" id="Artifact-getNSFW-nav"><a href="Artifact.html#getNSFW">getNSFW</a></li><li data-type="method" id="Artifact-getPaymentAddress-nav"><a href="Artifact.html#getPaymentAddress">getPaymentAddress</a></li><li data-type="method" id="Artifact-getPaymentAddresses-nav"><a href="Artifact.html#getPaymentAddresses">getPaymentAddresses</a></li><li data-type="method" id="Artifact-getPaymentFiat-nav"><a href="Artifact.html#getPaymentFiat">getPaymentFiat</a></li><li data-type="method" id="Artifact-getPaymentScale-nav"><a href="Artifact.html#getPaymentScale">getPaymentScale</a></li><li data-type="method" id="Artifact-getPromoterCut-nav"><a href="Artifact.html#getPromoterCut">getPromoterCut</a></li><li data-type="method" id="Artifact-getPublisherName-nav"><a href="Artifact.html#getPublisherName">getPublisherName</a></li><li data-type="method" id="Artifact-getRetailerCut-nav"><a href="Artifact.html#getRetailerCut">getRetailerCut</a></li><li data-type="method" id="Artifact-getSignature-nav"><a href="Artifact.html#getSignature">getSignature</a></li><li data-type="method" id="Artifact-getSubtype-nav"><a href="Artifact.html#getSubtype">getSubtype</a></li><li data-type="method" id="Artifact-getSuggestedTip-nav"><a href="Artifact.html#getSuggestedTip">getSuggestedTip</a></li><li data-type="method" id="Artifact-getSupportedCoins-nav"><a href="Artifact.html#getSupportedCoins">getSupportedCoins</a></li><li data-type="method" id="Artifact-getTags-nav"><a href="Artifact.html#getTags">getTags</a></li><li data-type="method" id="Artifact-getThumbnail-nav"><a href="Artifact.html#getThumbnail">getThumbnail</a></li><li data-type="method" id="Artifact-getTime-nav"><a href="Artifact.html#getTime">getTime</a></li><li data-type="method" id="Artifact-getTimestamp-nav"><a href="Artifact.html#getTimestamp">getTimestamp</a></li><li data-type="method" id="Artifact-getTipAddresses-nav"><a href="Artifact.html#getTipAddresses">getTipAddresses</a></li><li data-type="method" id="Artifact-getTitle-nav"><a href="Artifact.html#getTitle">getTitle</a></li><li data-type="method" id="Artifact-getTokenRules-nav"><a href="Artifact.html#getTokenRules">getTokenRules</a></li><li data-type="method" id="Artifact-getTXID-nav"><a href="Artifact.html#getTXID">getTXID</a></li><li data-type="method" id="Artifact-getType-nav"><a href="Artifact.html#getType">getType</a></li><li data-type="method" id="Artifact-getVersionType-nav"><a href="Artifact.html#getVersionType">getVersionType</a></li><li data-type="method" id="Artifact-getYear-nav"><a href="Artifact.html#getYear">getYear</a></li><li data-type="method" id="Artifact-import041-nav"><a href="Artifact.html#import041">import041</a></li><li data-type="method" id="Artifact-import042-nav"><a href="Artifact.html#import042">import042</a></li><li data-type="method" id="Artifact-importAlexandriaMedia-nav"><a href="Artifact.html#importAlexandriaMedia">importAlexandriaMedia</a></li><li data-type="method" id="Artifact-isPaid-nav"><a href="Artifact.html#isPaid">isPaid</a></li><li data-type="method" id="Artifact-isValid-nav"><a href="Artifact.html#isValid">isValid</a></li><li data-type="method" id="Artifact-setBlock-nav"><a href="Artifact.html#setBlock">setBlock</a></li><li data-type="method" id="Artifact-setBlockHash-nav"><a href="Artifact.html#setBlockHash">setBlockHash</a></li><li data-type="method" id="Artifact-setDeactivated-nav"><a href="Artifact.html#setDeactivated">setDeactivated</a></li><li data-type="method" id="Artifact-setDescription-nav"><a href="Artifact.html#setDescription">setDescription</a></li><li data-type="method" id="Artifact-setDetail-nav"><a href="Artifact.html#setDetail">setDetail</a></li><li data-type="method" id="Artifact-setLocation-nav"><a href="Artifact.html#setLocation">setLocation</a></li><li data-type="method" id="Artifact-setMainAddress-nav"><a href="Artifact.html#setMainAddress">setMainAddress</a></li><li data-type="method" id="Artifact-setMaxDiscount-nav"><a href="Artifact.html#setMaxDiscount">setMaxDiscount</a></li><li data-type="method" id="Artifact-setNetwork-nav"><a href="Artifact.html#setNetwork">setNetwork</a></li><li data-type="method" id="Artifact-setNSFW-nav"><a href="Artifact.html#setNSFW">setNSFW</a></li><li data-type="method" id="Artifact-setPaymentFiat-nav"><a href="Artifact.html#setPaymentFiat">setPaymentFiat</a></li><li data-type="method" id="Artifact-setPaymentScale-nav"><a href="Artifact.html#setPaymentScale">setPaymentScale</a></li><li data-type="method" id="Artifact-setPromoterCut-nav"><a href="Artifact.html#setPromoterCut">setPromoterCut</a></li><li data-type="method" id="Artifact-setPublisherName-nav"><a href="Artifact.html#setPublisherName">setPublisherName</a></li><li data-type="method" id="Artifact-setRetailerCut-nav"><a href="Artifact.html#setRetailerCut">setRetailerCut</a></li><li data-type="method" id="Artifact-setSignature-nav"><a href="Artifact.html#setSignature">setSignature</a></li><li data-type="method" id="Artifact-setSubtype-nav"><a href="Artifact.html#setSubtype">setSubtype</a></li><li data-type="method" id="Artifact-setSuggestedTip-nav"><a href="Artifact.html#setSuggestedTip">setSuggestedTip</a></li><li data-type="method" id="Artifact-setTags-nav"><a href="Artifact.html#setTags">setTags</a></li><li data-type="method" id="Artifact-setTime-nav"><a href="Artifact.html#setTime">setTime</a></li><li data-type="method" id="Artifact-setTimestamp-nav"><a href="Artifact.html#setTimestamp">setTimestamp</a></li><li data-type="method" id="Artifact-setTitle-nav"><a href="Artifact.html#setTitle">setTitle</a></li><li data-type="method" id="Artifact-setTXID-nav"><a href="Artifact.html#setTXID">setTXID</a></li><li data-type="method" id="Artifact-setType-nav"><a href="Artifact.html#setType">setType</a></li><li data-type="method" id="Artifact-setVersionType-nav"><a href="Artifact.html#setVersionType">setVersionType</a></li><li data-type="method" id="Artifact-setYear-nav"><a href="Artifact.html#setYear">setYear</a></li><li data-type="method" id="Artifact-toJSON-nav"><a href="Artifact.html#toJSON">toJSON</a></li><li data-type="method" id="Artifact-toString-nav"><a href="Artifact.html#toString">toString</a></li></ul></li><li id="DaemonApi-nav"><a href="DaemonApi.html">DaemonApi</a><ul class='methods'><li data-type="method" id="DaemonApi-get041Artifact-nav"><a href="DaemonApi.html#get041Artifact">get041Artifact</a></li><li data-type="method" id="DaemonApi-get041Artifacts-nav"><a href="DaemonApi.html#get041Artifacts">get041Artifacts</a></li><li data-type="method" id="DaemonApi-getAlexandriaMediaArtifact-nav"><a href="DaemonApi.html#getAlexandriaMediaArtifact">getAlexandriaMediaArtifact</a></li><li data-type="method" id="DaemonApi-getAlexandriaMediaArtifacts-nav"><a href="DaemonApi.html#getAlexandriaMediaArtifacts">getAlexandriaMediaArtifacts</a></li><li data-type="method" id="DaemonApi-getArtifact-nav"><a href="DaemonApi.html#getArtifact">getArtifact</a></li><li data-type="method" id="DaemonApi-getArtifacts-nav"><a href="DaemonApi.html#getArtifacts">getArtifacts</a></li><li data-type="method" id="DaemonApi-getFloData-nav"><a href="DaemonApi.html#getFloData">getFloData</a></li><li data-type="method" id="DaemonApi-getHistorianData-nav"><a href="DaemonApi.html#getHistorianData">getHistorianData</a></li><li data-type="method" id="DaemonApi-getLastestHistorianData-nav"><a href="DaemonApi.html#getLastestHistorianData">getLastestHistorianData</a></li><li data-type="method" id="DaemonApi-getLatest041Artifacts-nav"><a href="DaemonApi.html#getLatest041Artifacts">getLatest041Artifacts</a></li><li data-type="method" id="DaemonApi-getLatest042Artifacts-nav"><a href="DaemonApi.html#getLatest042Artifacts">getLatest042Artifacts</a></li><li data-type="method" id="DaemonApi-getLatestAlexandriaMediaArtifacts-nav"><a href="DaemonApi.html#getLatestAlexandriaMediaArtifacts">getLatestAlexandriaMediaArtifacts</a></li><li data-type="method" id="DaemonApi-getLatestArtifacts-nav"><a href="DaemonApi.html#getLatestArtifacts">getLatestArtifacts</a></li><li data-type="method" id="DaemonApi-getMultipart-nav"><a href="DaemonApi.html#getMultipart">getMultipart</a></li><li data-type="method" id="DaemonApi-getMultiparts-nav"><a href="DaemonApi.html#getMultiparts">getMultiparts</a></li><li data-type="method" id="DaemonApi-getNetwork-nav"><a href="DaemonApi.html#getNetwork">getNetwork</a></li><li data-type="method" id="DaemonApi-getUrl-nav"><a href="DaemonApi.html#getUrl">getUrl</a></li><li data-type="method" id="DaemonApi-getVersion-nav"><a href="DaemonApi.html#getVersion">getVersion</a></li><li data-type="method" id="DaemonApi-searchArtifacts-nav"><a href="DaemonApi.html#searchArtifacts">searchArtifacts</a></li><li data-type="method" id="DaemonApi-searchFloData-nav"><a href="DaemonApi.html#searchFloData">searchFloData</a></li><li data-type="method" id="DaemonApi-setUrl-nav"><a href="DaemonApi.html#setUrl">setUrl</a></li></ul></li><li id="ErrorX-nav"><a href="ErrorX.html">ErrorX</a></li><li id="MPSingle-nav"><a href="MPSingle.html">MPSingle</a><ul class='methods'><li data-type="method" id="MPSingle-fromInput-nav"><a href="MPSingle.html#fromInput">fromInput</a></li><li data-type="method" id="MPSingle-getAddress-nav"><a href="MPSingle.html#getAddress">getAddress</a></li><li data-type="method" id="MPSingle-getAssembled-nav"><a href="MPSingle.html#getAssembled">getAssembled</a></li><li data-type="method" id="MPSingle-getBlock-nav"><a href="MPSingle.html#getBlock">getBlock</a></li><li data-type="method" id="MPSingle-getBlockHash-nav"><a href="MPSingle.html#getBlockHash">getBlockHash</a></li><li data-type="method" id="MPSingle-getData-nav"><a href="MPSingle.html#getData">getData</a></li><li data-type="method" id="MPSingle-getMax-nav"><a href="MPSingle.html#getMax">getMax</a></li><li data-type="method" id="MPSingle-getMeta-nav"><a href="MPSingle.html#getMeta">getMeta</a></li><li data-type="method" id="MPSingle-getPart-nav"><a href="MPSingle.html#getPart">getPart</a></li><li data-type="method" id="MPSingle-getReference-nav"><a href="MPSingle.html#getReference">getReference</a></li><li data-type="method" id="MPSingle-getSignature-nav"><a href="MPSingle.html#getSignature">getSignature</a></li><li data-type="method" id="MPSingle-getSignatureData-nav"><a href="MPSingle.html#getSignatureData">getSignatureData</a></li><li data-type="method" id="MPSingle-getTXID-nav"><a href="MPSingle.html#getTXID">getTXID</a></li><li data-type="method" id="MPSingle-isComplete-nav"><a href="MPSingle.html#isComplete">isComplete</a></li><li data-type="method" id="MPSingle-isStale-nav"><a href="MPSingle.html#isStale">isStale</a></li><li data-type="method" id="MPSingle-setAddress-nav"><a href="MPSingle.html#setAddress">setAddress</a></li><li data-type="method" id="MPSingle-setAssembled-nav"><a href="MPSingle.html#setAssembled">setAssembled</a></li><li data-type="method" id="MPSingle-setBlock-nav"><a href="MPSingle.html#setBlock">setBlock</a></li><li data-type="method" id="MPSingle-setBlockHash-nav"><a href="MPSingle.html#setBlockHash">setBlockHash</a></li><li data-type="method" id="MPSingle-setData-nav"><a href="MPSingle.html#setData">setData</a></li><li data-type="method" id="MPSingle-setIsComplete-nav"><a href="MPSingle.html#setIsComplete">setIsComplete</a></li><li data-type="method" id="MPSingle-setIsStale-nav"><a href="MPSingle.html#setIsStale">setIsStale</a></li><li data-type="method" id="MPSingle-setMax-nav"><a href="MPSingle.html#setMax">setMax</a></li><li data-type="method" id="MPSingle-setPart-nav"><a href="MPSingle.html#setPart">setPart</a></li><li data-type="method" id="MPSingle-setReference-nav"><a href="MPSingle.html#setReference">setReference</a></li><li data-type="method" id="MPSingle-setSignature-nav"><a href="MPSingle.html#setSignature">setSignature</a></li><li data-type="method" id="MPSingle-setTXID-nav"><a href="MPSingle.html#setTXID">setTXID</a></li><li data-type="method" id="MPSingle-signSelf-nav"><a href="MPSingle.html#signSelf">signSelf</a></li><li data-type="method" id="MPSingle-toString-nav"><a href="MPSingle.html#toString">toString</a></li></ul></li><li id="MultipartX-nav"><a href="MultipartX.html">MultipartX</a><ul class='methods'><li data-type="method" id="MultipartX-fromMultiparts-nav"><a href="MultipartX.html#fromMultiparts">fromMultiparts</a></li><li data-type="method" id="MultipartX-fromString-nav"><a href="MultipartX.html#fromString">fromString</a></li><li data-type="method" id="MultipartX-getMultiparts-nav"><a href="MultipartX.html#getMultiparts">getMultiparts</a></li><li data-type="method" id="MultipartX-toString-nav"><a href="MultipartX.html#toString">toString</a></li></ul></li><li id="OIP-nav"><a href="OIP.html">OIP</a><ul class='methods'><li data-type="method" id="OIP-addSpentTransaction-nav"><a href="OIP.html#addSpentTransaction">addSpentTransaction</a></li><li data-type="method" id="OIP-broadcastRawHex-nav"><a href="OIP.html#broadcastRawHex">broadcastRawHex</a></li><li data-type="method" id="OIP-buildInputsAndOutputs-nav"><a href="OIP.html#buildInputsAndOutputs">buildInputsAndOutputs</a></li><li data-type="method" id="OIP-buildTXHex-nav"><a href="OIP.html#buildTXHex">buildTXHex</a></li><li data-type="method" id="OIP-deleteHistory-nav"><a href="OIP.html#deleteHistory">deleteHistory</a></li><li data-type="method" id="OIP-deserialize-nav"><a href="OIP.html#deserialize">deserialize</a></li><li data-type="method" id="OIP-getSpentTransactions-nav"><a href="OIP.html#getSpentTransactions">getSpentTransactions</a></li><li data-type="method" id="OIP-getTxHistory-nav"><a href="OIP.html#getTxHistory">getTxHistory</a></li><li data-type="method" id="OIP-getUTXO-nav"><a href="OIP.html#getUTXO">getUTXO</a></li><li data-type="method" id="OIP-publish-nav"><a href="OIP.html#publish">publish</a></li><li data-type="method" id="OIP-publishData-nav"><a href="OIP.html#publishData">publishData</a></li><li data-type="method" id="OIP-publishMultiparts-nav"><a href="OIP.html#publishMultiparts">publishMultiparts</a></li><li data-type="method" id="OIP-removeSpent-nav"><a href="OIP.html#removeSpent">removeSpent</a></li><li data-type="method" id="OIP-save-nav"><a href="OIP.html#save">save</a></li><li data-type="method" id="OIP-serialize-nav"><a href="OIP.html#serialize">serialize</a></li></ul></li></ul><h3 id="global-nav">Global</h3><ul><li><a href="global.html#isValidWIF">isValidWIF</a></li></ul>
+  </nav>
+
+  <div id="main">
+    
+      <h1 class="page-title">
+        modules/multipart/mpsingle.js
+      </h1>
+    
+
+    
+      
+
+<section>
+  <article>
+    <pre class="prettyprint source linenums"><code>import {sign, verify} from 'bitcoinjs-message'
+
+/**
+ * An ES6 Multipart Single Class
+ * @class
+ */
+class MPSingle {
+	/**
+	 * Construct a Multipart Single by passing in an object or a valid JSON string
+	 * ##### Examples
+	 * ```javascript
+	 * let myOIPObject = {
+	 *     part: 0,
+	 *     max: 1,
+	 *     reference: `${firstTXIDRef}`,
+	 *     address: `${p2pkh}`,
+	 *     signature: `${signature}`,
+	 *     data: `${data}`
+	 * }
+	 * let mps = new MPSingle(myOIPObject)
+	 * //or
+	 * mps = new MPSingle(JSON.stringify(myOIPObject))
+	 * ```
+	 * @param {String|Object} input - a multipart chunk
+	 * @return {MPSingle}
+	 */
+	constructor(input) {
+		// this._source = input
+		this.prefix = "oip-mp"
+
+		this.part = undefined
+		this.max = undefined
+		this.address = undefined
+		this.reference = undefined
+		this.signature = undefined
+		this.data = undefined
+
+		this.meta = {
+			complete: undefined,
+			stale: undefined,
+			time: undefined,
+			txid: undefined,
+			block: undefined,
+			block_hash: undefined,
+			assembled: undefined,
+			tx: undefined
+		}
+
+		this.fromInput(input)
+	}
+
+	/**
+	 * Get Part Number
+	 * @return {number}
+	 */
+	getPart() {
+		return parseInt(this.part)
+	}
+
+	/**
+	 * Set part number
+	 * @param {number} part
+	 */
+	setPart(part) {
+		this.part = part
+	}
+
+	/**
+	 * Get max number of parts
+	 * @return {number}
+	 */
+	getMax() {
+		return parseInt(this.max)
+	}
+
+	/**
+	 * Set max number of parts
+	 * @param {number} max
+	 */
+	setMax(max) {
+		this.max = max
+	}
+
+	/**
+	 * Get publisher address
+	 * @return {string}
+	 */
+	getAddress() {
+		return this.address
+	}
+
+	/**
+	 * Set Publisher address
+	 * @param {string} address
+	 */
+	setAddress(address) {
+		this.address = address
+	}
+
+	/**
+	 * Get the reference to the first part's TXID
+	 * @return {string}
+	 */
+	getReference() {
+		return this.reference
+	}
+
+	/**
+	 * Set the reference to the first part's TXID
+	 * @param {string} reference
+	 */
+	setReference(reference) {
+		this.reference = reference
+	}
+
+	/**
+	 * Get signature
+	 * @return {string}
+	 */
+	getSignature() {
+		return this.signature
+	}
+
+	/**
+	 * Set signature
+	 * @param {string} signature
+	 */
+	setSignature(signature) {
+		this.signature = signature
+	}
+
+	/**
+	 * Get multipart data
+	 * @return {string}
+	 */
+	getData() {
+		return this.data
+	}
+
+	/**
+	 * Set multipart data
+	 * @param {string} data - floData
+	 */
+	setData(data) {
+		this.data = data
+	}
+
+	/**
+	 * Get the multipart meta data
+	 * @return {Object}
+	 */
+	getMeta() {
+		return this.meta
+	}
+
+	/**
+	 * Check if multipart is complete
+	 * @return {Boolean}
+	 */
+	isComplete() {
+		return this.meta.complete
+	}
+
+	/**
+	 * Set whether mulitpart is complete
+	 * @param {boolean} isComplete
+	 */
+	setIsComplete(isComplete) {
+		this.meta.complete = isComplete
+	}
+
+	/**
+	 * Check if multipart is stale
+	 * @return {Boolean}
+	 */
+	isStale() {
+		return this.meta.stale
+	}
+
+	/**
+	 * Set stale param
+	 * @param {Boolean} isStale
+	 */
+	setIsStale(isStale) {
+		this.meta.stale = isStale
+	}
+
+	getTime() {
+		return this.meta.time
+	}
+
+	setTime(time) {
+		this.meta.time = time
+	}
+
+	/**
+	 * Get TXID
+	 * @return {string}
+	 */
+	getTXID() {
+		return this.meta.txid
+	}
+
+	/**
+	 * Set TXID
+	 * @param {string} txid
+	 */
+	setTXID(txid) {
+		this.meta.txid = txid
+	}
+
+	/**
+	 * Get Block Height
+	 * @return {number}
+	 */
+	getBlock() {
+		return parseInt(this.meta.block)
+	}
+
+	/**
+	 * Set Block Height
+	 * @param {number|string} block
+	 */
+	setBlock(block) {
+		this.meta.block = block
+	}
+
+	/**
+	 * Get block hash
+	 * @return {string}
+	 */
+	getBlockHash() {
+		return this.meta.block_hash
+	}
+
+	/**
+	 * Set block hash
+	 * @param {string} block_hash
+	 */
+	setBlockHash(block_hash) {
+		this.meta.block_hash = block_hash
+	}
+
+	/**
+	 * Get assembled multipart
+	 * @return {string}
+	 */
+	getAssembled() {
+		return this.meta.assembled
+	}
+
+	/**
+	 * Set assembled multipart
+	 * @param {string} assembled - assembled multipart
+	 */
+	setAssembled(assembled) {
+		this.meta.assembled = assembled
+	}
+
+	/**
+	 * Get Transaction
+	 * @return {Object}
+	 * @deprecated
+	 */
+	// getTX() {
+	// 	return this.meta.tx
+	// }
+
+	/**
+	 * Set Transaction
+	 * @param {Object} tx
+	 * @deprecated
+	 */
+	// setTX(tx) {
+	// 	this.meta.tx = tx
+	// }
+
+	/**
+	 * Get original source data
+	 * @private
+	 * @deprecated
+	 */
+	// _getSource() {
+	// 	return this._source
+	// }
+
+	/**
+	 * Construct a MPSingle from a JSON string or Object
+	 * @param {string|object} input - see constructor example
+	 * @return {null}
+	 */
+	fromInput(input) {
+		if (!input)
+			return new Error(`No input!`)
+
+		if (typeof input === 'string') {
+			try {
+				input = JSON.parse(input)
+			} catch (err) {
+				return new Error(`Input is invalid JSON: ${err}`)
+			}
+		}
+
+		if (input.part !== undefined) {
+			this.setPart(input.part)
+		}
+		if (input.max !== undefined) {
+			this.setMax(input.max)
+		}
+		if (input.address) {
+			this.setAddress(input.address)
+		}
+		if (input.reference) {
+			this.setReference(input.reference)
+		}
+		if (input.signature) {
+			this.setSignature(input.signature)
+		}
+		if (input.data) {
+			this.setData(input.data)
+		}
+
+		if (!input.meta) return
+
+		if (input.meta.complete !== undefined) {
+			this.setIsComplete(input.meta.complete)
+			this.setAssembled(input.meta.assembled)
+		}
+		if (input.meta.stale !== undefined) {
+			this.setIsStale(input.meta.stale)
+		}
+		if (input.meta.time) {
+			this.setTime(input.meta.time)
+		}
+		if (input.meta.txid) {
+			this.setTXID(input.meta.txid)
+		}
+		if (input.meta.block) {
+			this.setBlock(input.meta.block)
+		}
+		if (input.meta.block_hash) {
+			this.setBlockHash(input.meta.block_hash)
+		}
+
+		// if (input.meta.tx) {
+		// 	this.setTX(input.meta.tx)
+		// }
+	}
+
+	isValid() {
+		if (this.getPart() &lt; 0 || this.getPart() === "") {
+			return {success: false, message: "Part number can't be negative, null, or undefined"}
+		}
+		if (this.getPart() > this.getMax()) {
+			return {success: false, message: "Part number too high for total parts!"}
+		}
+		if (this.getMax() &lt; 1) {
+			return {success: false, message: "Must have more than one part to be a MULTIPART message!"}
+		}
+		if (this.getAddress() === "") {
+			return {success: false, message: "Must have a Publisher Address!"}
+		}
+		if (this.getReference() === "" &amp;&amp; this.getPart() !== 0) {
+			return {
+				success: false,
+				message: "Only the first part in a multipart message can have a blank first part TXID!"
+			}
+		}
+		if (isNaN(this.getPart()) || isNaN(this.getPart())) {
+			return {success: false, message: "The part number and the total part number must be of NUMBER types"}
+		}
+		if (!this.getSignature()) {
+			return {success: false, message: "Must have a Signature!"}
+		}
+
+		//signature validation
+		if (!verify(this.getSignatureData(), this.getAddress(), this.getSignature(), '\u001bFlorincoin Signed Message:\n')) {
+			return {
+				success: false,
+				message: 'Signature did not pass validation.',
+				signatureData: this.getSignatureData(),
+				address: this.getAddress(),
+				signature: this.getSignature(),
+				messagePrefix: '\u001bFlorincoin Signed Message:\n'
+			}
+		}
+
+
+		this.is_valid = true;
+		return {success: true}
+	}
+
+	/**
+	 * Convert MPSingle to string
+	 * @return {string}
+	 * @example
+	 * ```
+	 * oip-mp(4,6,FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k,8c204c5f39,H9dqFw5Pd//qwHeEQA+ENifGvvs/0X1sLUXLQKj2L5qdI/BIJMBX2w3TKETHeNg3MMhA1i3PYVT2FnC8y/BxvUM=):":"Single Track","duration":268},{"fname":"miltjordan-vanishingbreed.jpg","fsize":40451,"type":"Image","subtype":"album-art"},{"fname":"miltjordan-angelsgettheblues.jpg","fsize":54648,"type":"Image","subtype":"cover"}],"location":"QmWmth4ES4ZH9Wgz6Z7S7dRFF8MzJVGgDhit5KzH5uCvZz"},"payment":{"fiat":"USD","scale":"1000:1","maxdisc":30,"promoter":15,"retailer":15,"sugTip"
+	 * ```
+	 */
+	toString() {
+		if (this.isValid().success) {
+			return this.prefix + "(" +
+				this.getPart() + "," +
+				this.getMax() + "," +
+				this.getAddress() + "," +
+				this.getReference() + "," +
+				this.getSignature() + "):" +
+				this.getData();
+		} else return new Error(`Invalid multipart: ${this.isValid().message}`)
+	}
+
+	/**
+	 * Get Signature Data (the message parameter for the signing function)
+	 * @return {string} signatureData
+	 */
+	getSignatureData() {
+		let part = this.getPart()
+		let max = this.getMax()
+		let address = this.getAddress()
+		let reference = this.getPart() ? this.getReference() : ''
+		let data = this.getData()
+		return `${part}-${max}-${address}-${reference}-${data}`
+	}
+
+	/**
+	 * Get the signature of a specific message that can be verified by others
+	 * @param   {Object} ECPair - Elliptic Curve Key Pair (bitcoinjs-lib/ecpair)
+	 * @return  {Object} success - Returns a success object
+	 * ```javascript
+	 * {success: true, signature: 'base64', error: undefined}
+	 *
+	 * //or something like
+	 *
+	 * {success: false, signature: undefined, error: "Missing address for signature}
+	 *```
+	 *
+	 * ```javascript
+	 * //nice little trick
+	 * let {success, signature, error} = mp.signSelf(ECPair)
+	 *
+	 * if (success) {
+	 *     mp.setSignature(signature)
+	 * } else {
+	 *     handle(error)
+	 * }
+	 * ```
+	 */
+	signSelf(ECPair) {
+		if (!ECPair)
+			return {success: false, error: "No Private Key available! Unable to sign message!"}
+
+		if (this.getPart() === undefined) {
+			return {success: false, error: "Missing part number! Unable to sign message!"}
+		}
+
+		if (this.getMax() === undefined) {
+			return {success: false, error: "Missing maximum part number! Unable to sign message!"}
+		}
+
+		if (this.getReference() === undefined) {
+			return {success: false, error: "Missing first txid reference! Unable to sign message!"}
+		}
+
+		if (this.getData() === undefined) {
+			return {success: false, error: "Missing data! Unable to sign message!"}
+		}
+
+		let privateKeyBuffer = ECPair.privateKey;
+
+		let compressed = ECPair.compressed || true;
+
+		let signature_buffer
+		try {
+			signature_buffer = sign(this.getSignatureData(), privateKeyBuffer, compressed, ECPair.network.messagePrefix)
+		} catch (e) {
+			return {success: false, error: e}
+		}
+
+		return {success: true, signature: signature_buffer.toString('base64')}
+	}
+}
+
+export default MPSingle</code></pre>
+  </article>
+</section>
+
+    
+
+
+  </div>
+
+  <br class="clear">
+
+  <footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+  </footer>
+
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/pagelocation.js"></script>
+
+  
+  
+</body>
+</html>

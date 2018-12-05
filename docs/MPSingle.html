@@ -1,0 +1,4311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+      MPSingle - Documentation
+  </title>
+
+  <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.3.0/highlightjs-line-numbers.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad();
+  </script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+  <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+  <link type="text/css" rel="stylesheet" href="styles/monokai-sublime.css">
+
+  
+
+  <!-- start Mixpanel -->
+  <script type="text/javascript">(function(e,a){if(!a.__SV){var b=window;try{var c,l,i,j=b.location,g=j.hash;c=function(a,b){return(l=a.match(RegExp(b+"=([^&]*)")))?l[1]:null};g&&c(g,"state")&&(i=JSON.parse(decodeURIComponent(c(g,"state"))),"mpeditor"===i.action&&(b.sessionStorage.setItem("_mpcehash",g),history.replaceState(i.desiredHash||"",e.title,j.pathname+j.search)))}catch(m){}var k,h;window.mixpanel=a;a._i=[];a.init=function(b,c,f){function e(b,a){var c=a.split(".");2==c.length&&(b=b[c[0]],a=c[1]);b[a]=function(){b.push([a].concat(Array.prototype.slice.call(arguments,
+  0)))}}var d=a;"undefined"!==typeof f?d=a[f]=[]:f="mixpanel";d.people=d.people||[];d.toString=function(b){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);b||(a+=" (stub)");return a};d.people.toString=function(){return d.toString(1)+".people (stub)"};k="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+  for(h=0;h<k.length;h++)e(d,k[h]);a._i.push([b,c,f])};a.__SV=1.2;b=e.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";c=e.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c)}})(document,window.mixpanel||[]);
+  mixpanel.init("1919205b2da72e4da3b9b6639b444d59");</script>
+  <!-- end Mixpanel -->
+</head>
+
+<body>
+  <svg style="display: none;">
+    <defs>
+      <symbol id="linkIcon" fill="#706d77" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0h24v24H0z" fill="none"/>
+          <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+  <label for="nav-trigger" class="navicon-button x">
+    <div class="navicon"></div>
+  </label>
+
+  <label for="nav-trigger" class="overlay"></label>
+
+  <div class="top-nav-wrapper">
+    <ul>
+      <li >
+        <a href="index.html">
+          
+            <svg fill="#6D6D6D" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+          
+          
+        </a>
+      </li>
+
+      
+
+    </ul>
+  </div>
+
+  <nav>
+    <h3 class="reference-title">
+      js-oip
+    </h3>
+
+    <h3>Classes</h3><ul><li id="Artifact-nav"><a href="Artifact.html">Artifact</a><ul class='methods'><li data-type="method" id="Artifact-getArtifactSubtype-nav"><a href="Artifact.html#.getArtifactSubtype">getArtifactSubtype</a></li><li data-type="method" id="Artifact-getArtifactType-nav"><a href="Artifact.html#.getArtifactType">getArtifactType</a></li><li data-type="method" id="Artifact-getTypeAndSubtype-nav"><a href="Artifact.html#.getTypeAndSubtype">getTypeAndSubtype</a></li><li data-type="method" id="Artifact-_getSource-nav"><a href="Artifact.html#_getSource">_getSource</a></li><li data-type="method" id="Artifact-_setSourceData-nav"><a href="Artifact.html#_setSourceData">_setSourceData</a></li><li data-type="method" id="Artifact-addFile-nav"><a href="Artifact.html#addFile">addFile</a></li><li data-type="method" id="Artifact-addSinglePaymentAddress-nav"><a href="Artifact.html#addSinglePaymentAddress">addSinglePaymentAddress</a></li><li data-type="method" id="Artifact-addTokenRule-nav"><a href="Artifact.html#addTokenRule">addTokenRule</a></li><li data-type="method" id="Artifact-fromJSON-nav"><a href="Artifact.html#fromJSON">fromJSON</a></li><li data-type="method" id="Artifact-getArtifact-nav"><a href="Artifact.html#getArtifact">getArtifact</a></li><li data-type="method" id="Artifact-getBlock-nav"><a href="Artifact.html#getBlock">getBlock</a></li><li data-type="method" id="Artifact-getBlockHash-nav"><a href="Artifact.html#getBlockHash">getBlockHash</a></li><li data-type="method" id="Artifact-getClassName-nav"><a href="Artifact.html#getClassName">getClassName</a></li><li data-type="method" id="Artifact-getDeactivated-nav"><a href="Artifact.html#getDeactivated">getDeactivated</a></li><li data-type="method" id="Artifact-getDescription-nav"><a href="Artifact.html#getDescription">getDescription</a></li><li data-type="method" id="Artifact-getDetail-nav"><a href="Artifact.html#getDetail">getDetail</a></li><li data-type="method" id="Artifact-getDuration-nav"><a href="Artifact.html#getDuration">getDuration</a></li><li data-type="method" id="Artifact-getFiles-nav"><a href="Artifact.html#getFiles">getFiles</a></li><li data-type="method" id="Artifact-getInternalTypeAndSubtype-nav"><a href="Artifact.html#getInternalTypeAndSubtype">getInternalTypeAndSubtype</a></li><li data-type="method" id="Artifact-getLocation-nav"><a href="Artifact.html#getLocation">getLocation</a></li><li data-type="method" id="Artifact-getMainAddress-nav"><a href="Artifact.html#getMainAddress">getMainAddress</a></li><li data-type="method" id="Artifact-getMaxDiscount-nav"><a href="Artifact.html#getMaxDiscount">getMaxDiscount</a></li><li data-type="method" id="Artifact-getMeta-nav"><a href="Artifact.html#getMeta">getMeta</a></li><li data-type="method" id="Artifact-getNetwork-nav"><a href="Artifact.html#getNetwork">getNetwork</a></li><li data-type="method" id="Artifact-getNSFW-nav"><a href="Artifact.html#getNSFW">getNSFW</a></li><li data-type="method" id="Artifact-getPaymentAddress-nav"><a href="Artifact.html#getPaymentAddress">getPaymentAddress</a></li><li data-type="method" id="Artifact-getPaymentAddresses-nav"><a href="Artifact.html#getPaymentAddresses">getPaymentAddresses</a></li><li data-type="method" id="Artifact-getPaymentFiat-nav"><a href="Artifact.html#getPaymentFiat">getPaymentFiat</a></li><li data-type="method" id="Artifact-getPaymentScale-nav"><a href="Artifact.html#getPaymentScale">getPaymentScale</a></li><li data-type="method" id="Artifact-getPromoterCut-nav"><a href="Artifact.html#getPromoterCut">getPromoterCut</a></li><li data-type="method" id="Artifact-getPublisherName-nav"><a href="Artifact.html#getPublisherName">getPublisherName</a></li><li data-type="method" id="Artifact-getRetailerCut-nav"><a href="Artifact.html#getRetailerCut">getRetailerCut</a></li><li data-type="method" id="Artifact-getSignature-nav"><a href="Artifact.html#getSignature">getSignature</a></li><li data-type="method" id="Artifact-getSubtype-nav"><a href="Artifact.html#getSubtype">getSubtype</a></li><li data-type="method" id="Artifact-getSuggestedTip-nav"><a href="Artifact.html#getSuggestedTip">getSuggestedTip</a></li><li data-type="method" id="Artifact-getSupportedCoins-nav"><a href="Artifact.html#getSupportedCoins">getSupportedCoins</a></li><li data-type="method" id="Artifact-getTags-nav"><a href="Artifact.html#getTags">getTags</a></li><li data-type="method" id="Artifact-getThumbnail-nav"><a href="Artifact.html#getThumbnail">getThumbnail</a></li><li data-type="method" id="Artifact-getTime-nav"><a href="Artifact.html#getTime">getTime</a></li><li data-type="method" id="Artifact-getTimestamp-nav"><a href="Artifact.html#getTimestamp">getTimestamp</a></li><li data-type="method" id="Artifact-getTipAddresses-nav"><a href="Artifact.html#getTipAddresses">getTipAddresses</a></li><li data-type="method" id="Artifact-getTitle-nav"><a href="Artifact.html#getTitle">getTitle</a></li><li data-type="method" id="Artifact-getTokenRules-nav"><a href="Artifact.html#getTokenRules">getTokenRules</a></li><li data-type="method" id="Artifact-getTXID-nav"><a href="Artifact.html#getTXID">getTXID</a></li><li data-type="method" id="Artifact-getType-nav"><a href="Artifact.html#getType">getType</a></li><li data-type="method" id="Artifact-getVersionType-nav"><a href="Artifact.html#getVersionType">getVersionType</a></li><li data-type="method" id="Artifact-getYear-nav"><a href="Artifact.html#getYear">getYear</a></li><li data-type="method" id="Artifact-import041-nav"><a href="Artifact.html#import041">import041</a></li><li data-type="method" id="Artifact-import042-nav"><a href="Artifact.html#import042">import042</a></li><li data-type="method" id="Artifact-importAlexandriaMedia-nav"><a href="Artifact.html#importAlexandriaMedia">importAlexandriaMedia</a></li><li data-type="method" id="Artifact-isPaid-nav"><a href="Artifact.html#isPaid">isPaid</a></li><li data-type="method" id="Artifact-isValid-nav"><a href="Artifact.html#isValid">isValid</a></li><li data-type="method" id="Artifact-setBlock-nav"><a href="Artifact.html#setBlock">setBlock</a></li><li data-type="method" id="Artifact-setBlockHash-nav"><a href="Artifact.html#setBlockHash">setBlockHash</a></li><li data-type="method" id="Artifact-setDeactivated-nav"><a href="Artifact.html#setDeactivated">setDeactivated</a></li><li data-type="method" id="Artifact-setDescription-nav"><a href="Artifact.html#setDescription">setDescription</a></li><li data-type="method" id="Artifact-setDetail-nav"><a href="Artifact.html#setDetail">setDetail</a></li><li data-type="method" id="Artifact-setLocation-nav"><a href="Artifact.html#setLocation">setLocation</a></li><li data-type="method" id="Artifact-setMainAddress-nav"><a href="Artifact.html#setMainAddress">setMainAddress</a></li><li data-type="method" id="Artifact-setMaxDiscount-nav"><a href="Artifact.html#setMaxDiscount">setMaxDiscount</a></li><li data-type="method" id="Artifact-setNetwork-nav"><a href="Artifact.html#setNetwork">setNetwork</a></li><li data-type="method" id="Artifact-setNSFW-nav"><a href="Artifact.html#setNSFW">setNSFW</a></li><li data-type="method" id="Artifact-setPaymentFiat-nav"><a href="Artifact.html#setPaymentFiat">setPaymentFiat</a></li><li data-type="method" id="Artifact-setPaymentScale-nav"><a href="Artifact.html#setPaymentScale">setPaymentScale</a></li><li data-type="method" id="Artifact-setPromoterCut-nav"><a href="Artifact.html#setPromoterCut">setPromoterCut</a></li><li data-type="method" id="Artifact-setPublisherName-nav"><a href="Artifact.html#setPublisherName">setPublisherName</a></li><li data-type="method" id="Artifact-setRetailerCut-nav"><a href="Artifact.html#setRetailerCut">setRetailerCut</a></li><li data-type="method" id="Artifact-setSignature-nav"><a href="Artifact.html#setSignature">setSignature</a></li><li data-type="method" id="Artifact-setSubtype-nav"><a href="Artifact.html#setSubtype">setSubtype</a></li><li data-type="method" id="Artifact-setSuggestedTip-nav"><a href="Artifact.html#setSuggestedTip">setSuggestedTip</a></li><li data-type="method" id="Artifact-setTags-nav"><a href="Artifact.html#setTags">setTags</a></li><li data-type="method" id="Artifact-setTime-nav"><a href="Artifact.html#setTime">setTime</a></li><li data-type="method" id="Artifact-setTimestamp-nav"><a href="Artifact.html#setTimestamp">setTimestamp</a></li><li data-type="method" id="Artifact-setTitle-nav"><a href="Artifact.html#setTitle">setTitle</a></li><li data-type="method" id="Artifact-setTXID-nav"><a href="Artifact.html#setTXID">setTXID</a></li><li data-type="method" id="Artifact-setType-nav"><a href="Artifact.html#setType">setType</a></li><li data-type="method" id="Artifact-setVersionType-nav"><a href="Artifact.html#setVersionType">setVersionType</a></li><li data-type="method" id="Artifact-setYear-nav"><a href="Artifact.html#setYear">setYear</a></li><li data-type="method" id="Artifact-toJSON-nav"><a href="Artifact.html#toJSON">toJSON</a></li><li data-type="method" id="Artifact-toString-nav"><a href="Artifact.html#toString">toString</a></li></ul></li><li id="DaemonApi-nav"><a href="DaemonApi.html">DaemonApi</a><ul class='methods'><li data-type="method" id="DaemonApi-get041Artifact-nav"><a href="DaemonApi.html#get041Artifact">get041Artifact</a></li><li data-type="method" id="DaemonApi-get041Artifacts-nav"><a href="DaemonApi.html#get041Artifacts">get041Artifacts</a></li><li data-type="method" id="DaemonApi-getAlexandriaMediaArtifact-nav"><a href="DaemonApi.html#getAlexandriaMediaArtifact">getAlexandriaMediaArtifact</a></li><li data-type="method" id="DaemonApi-getAlexandriaMediaArtifacts-nav"><a href="DaemonApi.html#getAlexandriaMediaArtifacts">getAlexandriaMediaArtifacts</a></li><li data-type="method" id="DaemonApi-getArtifact-nav"><a href="DaemonApi.html#getArtifact">getArtifact</a></li><li data-type="method" id="DaemonApi-getArtifacts-nav"><a href="DaemonApi.html#getArtifacts">getArtifacts</a></li><li data-type="method" id="DaemonApi-getFloData-nav"><a href="DaemonApi.html#getFloData">getFloData</a></li><li data-type="method" id="DaemonApi-getHistorianData-nav"><a href="DaemonApi.html#getHistorianData">getHistorianData</a></li><li data-type="method" id="DaemonApi-getLastestHistorianData-nav"><a href="DaemonApi.html#getLastestHistorianData">getLastestHistorianData</a></li><li data-type="method" id="DaemonApi-getLatest041Artifacts-nav"><a href="DaemonApi.html#getLatest041Artifacts">getLatest041Artifacts</a></li><li data-type="method" id="DaemonApi-getLatest042Artifacts-nav"><a href="DaemonApi.html#getLatest042Artifacts">getLatest042Artifacts</a></li><li data-type="method" id="DaemonApi-getLatestAlexandriaMediaArtifacts-nav"><a href="DaemonApi.html#getLatestAlexandriaMediaArtifacts">getLatestAlexandriaMediaArtifacts</a></li><li data-type="method" id="DaemonApi-getLatestArtifacts-nav"><a href="DaemonApi.html#getLatestArtifacts">getLatestArtifacts</a></li><li data-type="method" id="DaemonApi-getMultipart-nav"><a href="DaemonApi.html#getMultipart">getMultipart</a></li><li data-type="method" id="DaemonApi-getMultiparts-nav"><a href="DaemonApi.html#getMultiparts">getMultiparts</a></li><li data-type="method" id="DaemonApi-getNetwork-nav"><a href="DaemonApi.html#getNetwork">getNetwork</a></li><li data-type="method" id="DaemonApi-getUrl-nav"><a href="DaemonApi.html#getUrl">getUrl</a></li><li data-type="method" id="DaemonApi-getVersion-nav"><a href="DaemonApi.html#getVersion">getVersion</a></li><li data-type="method" id="DaemonApi-searchArtifacts-nav"><a href="DaemonApi.html#searchArtifacts">searchArtifacts</a></li><li data-type="method" id="DaemonApi-searchFloData-nav"><a href="DaemonApi.html#searchFloData">searchFloData</a></li><li data-type="method" id="DaemonApi-setUrl-nav"><a href="DaemonApi.html#setUrl">setUrl</a></li></ul></li><li id="ErrorX-nav"><a href="ErrorX.html">ErrorX</a></li><li id="MPSingle-nav"><a href="MPSingle.html">MPSingle</a><ul class='methods'><li data-type="method" id="MPSingle-fromInput-nav"><a href="MPSingle.html#fromInput">fromInput</a></li><li data-type="method" id="MPSingle-getAddress-nav"><a href="MPSingle.html#getAddress">getAddress</a></li><li data-type="method" id="MPSingle-getAssembled-nav"><a href="MPSingle.html#getAssembled">getAssembled</a></li><li data-type="method" id="MPSingle-getBlock-nav"><a href="MPSingle.html#getBlock">getBlock</a></li><li data-type="method" id="MPSingle-getBlockHash-nav"><a href="MPSingle.html#getBlockHash">getBlockHash</a></li><li data-type="method" id="MPSingle-getData-nav"><a href="MPSingle.html#getData">getData</a></li><li data-type="method" id="MPSingle-getMax-nav"><a href="MPSingle.html#getMax">getMax</a></li><li data-type="method" id="MPSingle-getMeta-nav"><a href="MPSingle.html#getMeta">getMeta</a></li><li data-type="method" id="MPSingle-getPart-nav"><a href="MPSingle.html#getPart">getPart</a></li><li data-type="method" id="MPSingle-getReference-nav"><a href="MPSingle.html#getReference">getReference</a></li><li data-type="method" id="MPSingle-getSignature-nav"><a href="MPSingle.html#getSignature">getSignature</a></li><li data-type="method" id="MPSingle-getSignatureData-nav"><a href="MPSingle.html#getSignatureData">getSignatureData</a></li><li data-type="method" id="MPSingle-getTXID-nav"><a href="MPSingle.html#getTXID">getTXID</a></li><li data-type="method" id="MPSingle-isComplete-nav"><a href="MPSingle.html#isComplete">isComplete</a></li><li data-type="method" id="MPSingle-isStale-nav"><a href="MPSingle.html#isStale">isStale</a></li><li data-type="method" id="MPSingle-setAddress-nav"><a href="MPSingle.html#setAddress">setAddress</a></li><li data-type="method" id="MPSingle-setAssembled-nav"><a href="MPSingle.html#setAssembled">setAssembled</a></li><li data-type="method" id="MPSingle-setBlock-nav"><a href="MPSingle.html#setBlock">setBlock</a></li><li data-type="method" id="MPSingle-setBlockHash-nav"><a href="MPSingle.html#setBlockHash">setBlockHash</a></li><li data-type="method" id="MPSingle-setData-nav"><a href="MPSingle.html#setData">setData</a></li><li data-type="method" id="MPSingle-setIsComplete-nav"><a href="MPSingle.html#setIsComplete">setIsComplete</a></li><li data-type="method" id="MPSingle-setIsStale-nav"><a href="MPSingle.html#setIsStale">setIsStale</a></li><li data-type="method" id="MPSingle-setMax-nav"><a href="MPSingle.html#setMax">setMax</a></li><li data-type="method" id="MPSingle-setPart-nav"><a href="MPSingle.html#setPart">setPart</a></li><li data-type="method" id="MPSingle-setReference-nav"><a href="MPSingle.html#setReference">setReference</a></li><li data-type="method" id="MPSingle-setSignature-nav"><a href="MPSingle.html#setSignature">setSignature</a></li><li data-type="method" id="MPSingle-setTXID-nav"><a href="MPSingle.html#setTXID">setTXID</a></li><li data-type="method" id="MPSingle-signSelf-nav"><a href="MPSingle.html#signSelf">signSelf</a></li><li data-type="method" id="MPSingle-toString-nav"><a href="MPSingle.html#toString">toString</a></li></ul></li><li id="MultipartX-nav"><a href="MultipartX.html">MultipartX</a><ul class='methods'><li data-type="method" id="MultipartX-fromMultiparts-nav"><a href="MultipartX.html#fromMultiparts">fromMultiparts</a></li><li data-type="method" id="MultipartX-fromString-nav"><a href="MultipartX.html#fromString">fromString</a></li><li data-type="method" id="MultipartX-getMultiparts-nav"><a href="MultipartX.html#getMultiparts">getMultiparts</a></li><li data-type="method" id="MultipartX-toString-nav"><a href="MultipartX.html#toString">toString</a></li></ul></li><li id="OIP-nav"><a href="OIP.html">OIP</a><ul class='methods'><li data-type="method" id="OIP-addSpentTransaction-nav"><a href="OIP.html#addSpentTransaction">addSpentTransaction</a></li><li data-type="method" id="OIP-broadcastRawHex-nav"><a href="OIP.html#broadcastRawHex">broadcastRawHex</a></li><li data-type="method" id="OIP-buildInputsAndOutputs-nav"><a href="OIP.html#buildInputsAndOutputs">buildInputsAndOutputs</a></li><li data-type="method" id="OIP-buildTXHex-nav"><a href="OIP.html#buildTXHex">buildTXHex</a></li><li data-type="method" id="OIP-deleteHistory-nav"><a href="OIP.html#deleteHistory">deleteHistory</a></li><li data-type="method" id="OIP-deserialize-nav"><a href="OIP.html#deserialize">deserialize</a></li><li data-type="method" id="OIP-getSpentTransactions-nav"><a href="OIP.html#getSpentTransactions">getSpentTransactions</a></li><li data-type="method" id="OIP-getTxHistory-nav"><a href="OIP.html#getTxHistory">getTxHistory</a></li><li data-type="method" id="OIP-getUTXO-nav"><a href="OIP.html#getUTXO">getUTXO</a></li><li data-type="method" id="OIP-publish-nav"><a href="OIP.html#publish">publish</a></li><li data-type="method" id="OIP-publishData-nav"><a href="OIP.html#publishData">publishData</a></li><li data-type="method" id="OIP-publishMultiparts-nav"><a href="OIP.html#publishMultiparts">publishMultiparts</a></li><li data-type="method" id="OIP-removeSpent-nav"><a href="OIP.html#removeSpent">removeSpent</a></li><li data-type="method" id="OIP-save-nav"><a href="OIP.html#save">save</a></li><li data-type="method" id="OIP-serialize-nav"><a href="OIP.html#serialize">serialize</a></li></ul></li></ul><h3 id="global-nav">Global</h3><ul><li><a href="global.html#isValidWIF">isValidWIF</a></li></ul>
+  </nav>
+
+  <div id="main">
+    
+      <h1 class="page-title">
+        MPSingle
+      </h1>
+    
+
+    
+
+<section>
+  <header>
+    
+      <h2>
+        
+        MPSingle
+        
+      </h2>
+
+      
+        <div class="class-description">
+          <p>An ES6 Multipart Single Class</p>
+        </div>
+      
+    
+  </header>
+
+  <article>
+    <div class="container-overview">
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+    <h2>Constructor</h2>
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#MPSingle">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="MPSingle">
+      <span class="type-signature"></span>new MPSingle<span class="signature">(input)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Construct a Multipart Single by passing in an object or a valid JSON string</p>
+<h5>Examples</h5><pre class="prettyprint source lang-javascript"><code>let myOIPObject = {
+    part: 0,
+    max: 1,
+    reference: `${firstTXIDRef}`,
+    address: `${p2pkh}`,
+    signature: `${signature}`,
+    data: `${data}`
+}
+let mps = new MPSingle(myOIPObject)
+//or
+mps = new MPSingle(JSON.stringify(myOIPObject))</code></pre>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>input</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      String
+    </span>
+
+    |
+
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>a multipart chunk</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line7">line 7</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+      <h3 class="subsection-title">Methods</h3>
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#fromInput">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="fromInput">
+      <span class="type-signature"></span>fromInput<span class="signature">(input)</span><span class="type-signature"> &rarr; {null}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Construct a MPSingle from a JSON string or Object</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>input</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>see constructor example</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line292">line 292</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      null
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getAddress">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getAddress">
+      <span class="type-signature"></span>getAddress<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get publisher address</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line88">line 88</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getAssembled">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getAssembled">
+      <span class="type-signature"></span>getAssembled<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get assembled multipart</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line248">line 248</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getBlock">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getBlock">
+      <span class="type-signature"></span>getBlock<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get Block Height</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line216">line 216</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getBlockHash">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getBlockHash">
+      <span class="type-signature"></span>getBlockHash<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get block hash</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line232">line 232</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getData">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getData">
+      <span class="type-signature"></span>getData<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get multipart data</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line136">line 136</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getMax">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getMax">
+      <span class="type-signature"></span>getMax<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get max number of parts</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line72">line 72</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getMeta">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getMeta">
+      <span class="type-signature"></span>getMeta<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get the multipart meta data</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line152">line 152</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getPart">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getPart">
+      <span class="type-signature"></span>getPart<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get Part Number</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line56">line 56</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getReference">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getReference">
+      <span class="type-signature"></span>getReference<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get the reference to the first part's TXID</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line104">line 104</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getSignature">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getSignature">
+      <span class="type-signature"></span>getSignature<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get signature</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line120">line 120</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getSignatureData">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getSignatureData">
+      <span class="type-signature"></span>getSignatureData<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get Signature Data (the message parameter for the signing function)</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line417">line 417</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+  <div class="param-desc">
+    <p>signatureData</p>
+  </div>
+
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getTXID">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getTXID">
+      <span class="type-signature"></span>getTXID<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get TXID</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line200">line 200</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#isComplete">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="isComplete">
+      <span class="type-signature"></span>isComplete<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Check if multipart is complete</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line160">line 160</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Boolean
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#isStale">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="isStale">
+      <span class="type-signature"></span>isStale<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Check if multipart is stale</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line176">line 176</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Boolean
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#setAddress">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="setAddress">
+      <span class="type-signature"></span>setAddress<span class="signature">(address)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Set Publisher address</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>address</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line96">line 96</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#setAssembled">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="setAssembled">
+      <span class="type-signature"></span>setAssembled<span class="signature">(assembled)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Set assembled multipart</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>assembled</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>assembled multipart</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line256">line 256</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#setBlock">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="setBlock">
+      <span class="type-signature"></span>setBlock<span class="signature">(block)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Set Block Height</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>block</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    |
+
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line224">line 224</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#setBlockHash">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="setBlockHash">
+      <span class="type-signature"></span>setBlockHash<span class="signature">(block_hash)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Set block hash</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>block_hash</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line240">line 240</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#setData">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="setData">
+      <span class="type-signature"></span>setData<span class="signature">(data)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Set multipart data</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>data</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>floData</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line144">line 144</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#setIsComplete">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="setIsComplete">
+      <span class="type-signature"></span>setIsComplete<span class="signature">(isComplete)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Set whether mulitpart is complete</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>isComplete</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      boolean
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line168">line 168</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#setIsStale">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="setIsStale">
+      <span class="type-signature"></span>setIsStale<span class="signature">(isStale)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Set stale param</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>isStale</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Boolean
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line184">line 184</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#setMax">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="setMax">
+      <span class="type-signature"></span>setMax<span class="signature">(max)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Set max number of parts</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>max</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line80">line 80</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#setPart">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="setPart">
+      <span class="type-signature"></span>setPart<span class="signature">(part)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Set part number</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>part</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line64">line 64</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#setReference">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="setReference">
+      <span class="type-signature"></span>setReference<span class="signature">(reference)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Set the reference to the first part's TXID</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>reference</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line112">line 112</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#setSignature">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="setSignature">
+      <span class="type-signature"></span>setSignature<span class="signature">(signature)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Set signature</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>signature</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line128">line 128</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#setTXID">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="setTXID">
+      <span class="type-signature"></span>setTXID<span class="signature">(txid)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Set TXID</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>txid</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line208">line 208</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#signSelf">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="signSelf">
+      <span class="type-signature"></span>signSelf<span class="signature">(ECPair)</span><span class="type-signature"> &rarr; {Object}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get the signature of a specific message that can be verified by others</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>ECPair</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Elliptic Curve Key Pair (bitcoinjs-lib/ecpair)</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line449">line 449</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+  <div class="param-desc">
+    <p>success - Returns a success object</p>
+<pre class="prettyprint source lang-javascript"><code>{success: true, signature: 'base64', error: undefined}
+
+//or something like
+
+{success: false, signature: undefined, error: &quot;Missing address for signature}</code></pre><pre class="prettyprint source lang-javascript"><code>//nice little trick
+let {success, signature, error} = mp.signSelf(ECPair)
+
+if (success) {
+    mp.setSignature(signature)
+} else {
+    handle(error)
+}</code></pre>
+  </div>
+
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#toString">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="toString">
+      <span class="type-signature"></span>toString<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Convert MPSingle to string</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_multipart_mpsingle.js.html">modules/multipart/mpsingle.js</a>, <a href="modules_multipart_mpsingle.js.html#line401">line 401</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#toString-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="toString-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>```
+oip-mp(4,6,FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k,8c204c5f39,H9dqFw5Pd//qwHeEQA+ENifGvvs/0X1sLUXLQKj2L5qdI/BIJMBX2w3TKETHeNg3MMhA1i3PYVT2FnC8y/BxvUM=):":"Single Track","duration":268},{"fname":"miltjordan-vanishingbreed.jpg","fsize":40451,"type":"Image","subtype":"album-art"},{"fname":"miltjordan-angelsgettheblues.jpg","fsize":54648,"type":"Image","subtype":"cover"}],"location":"QmWmth4ES4ZH9Wgz6Z7S7dRFF8MzJVGgDhit5KzH5uCvZz"},"payment":{"fiat":"USD","scale":"1000:1","maxdisc":30,"promoter":15,"retailer":15,"sugTip"
+```</code></pre>
+
+
+  </div>
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+    
+
+    
+
+    
+  </article>
+</section>
+
+
+
+
+  </div>
+
+  <br class="clear">
+
+  <footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+  </footer>
+
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/pagelocation.js"></script>
+
+  
+  
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": [
+      "jsdoc"
+    ]
+  },
+  "source": {
+    "include": "src",
+    "includePattern": ".js$",
+    "excludePattern": "(node_modules/|docs|lib)"
+  },
+  "plugins": ["plugins/markdown"],
+  "opts": {
+    "template": "node_modules/jsdoc-template",
+    "encoding": "utf8",
+    "destination": "docs/",
+    "recurse": true,
+    "verbose": true,
+    "private": true
+  },
+  "templates": {
+    "referenceTitle": "js-oip",
+    "disableSort": false
+  }
+}
