@@ -983,13 +983,21 @@ class Artifact extends OIPRecord {
 			this.artifact.storage.files.push(file.toJSON())
 		}
 
-		let retJSON = {
-			artifact: this.getArtifact(),
-			meta: this.getMeta()
+		let artifact = this.getArtifact()
+		let meta = this.getMeta()
+
+		let artJSON = {
+			artifact,
+			meta
 		}
 
+		let cloneJSON = JSON.parse(JSON.stringify(artJSON))
+		//OIPd will not accept artifacts that have storage defined without any files
+		if (this.artifact.storage.files.length === 0) {
+			delete cloneJSON.artifact.storage
+		}
 
-		return JSON.parse(JSON.stringify(retJSON))
+		return cloneJSON
 	}
 
 	/**
