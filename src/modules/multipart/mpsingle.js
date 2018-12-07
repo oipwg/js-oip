@@ -373,18 +373,9 @@ class MPSingle {
 			return {success: false, message: "Must have a Signature!"}
 		}
 
-		//signature validation
-		if (!verify(this.getSignatureData(), this.getAddress(), this.getSignature(), '\u001bFlorincoin Signed Message:\n')) {
-			return {
-				success: false,
-				message: 'Signature did not pass validation.',
-				signatureData: this.getSignatureData(),
-				address: this.getAddress(),
-				signature: this.getSignature(),
-				messagePrefix: '\u001bFlorincoin Signed Message:\n'
-			}
+		if (!this.hasValidSignature()) {
+			return {success: false, message: "Invalid Signature"}
 		}
-
 
 		this.is_valid = true;
 		return {success: true}
@@ -414,7 +405,7 @@ class MPSingle {
 	}
 
 	/**
-	 * Get Signature Data (the message parameter for the signing function)
+	 * Get Signature Data (preimage: the message parameter for the signing function)
 	 * @return {string} signatureData
 	 */
 	getSignatureData() {
@@ -485,6 +476,18 @@ class MPSingle {
 		this.setSignature(signature)
 		return {success: true, signature}
 	}
+
+	/**
+	 * Check to see if the signature is valid
+	 * @param {string} [message_prefix=\u001bFlorincoin Signed Message:]
+	 * @return {boolean}
+	 * @example
+	 * if (multipart.hasValidSignature()) {
+	 *     launchSpaceship()
+	 * }
+	 */
+	hasValidSignature(message_prefix = '\u001bFlorincoin Signed Message:\n') {
+		return verify(this.getSignatureData(), this.getAddress(), this.getSignature(), message_prefix)
 	}
 }
 
