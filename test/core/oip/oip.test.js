@@ -70,9 +70,9 @@ describe(`OIP`, () => {
 		})
 	})
 	describe('Publishing', () => {
-		it('build and broadcast TX hex | publishData', async () => {
+		it('build and broadcast TX hex | sendToFloChain', async () => {
 			let pub = new OIP(wif, "testnet")
-			let txid = await pub.publishData(`RC`)
+			let txid = await pub.sendToFloChain(`RC`)
 			expect(typeof txid === 'string').toBeTruthy()
 			// console.log(txid)
 		})
