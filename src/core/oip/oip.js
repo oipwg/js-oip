@@ -1,7 +1,9 @@
 import bitcoin from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
-import {isValidWIF, ErrorX} from '../../util'
+import floTx from 'fcoin/lib/primitives/tx'
+import {isValidWIF} from '../../util'
 import {MultipartX} from '../../modules'
+import {OIPRecord} from '../../modules/records'
 import {flo_mainnet, flo_testnet} from '../../config'
 
 if (typeof window === "undefined" || typeof window.localStorage === "undefined") {
@@ -132,7 +134,7 @@ class OIP {
 			throw new Error(`Data must be of type string. Got: ${typeof data}`)
 		}
 		if (data.length > 1040) {
-			return `Error: data length exceeds 1040 characters. Try using OIPPublisher.publish(data) instead.`
+			throw new Error(`Error: data length exceeds 1040 characters. Try using OIPPublisher.publish(data) instead.`)
 		}
 		let hex
 		try {
@@ -174,26 +176,34 @@ class OIP {
 		let txids = []
 
 		for (let mp of mps) {
+			//set reference, addr, and sign
+
+			mp.setAddress(this.p2pkh)
 			if (txids.length > 0) {
-				//set reference, addr, and sign
 				mp.setReference(txids[0])
-				mp.setAddress(this.p2pkh)
-				let {success, signature, error} = mp.signSelf(this.ECPair)
-				if (success) {
-					mp.setSignature(signature)
-				} else {
-					throw new Error(error)
-				}
 			}
-			if (!mp.isValid().success)
+			let {error} = mp.signSelf(this.ECPair)
+			if (error) {
+				throw new Error(`Failed to sign multipart: ${error}`)
+			}
+
+			// not going to be valid yet or will it
+			if (!mp.isValid().success) {
+				console.log(mp)
 				throw new Error(`Invalid multipart: ${mp.isValid().message}`)
+			}
 
 			let txid
 			try {
+				console.log(mp.toString())
+				console.log(mp.toString().length)
+
+				// throw new Error('STOP')
 				txid = await this.sendToFloChain(mp.toString())
 			} catch (err) {
 				throw new Error(`Failed to broadcast multipart: ${err}`)
 			}
+			console.log(txid)
 			txids.push(txid)
 		}
 		return txids
@@ -273,8 +283,8 @@ class OIP {
 
 		try {
 			builtHex = txb.build().toHex();
-		} catch (e) {
-			throw new Error("Unable to build Transaction Hex! \n" + e)
+		} catch (err) {
+			throw new Error(`Unable to build Transaction Hex!: ${err}`)
 		}
 
 		builtHex += extraBytes
@@ -305,7 +315,7 @@ class OIP {
 		try {
 			utxo = await this.getUTXO()
 		} catch (err) {
-			throw new ErrorX(`Failed to get utxos`, err)
+			throw new Error(`Failed to get utxo: ${err}`)
 		}
 
 		//hit the insight api repeatedly for max 10 sec and try to get the updated response
@@ -350,11 +360,11 @@ class OIP {
 
 		// console.log(formattedUtxos)
 
-		let utxosNoUnconfirmed = formattedUtxos.filter(utx => utx.confirmations > 0)
+		// let utxosNoUnconfirmed = formattedUtxos.filter(utx => utx.confirmations > 0) //ToDo
 
 		// console.log(utxosNoUnconfirmed)
 
-		let selected = coinselect(utxosNoUnconfirmed, targets, Math.ceil(this.coin.feePerByte), extraBytesLength)
+		let selected = coinselect(formattedUtxos, targets, Math.ceil(this.coin.feePerByte), extraBytesLength)
 
 		// Check if we are able to build inputs/outputs off only unconfirmed transactions with confirmations > 0
 		if (!selected.inputs || selected.inputs.length === 0 || !selected.outputs || selected.outputs.length === 0 || !selected.fee) {
@@ -389,8 +399,11 @@ class OIP {
 		try {
 			utxo = await this.explorer.getAddressUtxo(this.p2pkh)
 		} catch (err) {
-			throw new ErrorX(`Error fetching UTXOs`, err)
+			throw new Error(`Error fetching UTXOs: ${err}`)
 		}
+		// console.log('preutxo: ', utxo)
+		// console.log(utxo, this.getSpentTransactions())
+
 		return this.removeSpent(utxo)
 	}
 
@@ -619,6 +632,8 @@ class OIP {
 	 */
 	deleteHistory() {
 		localStorage.removeItem('tx_history')
+		this.spentTransactions = []
+		this.history = []
 	}
 
 }
