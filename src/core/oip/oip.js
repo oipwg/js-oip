@@ -308,8 +308,23 @@ class OIP {
 			throw new ErrorX(`Failed to get utxos`, err)
 		}
 
+		//hit the insight api repeatedly for max 10 sec and try to get the updated response
 		if (utxo.length === 0) {
-			throw new ErrorX(`P2PKH: ${this.p2pkh} has no unspent transaction outputs.`, utxo)
+			let start = Date.now(), finish = 0
+			while (utxo.length === 0 && finish < 10000) {
+				// console.log('while', finish)
+				const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+				await delay(500)
+				try {
+					utxo = await this.getUTXO()
+				} catch (err) {
+					throw new Error(`Failed to get utxo: ${err}`)
+				}
+				finish = Date.now() - start
+			}
+			if (utxo.length === 0) {
+				throw new Error(`P2PKH: ${this.p2pkh} has no unspent transaction outputs`)
+			}
 		}
 
 		let formattedUtxos = utxo.map(utxo => {
