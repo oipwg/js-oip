@@ -1,8 +1,8 @@
-import {OIPdAPI} from '../../../src/core'
+import {DaemonApi} from '../../../src/core'
 import {MPSingle} from "../../../src/modules";
-import {Artifact} from '../../../src/modules/records'
+import {Artifact} from '../../../src/modules/records/artifact'
 
-let index = new OIPdAPI()
+let index = new DaemonApi()
 
 describe('DaemonApi', () => {
 	it('GET search index by query | searchArtifacts()', async () => {
@@ -56,7 +56,7 @@ describe('DaemonApi', () => {
 		expect(error).toBeUndefined()
 		expect(artifacts).toBeDefined()
 		for (let art of artifacts) {
-			expect(art.getVersionType()).toEqual("oip041")
+			expect(art.getVersion()).toEqual("oip041")
 			expect(art).toBeInstanceOf(Artifact)
 		}
 	})
@@ -66,7 +66,7 @@ describe('DaemonApi', () => {
 		expect(success).toBeTruthy()
 		expect(error).toBeUndefined()
 		expect(artifact).toBeDefined()
-		expect(artifact.getVersionType()).toEqual("oip041")
+		expect(artifact.getVersion()).toEqual("oip041")
 	});
 	it('GET multiple OIP041 artifact by ID | get041Artifacts()', async () => {
 		const txid1 = '8c204c5f39b67431c59c7703378b2cd3b746a64743e130de0f5cfb2118b5136b'
@@ -78,7 +78,7 @@ describe('DaemonApi', () => {
 		expect(error).toBeUndefined()
 		expect(artifacts).toBeDefined()
 		for (let art of artifacts) {
-			expect(art.getVersionType()).toEqual("oip041")
+			expect(art.getVersion()).toEqual("oip041")
 			expect(art).toBeInstanceOf(Artifact)
 		}
 	})
@@ -90,7 +90,7 @@ describe('DaemonApi', () => {
 		expect(artifacts).toBeDefined()
 		for (let art of artifacts) {
 			expect(art).toBeInstanceOf(Artifact)
-			expect(art.getVersionType()).toEqual("oip042")
+			expect(art.getVersion()).toEqual("oip042")
 		}
 	})
 	it('GET latest Alexandria Media artifacts | getLatestAlexandriaMediaArtifacts()', async () => {
@@ -101,7 +101,7 @@ describe('DaemonApi', () => {
 		expect(artifacts).toBeDefined()
 		for (let art of artifacts) {
 			expect(art).toBeInstanceOf(Artifact)
-			expect(art.getVersionType()).toEqual('alexandria-media')
+			expect(art.getVersion()).toEqual('alexandria-media')
 		}
 	})
 	it('GET an Alexandria Media Artifact by TXID | getAlexandriaMediaArtifact()', async () => {
@@ -110,7 +110,7 @@ describe('DaemonApi', () => {
 		expect(success).toBeTruthy()
 		expect(error).toBeUndefined()
 		expect(artifact).toBeDefined()
-		expect(artifact.getVersionType()).toEqual('alexandria-media')
+		expect(artifact.getVersion()).toEqual('alexandria-media')
 	});
 	it('GET multiple Alexandria Media artifact by ID | getAlexandriaMediaArtifacts()', async () => {
 		const txid1 = '33e04cb2dcf7004a460d0719eea36129ebaf48fb10cffff19653bfeeca9bc7ad'
@@ -123,7 +123,7 @@ describe('DaemonApi', () => {
 		expect(artifacts).toBeDefined()
 		for (let art of artifacts) {
 			expect(art).toBeInstanceOf(Artifact)
-			expect(art.getVersionType()).toEqual('alexandria-media')
+			expect(art.getVersion()).toEqual('alexandria-media')
 		}
 	})
 	it('GET search floData by query | searchFloData()', async () => {
