@@ -945,17 +945,17 @@ class Artifact extends OIPRecord {
 	}
 
 	/**
-	 * Set Artifact Version type
-	 * @param type
+	 * Set Artifact Version
+	 * @param version - 'alexandria-media', 'oip041', or 'oip042'
 	 */
-	setVersionType(type) {
-		this.meta.type = type
+	setVersion(version) {
+		this.meta.type = version
 	}
 
 	/**
 	 * Get Artifact Version type
 	 */
-	getVersionType() {
+	getVersion() {
 		return this.meta.type
 	}
 
@@ -1005,13 +1005,13 @@ class Artifact extends OIPRecord {
 			if (!artifact.meta) {
 				if (artifact['media-data']) {
 					if (artifact['media-data']['alexandria-media']) {
-						this.setVersionType("alexandria-media")
+						this.setVersion("alexandria-media")
 						return this.importAlexandriaMedia(artifact['media-data']['alexandria-media'])
 					} else {
 						return {success: false, error: "No Artifact_DEPRECATED under Version!"}
 					}
 				} else if (artifact['oip-041']) {
-					this.setVersionType("oip041")
+					this.setVersion("oip041")
 					if (artifact['oip-041'].signature) {
 						this.setSignature(artifact['oip-041'].signature)
 					}
@@ -1025,7 +1025,7 @@ class Artifact extends OIPRecord {
 						this.setSignature(artifact.oip042.signature)
 					}
 					if (artifact.oip042.artifact) {
-						this.setVersionType("oip042")
+						this.setVersion("oip042")
 						return this.import042(artifact.oip042.artifact)
 					} else if (artifact.oip042.publish && artifact.oip042.publish.artifact) {
 						return this.import042(artifact.oip042.publish.artifact)
@@ -1041,7 +1041,7 @@ class Artifact extends OIPRecord {
 			this.setSignature(artifact.meta.signature)
 			this.setTXID(artifact.meta.txid);
 			this.setTime(artifact.meta.time)
-			this.setVersionType(artifact.meta.type)
+			this.setVersion(artifact.meta.type)
 
 			switch (artifact.meta.type) {
 				case 'alexandria-media':
