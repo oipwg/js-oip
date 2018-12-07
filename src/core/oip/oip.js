@@ -425,7 +425,7 @@ class OIP {
 	 *     address: "oNAydz5TjkhdP3RPuu3nEirYQf49Jrzm4S",
 	 *     value: Math.floor(0.001 * flo_testnet.satPerCoin)
 	 * }
-	 * let txid = await oip.sendTX(output, "sending floData to testnet")
+	 * let txid = await oip.createAndSendFloTx(output, "sending floData to testnet")
 	 * oip.addSpentTransaction(txid)
 	 * let spentTxs = oip.getSpentTransactions()
 	 * spentTxs === [txid] //true
@@ -494,7 +494,7 @@ class OIP {
 		return txid
 	}
 
-	async sendTX(output, floData) {
+	async createAndSendFloTx(output, floData) {
 		if (floData && typeof floData !== 'string') {
 			throw new Error(`Data must be of type string. Got: ${typeof floData}`)
 		}

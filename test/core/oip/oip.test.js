@@ -84,13 +84,13 @@ describe(`OIP`, () => {
 		})
 	})
 	describe('Chain Functions', () => {
-		it('Send a TX', async () => {
+		it('Create and Send a FLO TX', async () => {
 			let pub = new OIP(wif,  "testnet")
 			let output = {
 				address: "oNAydz5TjkhdP3RPuu3nEirYQf49Jrzm4S",
 				value: Math.floor(0.0001 * flo_testnet.satPerCoin)
 			}
-			let txid = await pub.sendTX(output, "to testnet")
+			let txid = await pub.createAndSendFloTx(output, "to testnet")
 			console.log(txid)
 			expect(txid).toBeDefined()
 			expect(typeof txid === 'string').toBeTruthy()
