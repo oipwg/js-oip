@@ -1,6 +1,6 @@
 import MPSingle from './mpsingle'
 
-const CHOP_MAX_LEN = 890;
+const CHOP_MAX_LEN = 839;
 const FLODATA_MAX_LEN = 1040;
 /**
  * An OIP Multipart Converter (X); converts large data into OIP Multiparts and vice versa
