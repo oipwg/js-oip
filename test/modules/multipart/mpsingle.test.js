@@ -1,5 +1,4 @@
 import bitcoin from 'bitcoinjs-lib'
-import {verify} from 'bitcoinjs-message'
 import {flo_testnet} from '../../../src/config/networks'
 import MPSingle from '../../../src/modules/multipart/mpsingle'
 import Oipindex from '../../../src/core/oipd-api/daemonApi'
@@ -74,7 +73,7 @@ describe("MPSingle", () => {
 		})
 	})
 	describe('Signing', () => {
-		it('Should sign itself', () => {
+		it('Create and validate signature', () => {
 			let network = flo_testnet.network
 			let ECPair = bitcoin.ECPair.makeRandom({network})
 			let address = bitcoin.payments.p2pkh({pubkey: ECPair.publicKey, network}).address
@@ -85,16 +84,26 @@ describe("MPSingle", () => {
 			expect(signature).toBeDefined()
 			expect(error).toBeUndefined()
 
-			let ver = verify(mps.getSignatureData(), mps.getAddress(), signature, network.messagePrefix)
-			expect(ver).toBeTruthy()
+			expect(mps.hasValidSignature()).toBeTruthy()
 		})
 	})
 	describe(`To String`, () => {
 		it('toString', async () => {
 			let mp = await index.getMultipart('1d6392c44629a1fc3eafab4b564a003084e9afad055b5cbdb8fc8c1d3f042d1d')
 			expect(mp.success).toBeTruthy()
-			let mps = new MPSingle(mp.multipart)
-			expect(mps.toString()).toEqual('oip-mp(4,6,FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k,8c204c5f39,H9dqFw5Pd//qwHeEQA+ENifGvvs/0X1sLUXLQKj2L5qdI/BIJMBX2w3TKETHeNg3MMhA1i3PYVT2FnC8y/BxvUM=):":"Single Track","duration":268},{"fname":"miltjordan-vanishingbreed.jpg","fsize":40451,"type":"Image","subtype":"album-art"},{"fname":"miltjordan-angelsgettheblues.jpg","fsize":54648,"type":"Image","subtype":"cover"}],"location":"QmWmth4ES4ZH9Wgz6Z7S7dRFF8MzJVGgDhit5KzH5uCvZz"},"payment":{"fiat":"USD","scale":"1000:1","maxdisc":30,"promoter":15,"retailer":15,"sugTip"')
+			expect(mp.multipart).toBeInstanceOf(MPSingle)
+			expect(mp.multipart.toString()).toEqual('oip-mp(4,6,FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k,8c204c5f39,H9dqFw5Pd//qwHeEQA+ENifGvvs/0X1sLUXLQKj2L5qdI/BIJMBX2w3TKETHeNg3MMhA1i3PYVT2FnC8y/BxvUM=):":"Single Track","duration":268},{"fname":"miltjordan-vanishingbreed.jpg","fsize":40451,"type":"Image","subtype":"album-art"},{"fname":"miltjordan-angelsgettheblues.jpg","fsize":54648,"type":"Image","subtype":"cover"}],"location":"QmWmth4ES4ZH9Wgz6Z7S7dRFF8MzJVGgDhit5KzH5uCvZz"},"payment":{"fiat":"USD","scale":"1000:1","maxdisc":30,"promoter":15,"retailer":15,"sugTip"')
+			expect(mp.multipart.hasValidSignature()).toBeTruthy()
+
+		})
+
+		it('part 0 to string', async () => {
+			let mp = await index.getMultipart('a690609a2a8198fbf4ed3fd7e4987637a93b7e1cad96a5aeac2197b7a7bf8fb9')
+			let {success, multipart, error} = mp
+			expect(success).toBeTruthy();
+			expect(multipart).toBeInstanceOf(MPSingle)
+			expect(error).toBeUndefined()
+			expect(multipart.hasValidSignature()).toBeTruthy()
 		})
 	})
 	describe(`Getters & Setters`, () => {
