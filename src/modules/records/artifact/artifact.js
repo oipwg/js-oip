@@ -1,5 +1,4 @@
 import {ArtifactFile} from '../../files';
-import {MultipartX} from '../../multipart'
 import OIPRecord from '../oip-record'
 
 const DEFAULT_NETWORK = "IPFS";
