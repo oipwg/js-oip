@@ -1,6 +1,4 @@
-import {Artifact} from '../../../src/index'
-import {PropertyParty, PropertyTenure, PropertySpatialUnit, ResearchTomogram} from '../../../src/modules/records/artifact/index'
-import OIPRecord from "../../../src/modules/records/oip-record";
+import {Artifact, PropertyParty, PropertyTenure, PropertySpatialUnit, ResearchTomogram} from '../../../src/modules/records/artifact/index'
 
 const oip41_artifact_wJSON = "5f399eef8f93c03502efbd51691350cbacbf3c16eba228409bf7453ffff78207"
 
@@ -279,19 +277,19 @@ describe("Artifact", () => {
 		})
 		it("Get Publisher Name is main address if publisher name is not set", () => {
 			let artifact = new Artifact();
-			artifact.setMainAddress("main-address")
+			artifact.setPubAddress("main-address")
 			expect(artifact.getPublisherName()).toBe("main-address")
 		})
 		it("Get Publisher Name is correct when set", () => {
 			let artifact = new Artifact();
-			artifact.setMainAddress("main-address")
+			artifact.setPubAddress("main-address")
 			artifact.setPublisherName("publisher-name")
 			expect(artifact.getPublisherName()).toBe("publisher-name")
 		})
-		it("setMainAddress and getMainAddress", () => {
+		it("setPubAddress and getPubAddress", () => {
 			let artifact = new Artifact();
-			artifact.setMainAddress("main-address")
-			expect(artifact.getMainAddress()).toBe("main-address")
+			artifact.setPubAddress("main-address")
+			expect(artifact.getPubAddress()).toBe("main-address")
 		})
 		it("setTimestamp and getTimestamp", () => {
 			let artifact = new Artifact();
@@ -498,7 +496,7 @@ describe("Artifact", () => {
 		})
 		it("getPaymentAddresses returns main address if unset", () => {
 			let artifact = new Artifact();
-			artifact.setMainAddress("FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k")
+			artifact.setPubAddress("FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k")
 			expect(artifact.getPaymentAddresses()).toEqual({"flo": "FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k"})
 		})
 	})
@@ -869,7 +867,7 @@ describe("Artifact", () => {
 // 	let artifact = new new Artifact();
 //
 // 	artifact.setTitle("title")
-// 	artifact.setMainAddress("FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k")
+// 	artifact.setPubAddress("FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k")
 //
 // 	expect(artifact.isValid()).toEqual({success: true})
 // })
@@ -885,7 +883,7 @@ describe("Artifact", () => {
 // it("isValid fails on only mainAddress", () => {
 // 	let artifact = new new Artifact();
 //
-// 	artifact.setMainAddress("FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k")
+// 	artifact.setPubAddress("FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k")
 //
 // 	expect(artifact.isValid()).toEqual({success: false, error: "Artifact Title is a Required Field"})
 // })
@@ -1034,7 +1032,7 @@ describe("Artifact", () => {
 // it("getMultiparts (too short)", () => {
 // 	let artifact = new new Artifact();
 //
-// 	artifact.setMainAddress("mainAddress")
+// 	artifact.setPubAddress("mainAddress")
 //
 // 	artifact.setDescription("a short description")
 //
@@ -1044,7 +1042,7 @@ describe("Artifact", () => {
 // it("getMultiparts", () => {
 // 	let artifact = new new Artifact();
 //
-// 	artifact.setMainAddress("mainAddress")
+// 	artifact.setPubAddress("mainAddress")
 //
 // 	artifact.setDescription("a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description a very long description ")
 //
