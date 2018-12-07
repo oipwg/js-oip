@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {MPSingle} from '../../modules'
-import {Artifact} from '../../modules/records'
 import {ErrorX} from '../../'
+import {decodeArtifact} from '../../decoders'
 
 /**
  * The Transaction ID on the Blockchain.
@@ -12,11 +12,10 @@ import {ErrorX} from '../../'
  * 8a83ec
  */
 
-//ToDo: change to OIP Decode function::decode Artifact array
 const hydrateArray = (artifacts) => {
 	let tmpArray = []
 	for (let art of artifacts) {
-		tmpArray.push(new Artifact(art))
+		tmpArray.push(decodeArtifact(art))
 	}
 	return tmpArray
 }
@@ -133,7 +132,7 @@ class DaemonApi {
 		}
 		if (res && res.data) {
 			let [artifact] = res.data.results
-			return {success: true, artifact: new Artifact(artifact)} //ToDO: OIPDecoder
+			return {success: true, artifact: decodeArtifact(artifact)} //ToDO: OIPDecoder
 		} else {
 			return {success: false, error: `Missing response data: ${res.data}`}
 		}
@@ -241,7 +240,7 @@ class DaemonApi {
 		}
 		if (res && res.data) {
 			let [artifact] = res.data.results
-			return {success: true, artifact: new Artifact(artifact)} //ToDo: OIPDecoder
+			return {success: true, artifact: decodeArtifact(artifact)} //ToDo: OIPDecoder
 		} else {
 			return {success: false, error: `Missing response data: ${res.data}`}
 		}
@@ -348,7 +347,7 @@ class DaemonApi {
 		}
 		if (res && res.data) {
 			let [artifact] = res.data.results
-			return {success: true, artifact: new Artifact(artifact)} //ToDo: OIPDecoder
+			return {success: true, artifact: decodeArtifact(artifact)} //ToDo: OIPDecoder
 		} else {
 			return {success: false, error: `Missing response data: ${res.data}`}
 		}
