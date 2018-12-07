@@ -81,7 +81,7 @@ class MultipartX {
 	fromMultiparts(MPSingles) {
 		for (let mp of MPSingles) {
 			if (!mp instanceof MPSingle)
-				return this.invalidate(`Array passed into constructor does not contain all MPSingles`)
+				throw new Error('Input must be instanceof MPSingle')
 		}
 		MPSingles.sort((a, b) => a.getPart() - b.getPart())
 		this.multiparts = MPSingles
