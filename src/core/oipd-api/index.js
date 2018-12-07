@@ -1,1 +1,1 @@
-export OIPdAPI from "./daemonApi";
+export DaemonApi from "./daemonApi";
