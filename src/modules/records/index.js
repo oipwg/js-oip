@@ -1,5 +1,5 @@
 import OIPRecord from './oip-record'
-import {Artifact, PropertyTenure, PropertySpatialUnit, PropertyParty, ResearchTomogram} from './artifact'
+import * as Artifacts from './artifact'
 import {Influencer} from './influencer'
 import {Platform} from './platform'
 import {Publisher} from './publisher'
@@ -7,11 +7,7 @@ import {Publisher} from './publisher'
 
 export {
 	OIPRecord,
-	Artifact,
-	PropertyParty,
-	PropertySpatialUnit,
-	PropertyTenure,
-	ResearchTomogram,
+	Artifacts,
 	Influencer,
 	Platform,
 	Publisher
