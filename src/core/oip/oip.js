@@ -76,19 +76,23 @@ class OIP {
 		this.deserialize()
 	}
 
-	//ToDo:: change item to record
-	/**
-	 * Publish OIP Objects to the FLO Chain
-	 * @param {OIPRecord} item - an OIPObject //ToDo:: Create an OIP Object || Record || OIPRecord
-	 * @return {Promise<string|Array<string>>} txid - the txid(s) of the broadcasted messages
-	 */
-	async publish(item) {
-		//check type of item
-		//if json, add json prefix
-		//if protobuf, add protobuf prefix
-		//else send as is
 
-		let broadcast_string = `{oip042:${data}}`
+	/**
+	 * Publish OIP Records
+	 * @param {OIPRecord} record - an Artifact, Publisher, Platform, Retailer, or Influencer
+	 * @return {Promise<string|Array<string>>} txid - a txid or an array of txids (if your record is too large to fit onto one tx)
+	 */
+	async publish(record) {
+		if (!(record instanceof OIPRecord)) {
+			throw new Error(`Record must be an instanceof OIPRecord`)
+		}
+		//if not signed, then sign
+		if (!record.getSignature() || record.getSignature() === "") {
+			const ECPair = bitcoin.ECPair.fromWIF(wif, this.network)
+			record.signSelf(ECPair)
+		}
+		const methodType = 'publish'
+		let broadcast_string = record.serialize(methodType)
 
 		if (broadcast_string.length > FLODATA_MAX_LEN) {
 			let txids
