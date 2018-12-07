@@ -3,6 +3,8 @@ import {flo_testnet} from '../../../src/config'
 import {isValidWIF} from '../../../src/util/btc'
 import {OIP} from '../../../src'
 import floTx from 'fcoin/lib/primitives/tx'
+import testArtifact from '../../../examples/exampleArtifact'
+import Artifact from "../../../src/modules/records/artifact/artifact";
 
 const network = flo_testnet.network
 
@@ -74,6 +76,12 @@ describe(`OIP`, () => {
 			expect(typeof txid === 'string').toBeTruthy()
 			// console.log(txid)
 		})
+		it('publish test artifact', async () => {
+			let oip = new OIP(wif, "testnet")
+			expect(testArtifact).toBeInstanceOf(Artifact)
+			let txid = await oip.publish(testArtifact)
+			 console.log(txid)
+		})
 	})
 	describe('Chain Functions', () => {
 		it('Send a TX', async () => {
@@ -82,7 +90,7 @@ describe(`OIP`, () => {
 				address: "oNAydz5TjkhdP3RPuu3nEirYQf49Jrzm4S",
 				value: Math.floor(0.0001 * flo_testnet.satPerCoin)
 			}
-			let txid = await pub.sendTX(output, "sending floData to testnet")
+			let txid = await pub.sendTX(output, "to testnet")
 			console.log(txid)
 			expect(txid).toBeDefined()
 			expect(typeof txid === 'string').toBeTruthy()
