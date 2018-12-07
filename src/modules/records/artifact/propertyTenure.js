@@ -3,9 +3,6 @@ import Artifact from './artifact'
 class PropertyTenure extends Artifact {
 	constructor(artifact) {
 		super(artifact)
-
-		this.artifactType = 'property'
-		this.artifactSubtype = 'tenure'
 	}
 
 	/**
@@ -23,29 +20,6 @@ class PropertyTenure extends Artifact {
 	 */
 	static getArtifactSubtype() {
 		return "tenure"
-	}
-
-	/**
-	 * Returns the Artifact Type and Subtype Concatenated (to be used before class initialization)
-	 * @static
-	 * @returns {string} return the artifact type concatenated with the artifact subtype
-	 * @example
-	 * //return
-	 * "type-subtype"
-	 */
-	static getTypeAndSubtype() {
-		return 'property-tenure'
-	}
-
-	/**
-	 * Returns the Artifact Type (to be used after class initialization)
-	 * @returns {string} return the artifact type concatenated with the artifact subtype
-	 * @example
-	 * //return
-	 * "type-subtype"
-	 */
-	getInternalTypeAndSubtype() {
-		return this.artifactType + '-' + this.artifactSubtype
 	}
 
 	/**

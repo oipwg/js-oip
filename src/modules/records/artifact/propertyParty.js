@@ -1,14 +1,8 @@
 import Artifact from './artifact'
 
-//ToDo: convert types to constants for Special-Type artifact
-const _type = "party"
-
 class PropertyParty extends Artifact {
 	constructor(artifact) {
 		super(artifact)
-
-		this.artifactType = 'property'
-		this.artifactSubtype = _type
 	}
 
 	/**
@@ -17,7 +11,7 @@ class PropertyParty extends Artifact {
 	 * @returns {string}
 	 */
 	static getArtifactType() {
-		return _type
+		return "property"
 	}
 
 	/**
@@ -26,29 +20,6 @@ class PropertyParty extends Artifact {
 	 */
 	static getArtifactSubtype() {
 		return "party"
-	}
-
-	/**
-	 * Returns the Artifact Type and Subtype Concatenated (to be used before class initialization)
-	 * @static
-	 * @returns {string} return the artifact type concatenated with the artifact subtype
-	 * @example
-	 * //return
-	 * "type-subtype"
-	 */
-	static getTypeAndSubtype() {
-		return 'property-party'
-	}
-
-	/**
-	 * Returns the Artifact Type (to be used after class initialization)
-	 * @returns {string} return the artifact type concatenated with the artifact subtype
-	 * @example
-	 * //return
-	 * "type-subtype"
-	 */
-	getInternalTypeAndSubtype() {
-		return this.artifactType + '-' + this.artifactSubtype
 	}
 
 	/**

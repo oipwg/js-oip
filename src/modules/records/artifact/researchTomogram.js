@@ -3,9 +3,6 @@ import Artifact from './artifact'
 class ResearchTomogram extends Artifact {
 	constructor(artifact) {
 		super(artifact)
-
-		this.artifactType = 'research'
-		this.artifactSubtype = 'tomogram'
 	}
 
 	/**
@@ -24,30 +21,6 @@ class ResearchTomogram extends Artifact {
 	static getArtifactSubtype() {
 		return "tomogram"
 	}
-
-	/**
-	 * Returns the Artifact Type and Subtype Concatenated (to be used before class initialization)
-	 * @static
-	 * @returns {string} return the artifact type concatenated with the artifact subtype
-	 * @example
-	 * //return
-	 * "type-subtype"
-	 */
-	static getTypeAndSubtype() {
-		return 'research-tomogram'
-	}
-
-	/**
-	 * Returns the Artifact Type (to be used after class initialization)
-	 * @returns {string} return the artifact type concatenated with the artifact subtype
-	 * @example
-	 * //return
-	 * "type-subtype"
-	 */
-	getInternalTypeAndSubtype() {
-		return this.artifactType + '-' + this.artifactSubtype
-	}
-
 
 	/**
 	 * Get NCBITaxID

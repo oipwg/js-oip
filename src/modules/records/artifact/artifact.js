@@ -87,9 +87,6 @@ class Artifact extends OIPRecord {
 	constructor(input) {
 		super(input);
 
-		this.artifactType = 'generic'
-		this.artifactSubtype = 'record'
-
 		this.artifact = {
 			floAddress: "",
 			info: {},
@@ -135,7 +132,7 @@ class Artifact extends OIPRecord {
 	 * @returns {string}
 	 */
 	static getArtifactType() {
-		return "generic"
+		return "artifact"
 	}
 
 	/**
@@ -143,30 +140,9 @@ class Artifact extends OIPRecord {
 	 * @returns {string}
 	 */
 	static getArtifactSubtype() {
-		return 'record'
+		return ''
 	}
 
-	/**
-	 * Returns the Artifact Type and Subtype Concatenated (to be used before class initialization)
-	 * @returns {string} return the artifact type concatenated with the artifact subtype
-	 * @example
-	 * //return
-	 * "type-subtype"
-	 */
-	static getTypeAndSubtype() {
-		return 'generic-record'
-	}
-
-	/**
-	 * Returns the Artifact Type (to be used after class initialization)
-	 * @returns {string} return the artifact type concatenated with the artifact subtype
-	 * @example
-	 * //return
-	 * "type-subtype"
-	 */
-	getInternalTypeAndSubtype() {
-		return this.artifactType + '-' + this.artifactSubtype
-	}
 	// /**
 	//  * Returns the original data fed to the constructor
 	//  * @returns {*}
