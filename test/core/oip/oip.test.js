@@ -180,15 +180,17 @@ describe(`OIP`, () => {
 				for (let tx in txObj) {
 					ftx = floTx.fromRaw(txObj[tx], 'hex')
 				}
-				//grab output addresses from ftx and convert them to testnet addresses
-
 				// console.log(ftx)
-				// let [addr] = ftx.getOutputAddresses()
-				// addr = addr.toBase58()
-				// let addrBuffer = Buffer.from(addr,  'base58')
-				// console.log(addrBuffer)
-				// console.log(addr.toBase58(network))
+				let [addr] = ftx.getOutputAddresses()
+				// console.log('address:', addr, typeof addr)
+				addr = addr.toBase58()
+				// console.log(addr, typeof addr)
+				let {hash} = bitcoin.address.fromBase58Check(addr)
+				// console.log(hash,  typeof hash)
+				console.log(bitcoin.address.toBase58Check(hash, 115), oip.p2pkh)
 			}
+
+
 		})
 	})
 	describe('Local Storage', () => {
