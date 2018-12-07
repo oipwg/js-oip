@@ -400,13 +400,16 @@ class MPSingle {
 	 */
 	toString() {
 		if (this.isValid().success) {
-			return this.prefix + "(" +
-				this.getPart() + "," +
-				this.getMax() + "," +
-				this.getAddress() + "," +
-				this.getReference() + "," +
-				this.getSignature() + "):" +
-				this.getData();
+			let part = this.getPart()
+			let max = this.getMax()
+			let addr = this.getAddress()
+			//if part === 0, return empty string
+			let ref = part ? this.getReference() : ""
+			let sig = this.getSignature()
+			let data = this.getData()
+
+			return`${this.prefix}(${part},${max},${addr},${ref},${sig}):${data}`
+
 		} else return new Error(`Invalid multipart: ${this.isValid().message}`)
 	}
 
