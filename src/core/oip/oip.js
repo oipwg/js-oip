@@ -109,14 +109,14 @@ class OIP {
 		}
 	}
 
-	async register(record) {
-	} //ToDo
-	async edit(record) {
-	} //ToDo
-	async transfer(record) {
-	} //ToDO
-	async deactivate(record) {
-	} //ToDo
+	// async register(record) {
+	// } //ToDo
+	// async edit(record) {
+	// } //ToDo
+	// async transfer(record) {
+	// } //ToDO
+	// async deactivate(record) {
+	// } //ToDo
 
 	/**
 	 * Publish arbitrary data to the FLO chain
