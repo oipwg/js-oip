@@ -1364,7 +1364,9 @@ class Artifact extends OIPRecord {
 	 */
 	create_preimage() {
 		this.setTimestamp(Date.now())
-		return `${this.getLocation() || ""}-${this.getPubAddress()}-${this.getTimestamp()}`
+		let preimage = `${this.getLocation() || ""}-${this.getPubAddress()}-${this.getTimestamp()}`
+		this.preimage = preimage
+		return preimage
 	}
 
 	serialize(method) {
