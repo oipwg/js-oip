@@ -101,7 +101,7 @@ class OIP {
 		} else {
 			let txid
 			try {
-				txid = await this.publishData(broadcast_string)
+				txid = await this.sendToFloChain(broadcast_string)
 			} catch (err) {
 				throw new Error(`Failed to broadcast message: ${err}`)
 			}
@@ -119,11 +119,11 @@ class OIP {
 	// } //ToDo
 
 	/**
-	 * Publish arbitrary data to the FLO chain
+	 * Send string data to the FLO Chain in a FLO tx
 	 * @param {string} data - String data. Must be below or equal to 1040 characters
 	 * @return {Promise<string>} txid - Returns the id of the transaction that contains the published data
-	 */ //ToDo: rename sendToFLOChain
-	async publishData(data) {
+	 */
+	async sendToFloChain(data) {
 		if (typeof data !== 'string') {
 			throw new Error(`Data must be of type string. Got: ${typeof data}`)
 		}
@@ -186,7 +186,7 @@ class OIP {
 
 			let txid
 			try {
-				txid = await this.publishData(mp.toString())
+				txid = await this.sendToFloChain(mp.toString())
 			} catch (err) {
 				throw new Error(`Failed to broadcast multipart: ${err}`)
 			}
