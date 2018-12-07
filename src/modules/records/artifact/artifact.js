@@ -91,8 +91,6 @@ class Artifact extends OIPRecord {
 		this.artifactType = 'generic'
 		this.artifactSubtype = 'record'
 
-		this._source = input
-
 		this.artifact = {
 			floAddress: "",
 			info: {},
@@ -170,23 +168,22 @@ class Artifact extends OIPRecord {
 	getInternalTypeAndSubtype() {
 		return this.artifactType + '-' + this.artifactSubtype
 	}
+	// /**
+	//  * Returns the original data fed to the constructor
+	//  * @returns {*}
+	//  */
+	// _getSource() {
+	// 	return this._source
+	// }
 
-	/**
-	 * Returns the original data fed to the constructor
-	 * @returns {*}
-	 */
-	_getSource() {
-		return this._source
-	}
-
-	/**
-	 * Set source data (DANGEROUS!!). Resets the original data fed into the constructor
-	 * @param data
-	 * @private
-	 */
-	_setSourceData(data) {
-		this._source = data
-	}
+	// /**
+	//  * Set source data (DANGEROUS!!). Resets the original data fed into the constructor
+	//  * @param data
+	//  * @private
+	//  */
+	// _setSourceData(data) {
+	// 	this._source = data
+	// }
 
 	/**
 	 * Set TXID
