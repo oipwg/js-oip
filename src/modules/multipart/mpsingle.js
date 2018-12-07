@@ -460,8 +460,9 @@ class MPSingle {
 		if (this.getMax() === undefined) {
 			return {success: false, error: "Missing maximum part number! Unable to sign message!"}
 		}
-
-		if (this.getReference() === undefined) {
+		//if the first txid is not set on a part greater than 0, throw
+		//part 0 multiparts should have an undefined ref
+		if (this.getReference() === undefined && this.getPart() !== 0) {
 			return {success: false, error: "Missing first txid reference! Unable to sign message!"}
 		}
 
@@ -480,7 +481,10 @@ class MPSingle {
 			return {success: false, error: e}
 		}
 
-		return {success: true, signature: signature_buffer.toString('base64')}
+		let signature = signature_buffer.toString('base64')
+		this.setSignature(signature)
+		return {success: true, signature}
+	}
 	}
 }
 
