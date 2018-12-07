@@ -221,26 +221,26 @@ class Artifact extends OIPRecord {
 	 * @return {string} Returns the Publisher Name if defined, or the Main Address if the publisher name is undefined
 	 */
 	getPublisherName() {
-		return this.publisherName || this.getMainAddress()
+		return this.publisherName || this.getPubAddress()
 	}
 
 	/**
 	 * Set the Main Address that you will be signing the Artifact with
 	 * @example
-	 * artifact.setMainAddress("FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k")
+	 * artifact.setPubAddress("FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k")
 	 * @param {string} address - The Main Address that will be signing the Artifact
 	 */
-	setMainAddress(address) {
+	setPubAddress(address) {
 		this.artifact.floAddress = address;
 	}
 
 	/**
 	 * Get the Main Address that the Artifact is signed with
 	 * @example
-	 * let mainAddress = artifact.getMainAddress()
+	 * let mainAddress = artifact.getPubAddress()
 	 * @return {string}
 	 */
-	getMainAddress() {
+	getPubAddress() {
 		return this.artifact.floAddress
 	}
 
@@ -458,7 +458,6 @@ class Artifact extends OIPRecord {
 	 */
 	setSignature(signature) {
 		this.artifact.signature = signature
-		this.meta.signature = signature
 	}
 
 	/**
@@ -489,7 +488,7 @@ class Artifact extends OIPRecord {
 	/**
 	 * Get the Storage Network for the Artifact
 	 * @example
-	 * let mainAddress = artifact.getMainAddress()
+	 * let mainAddress = artifact.getPubAddress()
 	 * @return {string}
 	 */
 	getNetwork() {
@@ -633,8 +632,8 @@ class Artifact extends OIPRecord {
 	 * @return {Object} - keyValue => [string][string] === [coin][address]
 	 */
 	getPaymentAddress(coins) {
-		if ((!this.artifact.payment.addresses || this.artifact.payment.addresses === {}) && this.getMainAddress() && this.getMainAddress() !== "")
-			return {flo: this.getMainAddress()}
+		if ((!this.artifact.payment.addresses || this.artifact.payment.addresses === {}) && this.getPubAddress() && this.getPubAddress() !== "")
+			return {flo: this.getPubAddress()}
 
 		let tmpObj = {}
 
@@ -659,8 +658,8 @@ class Artifact extends OIPRecord {
 	 * @return {Object} - keyValue => [string][string] === [coin][address]
 	 */
 	getPaymentAddresses(coins) {
-		if ((!this.artifact.payment.addresses || this.artifact.payment.addresses === {}) && this.getMainAddress() && this.getMainAddress() !== "")
-			return {flo: this.getMainAddress()}
+		if ((!this.artifact.payment.addresses || this.artifact.payment.addresses === {}) && this.getPubAddress() && this.getPubAddress() !== "")
+			return {flo: this.getPubAddress()}
 
 		let tmpObj = {};
 		if (coins) {
@@ -1076,7 +1075,7 @@ class Artifact extends OIPRecord {
 	 */
 	importAlexandriaMedia(artifact) {
 		if (artifact.publisher) {
-			this.setMainAddress(artifact.publisher)
+			this.setPubAddress(artifact.publisher)
 		}
 		if (artifact.timestamp) {
 			this.setTimestamp(artifact.timestamp)
@@ -1186,7 +1185,7 @@ class Artifact extends OIPRecord {
 	 */
 	import041(artifact) {
 		if (artifact.publisher) {
-			this.setMainAddress(artifact.publisher)
+			this.setPubAddress(artifact.publisher)
 		}
 		if (artifact.timestamp) {
 			this.setTimestamp(artifact.timestamp)
@@ -1280,7 +1279,7 @@ class Artifact extends OIPRecord {
 	 */
 	import042(artifact) {
 		if (artifact.floAddress) {
-			this.setMainAddress(artifact.floAddress)
+			this.setPubAddress(artifact.floAddress)
 		}
 		if (artifact.timestamp) {
 			this.setTimestamp(artifact.timestamp)
