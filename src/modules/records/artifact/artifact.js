@@ -1383,7 +1383,27 @@ class Artifact extends OIPRecord {
 		return "Artifact"
 	}
 
+	/**
+	 * Create message to use for signature
+	 * @return {string}
+	 */
+	create_preimage() {
+		this.setTimestamp(Date.now())
+		return `${this.getLocation() || ""}-${this.getPubAddress()}-${this.getTimestamp()}`
+	}
 
+	serialize(method) {
+		//convert this to json and extract artifact
+		let artJSON = this.toJSON()
+		let art = artJSON.artifact
+
+		//setup initial object
+		let pub_message = {oip042: {}}
+		//insert method type
+		pub_message['oip042'][method] = {artifact: art}
+		//add json prefix
+		return "json:" + JSON.stringify(pub_message)
+	}
 }
 
 export default Artifact
