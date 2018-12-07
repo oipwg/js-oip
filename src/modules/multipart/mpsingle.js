@@ -348,7 +348,7 @@ class MPSingle {
 	}
 
 	isValid() {
-		if (this.getPart() < 0 || this.getPart() === "") {
+		if (this.getPart() < 0 || this.getPart() === undefined || this.getPart() === "") {
 			return {success: false, message: "Part number can't be negative, null, or undefined"}
 		}
 		if (this.getPart() > this.getMax()) {
@@ -357,10 +357,10 @@ class MPSingle {
 		if (this.getMax() < 1) {
 			return {success: false, message: "Must have more than one part to be a MULTIPART message!"}
 		}
-		if (this.getAddress() === "") {
+		if (!this.getAddress()) {
 			return {success: false, message: "Must have a Publisher Address!"}
 		}
-		if (this.getReference() === "" && this.getPart() !== 0) {
+		if (!this.getReference() && this.getPart() !== 0) {
 			return {
 				success: false,
 				message: "Only the first part in a multipart message can have a blank first part TXID!"
