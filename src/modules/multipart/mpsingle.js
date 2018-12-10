@@ -349,32 +349,32 @@ class MPSingle {
 
 	isValid() {
 		if (this.getPart() < 0 || this.getPart() === undefined || this.getPart() === "") {
-			return {success: false, message: "Part number can't be negative, null, or undefined"}
+			return {success: false, error: "Part number can't be negative, null, or undefined"}
 		}
 		if (this.getPart() > this.getMax()) {
-			return {success: false, message: "Part number too high for total parts!"}
+			return {success: false, error: "Part number too high for total parts!"}
 		}
 		if (this.getMax() < 1) {
-			return {success: false, message: "Must have more than one part to be a MULTIPART message!"}
+			return {success: false, error: "Must have more than one part to be a MULTIPART message!"}
 		}
 		if (!this.getAddress()) {
-			return {success: false, message: "Must have a Publisher Address!"}
+			return {success: false, error: "Must have a Publisher Address!"}
 		}
 		if (!this.getReference() && this.getPart() !== 0) {
 			return {
 				success: false,
-				message: "Only the first part in a multipart message can have a blank first part TXID!"
+				error: "Only the first part in a multipart message can have a blank first part TXID!"
 			}
 		}
 		if (isNaN(this.getPart()) || isNaN(this.getPart())) {
-			return {success: false, message: "The part number and the total part number must be of NUMBER types"}
+			return {success: false, error: "The part number and the total part number must be of NUMBER types"}
 		}
 		if (!this.getSignature()) {
-			return {success: false, message: "Must have a Signature!"}
+			return {success: false, error: "Must have a Signature!"}
 		}
 
 		if (!this.hasValidSignature()) {
-			return {success: false, message: "Invalid Signature"}
+			return {success: false, error: "Invalid Signature"}
 		}
 
 		this.is_valid = true;
@@ -401,7 +401,7 @@ class MPSingle {
 
 			return`${this.prefix}(${part},${max},${addr},${ref},${sig}):${data}`
 
-		} else return new Error(`Invalid multipart: ${this.isValid().message}`)
+		} else return new Error(`Invalid multipart: ${this.isValid().error}`)
 	}
 
 	/**
