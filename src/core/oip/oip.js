@@ -83,6 +83,9 @@ class OIP {
 	 * Publish OIP Records
 	 * @param {OIPRecord} record - an Artifact, Publisher, Platform, Retailer, or Influencer
 	 * @return {Promise<string|Array<string>>} txid - a txid or an array of txids (if your record is too large to fit onto one tx)
+	 * let oip = new OIP(wif, "testnet")
+	 * let artifact = new Artifact()
+	 * let result = await oip.publish(artifact)
 	 */
 	async publish(record) {
 		if (!(record instanceof OIPRecord)) {
@@ -176,6 +179,10 @@ class OIP {
 	 * Publish data that exceeds the maximum floData length in multiple parts
 	 * @param {string} data - The data you wish to publish
 	 * @return {Promise<Array.<String>>} txids - An array of transaction IDs
+	 * @example
+	 * let oip = new OIP(wif, "testnet")
+	 * let txArray = await oip.publishMultiparts(superLongStringData)
+	 * //For multipart publishing, use oip.publish() instead. Will auto redirect to this function
 	 */
 	async publishMultiparts(data) {
 		if (typeof data !== 'string') {
@@ -649,7 +656,7 @@ class OIP {
 	}
 
 	/**
-	 * Deletes the publisher history from localStorage
+	 * WARNING!!! Deleting history may cause publishing to temporary fail as it might attempt to use spent transactions. Deletes the publisher history from localStorage
 	 * @example
 	 * let oip = new OIP(wif)
 	 * oip.deleteHistory()
