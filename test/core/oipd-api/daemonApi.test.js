@@ -185,7 +185,13 @@ describe('DaemonApi', () => {
 		expect(error).toBeUndefined()
 	})
 	it("GET version", async () => {
-		let v = await index.getVersion()
+		let d = new DaemonApi("http://localhost:1606")
+		let v = await d.getVersion()
+		expect(v).toBeDefined()
+	})
+	it("GET sync status", async () => {
+		let d = new DaemonApi("http://localhost:1606")
+		let v = await d.getSyncStatus()
 		expect(v).toBeDefined()
 	})
 })

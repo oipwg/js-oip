@@ -43,7 +43,7 @@ class DaemonApi {
 		if (daemonUrl) {
 			this.setUrl(daemonUrl)
 		} else {
-			this.setUrl(localhost) //ToDo: switch back to default
+			this.setUrl(defaultOIPdURL) //ToDo: switch back to default
 		}
 	}
 
@@ -552,9 +552,19 @@ class DaemonApi {
 	async getVersion() {
 		let res
 		try {
-			res = await this.index.get('/version')
+			res = await this.index.get('/daemon/version')
 		} catch (err) {
-			throw new ErrorX(`Failed to get daemon version`, err)
+			throw new Error(`Failed to get daemon version: ${err}`)
+		}
+		return res.data
+	}
+
+	async getSyncStatus() {
+		let res
+		try {
+			res = await this.index.get('/sync/status')
+		} catch (err) {
+			throw new ErrorX(`Failed to get sync status`, err)
 		}
 		return res.data
 	}
