@@ -54,7 +54,7 @@ class OIP {
 	 * let wif = "cRVa9rNx5N1YKBw8PhavegJPFCiYCfC4n8cYmdc3X1Y6TyFZGG4B"
 	 * let oip = new OIP(wif, "testnet")
 	 * ```
-	 * @param {string} wif - private key in Wallet Import Format (WIF)
+	 * @param {string} wif - private key in Wallet Import Format (WIF) see: {@link https://en.bitcoin.it/wiki/Wallet_import_format}
 	 * @param {string} [network="mainnet"] - Use "testnet" for testnet
 	 */
 	//ToDo:: Switch to mainnet for prod
