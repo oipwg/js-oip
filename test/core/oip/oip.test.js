@@ -73,7 +73,7 @@ describe(`OIP`, () => {
 		// 	let oip = new OIP(wif, 'testnet')
 		//
 		// 	for (let i = 0; i < 5; i++) {
-		// 		let txid = await oip.sendToFloChain('11:22')
+		// 		let txid = await oip.sendDataToChain('11:22')
 		// 		console.log(txid)
 		// 		let start = Date.now(), finish;
 		// 		// console.log(utxo)
@@ -97,9 +97,9 @@ describe(`OIP`, () => {
 		// 	}
 		// 	done()
 		// }, 250 * 100 * 100)
-		it('build and broadcast TX hex | sendToFloChain', async () => {
+		it('build and broadcast TX hex | sendDataToChain', async () => {
 			let pub = new OIP(wif, "testnet")
-			let txid = await pub.sendToFloChain(`RC`)
+			let txid = await pub.sendDataToChain(`RC`)
 			expect(typeof txid === 'string').toBeTruthy()
 			// console.log(txid)
 		})
