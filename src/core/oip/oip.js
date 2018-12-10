@@ -195,7 +195,6 @@ class OIP {
 
 		for (let mp of mps) {
 			//set reference, addr, and sign
-
 			mp.setAddress(this.p2pkh)
 			if (txids.length > 0) {
 				mp.setReference(txids[0])
@@ -208,20 +207,19 @@ class OIP {
 			// not going to be valid yet or will it
 			if (!mp.isValid().success) {
 				console.log(mp)
-				throw new Error(`Invalid multipart: ${mp.isValid().message}`)
+				throw new Error(`Invalid multipart: ${mp.isValid().error}`)
 			}
 
 			let txid
 			try {
-				console.log(mp.toString())
-				console.log(mp.toString().length)
-
+				// console.log(mp.toString())
+				// console.log(mp.toString().length)
 				// throw new Error('STOP')
 				txid = await this.sendToFloChain(mp.toString())
 			} catch (err) {
 				throw new Error(`Failed to broadcast multipart: ${err}`)
 			}
-			console.log(txid)
+			// console.log(txid)
 			txids.push(txid)
 		}
 		return txids
@@ -336,17 +334,18 @@ class OIP {
 			throw new Error(`Failed to get utxo: ${err}`)
 		}
 
-		//hit the insight api repeatedly for max 10 sec and try to get the updated response
+		//backup in case insight api hasn't given us updated responses
 		if (utxo.length === 0) {
 			let start = Date.now(), finish = 0
 			while (utxo.length === 0 && finish < 10000) {
+			console.log("Insight API returned stale results. Waiting on Insight API for update...")
 				// console.log('while', finish)
 				const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 				await delay(500)
 				try {
 					utxo = await this.getUTXO()
 				} catch (err) {
-					throw new Error(`Failed to get utxo: ${err}`)
+					throw new Error(`Failed to get utxo from insight explorer: ${err}`)
 				}
 				finish = Date.now() - start
 			}
@@ -365,6 +364,7 @@ class OIP {
 				confirmations: utxo.confirmations
 			}
 		})
+		// console.log('formatted utxos', formattedUtxos)
 
 		output = output || {
 			address: this.p2pkh,
