@@ -50,7 +50,7 @@ describe(`OIP`, () => {
 		it('fetch UTXO | getUTXO', async () => {
 			let oip = new OIP(wif, "testnet")
 			let utxo = await oip.getUTXO()
-			console.log(utxo)
+			// console.log(utxo)
 			expect(utxo).toBeDefined()
 			expect(Array.isArray(utxo)).toBeTruthy()
 		})
@@ -69,78 +69,52 @@ describe(`OIP`, () => {
 			// ToDo: Test signature validation
 			expect(ftx.strFloData).toEqual("floData")
 		})
-	})
-	describe('Publishing', () => {
-		it('publish test artifact', async () => {
-			let oip = new OIP(wif, "testnet")
-			expect(artifactSmall).toBeInstanceOf(Artifact)
-			let txid = await oip.publish(artifactSmall)
-			expect(txid).toBeDefined()
-			expect(typeof txid).toEqual('string')
-			// console.log(txid)
-		})
-		it('publish multiparted artifact', async (done) => {
-			// let str = '1d6392c44629a1fc3eafab4b564a003084e9afad055b5cbdb8fc8c1d3f042d1d,H9dqFw5Pd//qwHeEQA+ENifGvvs/0X1sLUXLQKj2L5qdI/BIJMBX2w3TKETHeNg3MMhA1i3PYVT2FnC8y/BxvUM=,FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k,'
-			// console.log(str.length)
-			let oip = new OIP(wif, "testnet")
-			// oip.deleteHistory()
-			expect(artifactLarge).toBeInstanceOf(Artifact)
-			let txids = await oip.publish(artifactLarge)
-			expect(txids).toBeDefined()
-			expect(Array.isArray(txids)).toBeTruthy()
-			// console.log('final return: ', txids)
-			done()
-		}, 250 * 100 * 100)
-	})
-	describe('Chain API', () => {
-		it.skip('test insight api update time', async (done) => {
-			let oip = new OIP(wif, 'testnet')
-
-			for (let i = 0; i < 5; i++) {
-				let txid = await oip.sendToFloChain('11:22')
-				console.log(txid)
-				let start = Date.now(), finish;
-				// console.log(utxo)
-				const slam = async () => {
-					// console.log('slam')
-					let utxo
-					try {
-						utxo = await oip.getUTXO()
-
-					} catch(err) {console.log('err', err)}
-					for (let u of utxo) {
-						if (u.txid === txid) {
-							finish = Date.now()
-						}
-					}
-				}
-				while (!finish) {
-					await slam()
-				}
-				console.log(finish - start)
-			}
-			done()
-		}, 250 * 100 * 100)
+		// it.skip('test insight api update time', async (done) => {
+		// 	let oip = new OIP(wif, 'testnet')
+		//
+		// 	for (let i = 0; i < 5; i++) {
+		// 		let txid = await oip.sendToFloChain('11:22')
+		// 		console.log(txid)
+		// 		let start = Date.now(), finish;
+		// 		// console.log(utxo)
+		// 		const slam = async () => {
+		// 			// console.log('slam')
+		// 			let utxo
+		// 			try {
+		// 				utxo = await oip.getUTXO()
+		//
+		// 			} catch(err) {console.log('err', err)}
+		// 			for (let u of utxo) {
+		// 				if (u.txid === txid) {
+		// 					finish = Date.now()
+		// 				}
+		// 			}
+		// 		}
+		// 		while (!finish) {
+		// 			await slam()
+		// 		}
+		// 		console.log(finish - start)
+		// 	}
+		// 	done()
+		// }, 250 * 100 * 100)
 		it('build and broadcast TX hex | sendToFloChain', async () => {
 			let pub = new OIP(wif, "testnet")
 			let txid = await pub.sendToFloChain(`RC`)
 			expect(typeof txid === 'string').toBeTruthy()
 			// console.log(txid)
 		})
-		it('Create and Send a FLO TX', async () => {
+		it('flotx w custom output | sendTx', async () => {
 			let pub = new OIP(wif,  "testnet")
 			let output = {
 				address: "oNAydz5TjkhdP3RPuu3nEirYQf49Jrzm4S",
 				value: Math.floor(0.0001 * flo_testnet.satPerCoin)
 			}
-			let txid = await pub.createAndSendFloTx(output, "to testnet")
+			let txid = await pub.sendTx(output, "to testnet")
 			// console.log(txid)
 			expect(txid).toBeDefined()
 			expect(typeof txid === 'string').toBeTruthy()
 		})
-	})
-	describe('Spent Transactions', () => {
-		it('add spent remove spent transaction from utxo', async () => {
+		it('add and remove spent transaction from utxo', async () => {
 			let oip = new OIP(wif, "testnet")
 			let utxo = await oip.getUTXO()
 			// console.log(utxo)
@@ -154,48 +128,38 @@ describe(`OIP`, () => {
 			let spentTx = oip.getSpentTransactions()[oip.getSpentTransactions().length-1]
 			expect(txid).toEqual(spentTx)
 		})
-		it('loop through history', () => {
+		it('create manual utxos', () => {
 			let oip = new OIP(wif, "testnet")
-			// console.log(oip.ECPair)
-			// const p2pkh = bitcoin.payments.p2pkh({pubkey: ECPair.publicKey, network}).address
-			// console.log(p2pkh)
-
-			let unspents = []
-			for (let txObj of oip.history) {
-				let match = false
-				for (let tx of oip.getSpentTransactions()) {
-					for (let txid in txObj) {
-						if (txid === tx) {
-							match = true
-						}
-					}
-				}
-				if (!match) {
-					unspents.push(txObj)
-				}
-			}
-
-			for (let txObj of unspents) {
-				let ftx;
-				for (let tx in txObj) {
-					ftx = floTx.fromRaw(txObj[tx], 'hex')
-				}
-				// console.log(ftx)
-				let [addr] = ftx.getOutputAddresses()
-				// console.log('address:', addr, typeof addr)
-				addr = addr.toBase58()
-				// console.log(addr, typeof addr)
-				let {hash} = bitcoin.address.fromBase58Check(addr)
-				// console.log(hash,  typeof hash)
-				console.log(bitcoin.address.toBase58Check(hash, 115), oip.p2pkh)
-			}
-
-
+			let utxos = oip.createManualUtxos()
+			expect(Array.isArray(utxos)).toBeTruthy();
+			// console.log(utxos)
 		})
+	})
+	describe('Publishing', () => {
+		it('publish test artifact', async () => {
+			let oip = new OIP(wif, "testnet")
+			expect(artifactSmall).toBeInstanceOf(Artifact)
+			let txid = await oip.publish(artifactSmall)
+			expect(txid).toBeDefined()
+			expect(typeof txid).toEqual('string')
+			// console.log(txid)
+		})
+		it('publish test multipart', async (done) => {
+			let oip = new OIP(wif, "testnet")
+			// oip.deleteHistory()
+			expect(artifactLarge).toBeInstanceOf(Artifact)
+			let txids = await oip.publish(artifactLarge)
+			expect(txids).toBeDefined()
+			expect(Array.isArray(txids)).toBeTruthy()
+			expect(txids.length).toEqual(8)
+			// console.log('final return: ', txids)
+			done()
+		}, 250 * 100 * 100)
 	})
 	describe('Local Storage', () => {
 		it(`serialize and delete tx history `, () => {
 			let oip = new OIP(wif, "testnet")
+			// oip.deleteHistory()
 			oip.addSpentTransaction("0")
 			oip.addSpentTransaction("1")
 			oip.serialize()
@@ -207,34 +171,42 @@ describe(`OIP`, () => {
 			expect(ls.history).toBeDefined()
 			expect(Array.isArray(ls.spentTransactions)).toBeTruthy()
 			expect(Array.isArray(ls.history)).toBeTruthy()
-			expect(ls.spentTransactions[0]).toEqual('0')
-			expect(ls.spentTransactions[1]).toEqual('1')
-			oip.deleteHistory()
-			expect(localStorage.getItem('tx_history')).toBeNull()
+			expect(ls.spentTransactions[ls.spentTransactions.length-2]).toEqual('0')
+			expect(ls.spentTransactions[ls.spentTransactions.length-1]).toEqual('1')
+			let pop1 = oip.spentTransactions.pop()
+			expect(pop1).toEqual("1")
+			let pop0 = oip.spentTransactions.pop()
+			expect(pop0).toEqual("0")
+			oip.serialize()
 		})
 		it('deserialize', () => {
 			let oip = new OIP(wif, "testnet")
+			// oip.deleteHistory()
 			oip.addSpentTransaction("0")
 			oip.addSpentTransaction("1")
 			oip.serialize()
 			let oip2 = new OIP(wif, "testnet")
-			expect(oip2.getSpentTransactions()).toEqual(["0", "1"])
-			oip.deleteHistory()
-			expect(localStorage.getItem('tx_history')).toBeNull()
+			let spents = oip2.getSpentTransactions()
+			expect(spents[spents.length-2]).toEqual("0")
+			expect(spents[spents.length-1]).toEqual("1")
+			let one = oip2.spentTransactions.pop()
+			expect(one).toEqual("1")
+			let zero = oip2.spentTransactions.pop()
+			expect(zero).toEqual("0")
+			oip2.serialize()
+
 		})
 		it('save and get history', () => {
 			let oip = new OIP(wif, "testnet")
 			oip.save('tx', 'hex')
-			let hist = localStorage.getItem('tx_history')
-			expect(hist).toBeDefined()
-			let pHist = JSON.parse(hist)
-			expect(pHist.history).toEqual([{"tx": 'hex'}])
-			oip.deleteHistory()
-			expect(localStorage.getItem('tx_history')).toBeNull()
-			expect(oip.getTxHistory()).toEqual({
-				history: [{"tx": 'hex'}],
-				spentTransactions: []
-			})
+			let serialized = localStorage.getItem('tx_history')
+			expect(serialized).toBeDefined()
+			let serializedParsed = JSON.parse(serialized)
+			expect(serializedParsed.history[serializedParsed.history.length-1]).toEqual({"tx": 'hex'})
+			expect(oip.history[oip.history.length-1]).toEqual({"tx": 'hex'})
+			let pop = oip.history.pop()
+			expect(pop).toEqual({"tx": "hex"})
+			oip.serialize()
 		})
 	})
 })
