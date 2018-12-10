@@ -533,7 +533,20 @@ class OIP {
 		return txid
 	}
 
-	async createAndSendFloTx(output, floData) {
+	/**
+	 * Create and send a FLO tx with a custom output
+	 * @param {object} output
+	 * @param {string} floData
+	 * @return {Promise<TXID>}
+	 * @example
+	 * let oip = new OIP(wif, "testnet")
+	 * let output = {
+	 *     address: "oNAydz5TjkhdP3RPuu3nEirYQf49Jrzm4S",
+	 *     value: 100000000
+	 * }
+	 * let txid = await oip.createAndSendFloTx(output, "to testnet")
+	 */
+	async sendTx(output, floData = "") {
 		if (floData && typeof floData !== 'string') {
 			throw new Error(`Data must be of type string. Got: ${typeof floData}`)
 		}
