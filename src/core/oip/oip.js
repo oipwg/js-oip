@@ -90,9 +90,20 @@ class OIP {
 		}
 		//if not signed, then sign
 		if (!record.getSignature() || record.getSignature() === "") {
-			const ECPair = bitcoin.ECPair.fromWIF(wif, this.network)
-			record.signSelf(ECPair)
+			let {success, error} = record.signSelf(this.ECPair)
+			if (!success) {
+				throw new Error(`Failed to sign record: ${error}`)
+			}
+			if (!record.hasValidSignature()) {
+				throw new Error(`Invalid signatuer`)
+			}
 		}
+
+		let {success, error} = record.isValid()
+		if (!success) {
+			throw new Error(`Invalid record: ${error}`)
+		}
+		
 		const methodType = 'publish'
 		let broadcast_string = record.serialize(methodType)
 
