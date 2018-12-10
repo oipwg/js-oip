@@ -9,7 +9,14 @@ class OIPRecord {
 	/**
 	 * Signs the record for publishing purposes
 	 * @param ECPair - see bitcoinjs-lib/ecpair
-	 * @return {null}
+	 * @return {object}
+	 * @example
+	 * let {success, error, signature} = OIPRecord.signSelf()
+	 * if (!success) {
+	 *     throw new Error(`Failed to sign record: ${error}`)
+	 * } else {
+	 *     console.log(signature)
+	 * }
 	 */
 	signSelf(ECPair) {
 		if (!ECPair) {
@@ -40,7 +47,7 @@ class OIPRecord {
 	}
 
 	/**
-	 * Checks the signature for validity
+	 * Checks signature validity
 	 * @param {string} [message_prefix=\u001bFlorincoin Signed Message:]
 	 * @return {boolean}
 	 */
@@ -82,6 +89,10 @@ class OIPRecord {
 
 	/**
 	 * Default method. Classes that extend OIPRecord must override this method with a unique preimage generator
+	 * @example
+	 * create_preimage() {
+	 *     return `${uniqueVariable}-${publisherAddress}-${timestamp}`
+	 * }
 	 */
 	create_preimage() {
 		throw new Error(`Classes that extend OIPRecord must contain a 'create_preimage' method`)
@@ -95,7 +106,7 @@ class OIPRecord {
 	}
 
 	/**
-	 * Default method. Classes that extend OIPRecord must override this method with a unique serialize method to format it for publishing
+	 * Default method. Classes that extend OIPRecord must override this method with a unique serialize method to format it for publishing. See Artifact.serialize() for an example.
 	 */
 	serialize() {
 		throw new Error(`Classes that extend OIPRecord must contain a 'serialize' method`)
