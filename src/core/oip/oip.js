@@ -738,6 +738,38 @@ class OIP {
 		this.history = []
 	}
 
+	/**
+	 * Returns the pay-to-pubkey-hash address generated from the given wif
+	 * @return {string}
+	 */
+	getPubAddress() {
+		return this.p2pkh
+	}
+
+	/**
+	 * Returns the ECPair (private/public key pair) generated from the given wif
+	 * @return {object}
+	 */
+	getECPair() {
+		return this.ECPair
+	}
+
+	/**
+	 * Returns information about the current coin (either FLO or FLO_Testnet)
+	 * @return {CoinInfo}
+	 */
+	getCoinInfo() {
+		return this.coin
+	}
+
+	/**
+	 * Returns coin network information needed for address generation
+	 * @return {CoinNetwork}
+	 */
+	getNetwork() {
+		return this.network
+	}
+
 }
 
 export default OIP
