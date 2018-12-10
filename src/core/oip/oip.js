@@ -509,7 +509,7 @@ class OIP {
 				let addr = outputs[i].getAddress()
 				// console.log(addr)
 				if (Array.isArray(addr)) {
-					throw new Error(`output has mutliple addresses.. can't handle this yet`)
+					throw new Error(`Can't handle array output`)
 				}
 				//convert mainnet addr -> testnet addr
 				addr = addr.toBase58()
