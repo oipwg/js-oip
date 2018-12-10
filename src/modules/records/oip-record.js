@@ -112,6 +112,22 @@ class OIPRecord {
 		throw new Error(`Classes that extend OIPRecord must contain a 'serialize' method`)
 	}
 
+	/**
+	 * Default Method. Classes that extend OIPRecord must override this method with validity check that returns an object with a 'success' property
+	 * @example
+	 * isValid() {
+	 *  let valid = someValiditycheck
+	 *  if (valid) {
+	 *      return {success: true, error: undefined}
+	 *  } else {
+	 *      return {success: false, error: "Error message"}
+	 *  }
+	 * }
+	 */
+	isValid() {
+		throw new Error(`Classes that extend OIPRecord must contain a 'isValid' method`)
+	}
+
 }
 
 export default OIPRecord
