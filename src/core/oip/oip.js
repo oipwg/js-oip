@@ -106,7 +106,7 @@ class OIP {
 		if (!success) {
 			throw new Error(`Invalid record: ${error}`)
 		}
-		
+
 		const methodType = 'publish'
 		let broadcast_string = record.serialize(methodType)
 
