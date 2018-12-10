@@ -337,8 +337,8 @@ class OIP {
 		//backup in case insight api hasn't given us updated responses
 		if (utxo.length === 0) {
 			let start = Date.now(), finish = 0
-			while (utxo.length === 0 && finish < 10000) {
 			console.log("Insight API returned stale results. Waiting on Insight API for update...")
+			while (utxo.length === 0 && finish < 6000) {
 				// console.log('while', finish)
 				const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 				await delay(500)
@@ -349,21 +349,29 @@ class OIP {
 				}
 				finish = Date.now() - start
 			}
-			if (utxo.length === 0) {
-				throw new Error(`P2PKH: ${this.p2pkh} has no unspent transaction outputs`)
-			}
 		}
 
-		let formattedUtxos = utxo.map(utxo => {
-			return {
-				address: utxo.address,
-				txId: utxo.txid,
-				vout: utxo.vout,
-				scriptPubKey: utxo.scriptPubKey,
-				value: utxo.satoshis,
-				confirmations: utxo.confirmations
+		let formattedUtxos
+		if (utxo.length === 0) {
+			//second backup in case insight really is not liking us
+			console.log('Insight API failed to update. Attempting to manually create utxos...')
+			formattedUtxos = this.createManualUtxos()
+			if (formattedUtxos.length === 0) {
+				throw new Error(`P2PKH: ${this.p2pkh} has no unspent transaction outputs`)
 			}
-		})
+		} else {
+			formattedUtxos = utxo.map(utxo => {
+				return {
+					address: utxo.address,
+					txId: utxo.txid,
+					vout: utxo.vout,
+					scriptPubKey: utxo.scriptPubKey,
+					value: utxo.satoshis,
+					confirmations: utxo.confirmations
+				}
+			})
+		}
+
 		// console.log('formatted utxos', formattedUtxos)
 
 		output = output || {
@@ -459,6 +467,69 @@ class OIP {
 		}
 
 		return unspent;
+	}
+
+	/**
+	 * Manually create Unspent Transaction Outputs from previous known transactions.
+	 * Loops through spent transaction IDs in localStorage and created txs to find outputs to use.
+	 * @return {Array.<utxo>}
+	 */
+	createManualUtxos() {
+		// console.log('manually creating utxos')
+		let unspents = []
+		for (let txObj of this.history) {
+			let match = false
+			for (let tx of this.getSpentTransactions()) {
+				for (let txid in txObj) {
+					if (txid === tx) {
+						match = true
+					}
+				}
+			}
+			if (!match) {
+				// console.log(txObj)
+				unspents.push(txObj)
+			}
+		}
+
+		let floTxs = []
+		for (let txObj of unspents) {
+			for (let txid in txObj) {
+				floTxs.push(floTx.fromRaw(txObj[txid], 'hex'))
+			}
+		}
+
+		// console.log(floTxs)
+		let utxos = []
+		for (let f of floTxs) {
+			// console.log(f)
+			let outputs = f.outputs
+
+			for (let i = 0; i < outputs.length; i++) {
+				let addr = outputs[i].getAddress()
+				// console.log(addr)
+				if (Array.isArray(addr)) {
+					throw new Error(`output has mutliple addresses.. can't handle this yet`)
+				}
+				//convert mainnet addr -> testnet addr
+				addr = addr.toBase58()
+				let {hash} = bitcoin.address.fromBase58Check(addr)
+				let testnetAddr = bitcoin.address.toBase58Check(hash,  115)
+				if (testnetAddr === this.p2pkh) {
+					let tmpObj = {
+						address: testnetAddr,
+						txId: f.txid(),
+						vout: i,
+						value: outputs[i].value,
+						scriptPubKey: outputs[i].script.toRaw().toString('hex'),
+						confirmations: 0
+					}
+					// console.log(tmpObj)
+					utxos.push(tmpObj)
+				}
+			}
+		}
+		return utxos
 	}
 
 	/**
