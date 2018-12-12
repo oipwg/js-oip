@@ -1,7 +1,7 @@
 /**
  * A Class used for uploading/adding files to IPFS inside the Browser
  */
-class XMLRequestIPFSAdd {
+class IpfsXml {
 	/**
 	 * Create a new XML HTTP Request IPFS Uploader
 	 * @param  {File|Blob} file - The [File](https://developer.mozilla.org/en-US/docs/Web/API/File) or [Blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob) you want added to IPFS.
@@ -145,4 +145,4 @@ class XMLRequestIPFSAdd {
 	}
 }
 
-module.exports = XMLRequestIPFSAdd
+module.exports = IpfsXml
