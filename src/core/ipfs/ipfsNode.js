@@ -5,7 +5,7 @@ class IpfsNode {
 		this.node = new IPFS()
 		this.ready = false
 
-		node.once('ready', () => {
+		this.node.once('ready', () => {
 			this.ready = true
 			console.log("ipfs node ready")
 		})
@@ -44,8 +44,8 @@ class IpfsNode {
 	 *      }
 	 * ]
 	 */
-	async addFiles(data, options) {
-		this.readyCheck()
+	async addFiles(data, options = {}) {
+		await this.readyCheck()
 
 		//todo: get fileSize
 		options = options || {progress: (bytesAdded) => {console.log("Added " + toMB(bytesAdded) + " MB out of " + `${options.fileSize || "NaN"}` + " MB")}}
@@ -69,8 +69,8 @@ class IpfsNode {
 	 * @param {number} [options.length] - an optional number of bytes to read from the stream
 	 * @return {Promise<string>}
 	 */
-	async getFile(ipfsPath, options) {
-		this.readyCheck()
+	async catFile(ipfsPath, options) {
+		await this.readyCheck()
 
 		let fileBuffer
 		try {
@@ -86,10 +86,11 @@ class IpfsNode {
 		return this.ready
 	}
 
-	readyCheck() {
-		if (!this.isReady()) {
-			throw new Error(`Node not ready`)
-		}
+	async readyCheck() {
+		return new Promise(res => {
+			this.node.once('ready', res)
+			if (this.isReady()) {res()}
+		})
 	}
 }
 
