@@ -7,14 +7,14 @@ class JsIpfs {
 
 		this.node.once('ready', () => {
 			this.ready = true
-			console.log("ipfs node ready")
+			console.log("Ipfs node ready")
 		})
 
 		this.node.on('error', error => {
 			console.error('Something went terribly wrong!', error)
 		})
 
-		this.node.once('stop', () => console.log('Node stopped!'))
+		this.node.once('stop', () => console.log('Ipfs node stopped!'))
 
 	}
 
@@ -97,7 +97,11 @@ class JsIpfs {
 	}
 
 	async stop() {
-
+		try {
+			await this.node.stop()
+		} catch (error) {
+			console.error('Node failed to stop cleanly!', error)
+		}
 	}
 }
 

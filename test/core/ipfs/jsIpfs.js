@@ -95,6 +95,8 @@ async function test() {
 	}
 
 	console.log("catted file: ", catted)
+
+	await ipfs.stop()
 }
 
 test()
