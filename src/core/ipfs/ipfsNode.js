@@ -3,9 +3,11 @@ import IPFS from 'ipfs'
 class IpfsNode {
 	constructor() {
 		this.node = new IPFS()
+		this.ready = false
 
-		node.on('ready', () => {
-			console.log("I'm ready!")
+		node.once('ready', () => {
+			this.ready = true
+			console.log("ipfs node ready")
 		})
 
 	}
@@ -43,14 +45,20 @@ class IpfsNode {
 	 * ]
 	 */
 	async addFiles(data, options) {
+		this.readyCheck()
+
+		//todo: get fileSize
+		options = options || {progress: (bytesAdded) => {console.log("Added " + toMB(bytesAdded) + " MB out of " + `${options.fileSize || "NaN"}` + " MB")}}
+
 		let filesAdded
 		try {
-			filesAdded = await this.node.files.add(data)
+			filesAdded = await this.node.files.add(data, options)
 		} catch (err) {
 			throw new Error(`Failed to add files: ${err}`)
 		}
 
-		console.log(filesAdded)
+		console.log('files added: ', filesAdded)
+
 	}
 
 	/**
@@ -85,6 +93,8 @@ class IpfsNode {
 	}
 }
 
+const toMB = function(num){
+	return Math.round((num  / 1024 / 1024) * 100) / 100;
 }
 
 export default IpfsNode
