@@ -47,8 +47,8 @@ class IpfsNode {
 	async addFiles(data, options = {}) {
 		await this.readyCheck()
 
-		//todo: get fileSize
-		options = options || {progress: (bytesAdded) => {console.log("Added " + toMB(bytesAdded) + " MB out of " + `${options.fileSize || "NaN"}` + " MB")}}
+		//get fileSize
+		// options = options || {progress: (bytesAdded) => {console.log("Added " + toMB(bytesAdded) + " MB out of " + `${options.fileSize || "NaN"}` + " MB")}}
 
 		let filesAdded
 		try {
