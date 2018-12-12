@@ -57,8 +57,8 @@ class IpfsNode {
 			throw new Error(`Failed to add files: ${err}`)
 		}
 
-		console.log('files added: ', filesAdded)
-
+		// console.log('files added: ', filesAdded)
+		return filesAdded
 	}
 
 	/**
@@ -67,19 +67,16 @@ class IpfsNode {
 	 * @param {object} [options]
 	 * @param [options.offset] - an optional byte offset to start the stream at
 	 * @param {number} [options.length] - an optional number of bytes to read from the stream
-	 * @return {Promise<string>}
+	 * @return {Promise<Buffer>}
 	 */
 	async catFile(ipfsPath, options) {
 		await this.readyCheck()
 
-		let fileBuffer
 		try {
-			fileBuffer = await node.cat(ipfsPath)
+			return await this.node.files.cat(ipfsPath)
 		} catch (err) {
 			throw new Error(`Failed to get back file: ${err}`)
 		}
-
-		return fileBuffer.toString()
 	}
 
 	isReady() {
