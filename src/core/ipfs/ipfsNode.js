@@ -53,6 +53,37 @@ class IpfsNode {
 		console.log(filesAdded)
 	}
 
+	/**
+	 * Returns a file addressed by a valid IPFS Path
+	 * @param {CID|string} ipfsPath - type cid: (a CID instance, Buffer, the raw Buffer of the cid, String, the base58 encoded version of the cid.) type String: (including the ipfs handler, a cid and a path to traverse to)
+	 * @param {object} [options]
+	 * @param [options.offset] - an optional byte offset to start the stream at
+	 * @param {number} [options.length] - an optional number of bytes to read from the stream
+	 * @return {Promise<string>}
+	 */
+	async getFile(ipfsPath, options) {
+		this.readyCheck()
+
+		let fileBuffer
+		try {
+			fileBuffer = await node.cat(ipfsPath)
+		} catch (err) {
+			throw new Error(`Failed to get back file: ${err}`)
+		}
+
+		return fileBuffer.toString()
+	}
+
+	isReady() {
+		return this.ready
+	}
+
+	readyCheck() {
+		if (!this.isReady()) {
+			throw new Error(`Node not ready`)
+		}
+	}
+}
 
 }
 
