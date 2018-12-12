@@ -1,6 +1,5 @@
-import {OIP, DaemonApi} from './core';
+import {OIP, DaemonApi, JsIpfs, IpfsHttpApi, IpfsXml} from './core';
 import * as Modules from './modules'
-import {ErrorX} from './util'
 import * as Networks from './config/networks'
 
 
@@ -9,5 +8,7 @@ export {
 	DaemonApi,
 	Modules,
 	Networks,
-	ErrorX
+	JsIpfs,
+	IpfsXml,
+	IpfsHttpApi
 }

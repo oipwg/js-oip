@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {MPSingle} from '../../modules'
-import {ErrorX} from '../../'
 import {decodeArtifact} from '../../decoders'
 
 /**
