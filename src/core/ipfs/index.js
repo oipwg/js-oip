@@ -1,7 +1,7 @@
 import IpfsHttpApi from './ipfsHttpApi'
-import IpfsNode from './ipfsNode'
+import JsIpfs from './jsIpfs'
 
 export {
 	IpfsHttpApi,
-	IpfsNode
+	JsIpfs
 }

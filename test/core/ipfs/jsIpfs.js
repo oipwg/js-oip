@@ -1,5 +1,5 @@
 import fs from 'fs'
-import IpfsNode from '../../../src/core/ipfs/ipfsNode'
+import JsIpfs from '../../../src/core/ipfs/jsIpfs'
 const IPFS = require('ipfs')
 
 
@@ -31,11 +31,11 @@ let godImg_ipfsFile = {
 // console.log(fs.statSync(test_file_B.path))
 
 async function test() {
-	let ipfsnode = new IpfsNode()
-	await ipfsnode.readyCheck()
+	let ipfs = new JsIpfs()
+	await ipfs.readyCheck()
 	let files
 	try {
-		files = await ipfsnode.addFiles(godImg_ipfsFile, {wrapWithDirectory: true, recursive: false})
+		files = await ipfs.addFiles(godImg_ipfsFile, {wrapWithDirectory: true, recursive: false})
 	} catch (err) {
 		console.error(err)
 	}
@@ -52,7 +52,7 @@ async function test() {
 
 
 	let pinnedHashes = []
-	let pinnedFiles = await ipfsnode.node.pin.ls()
+	let pinnedFiles = await ipfs.node.pin.ls()
 	for (let file of pinnedFiles) {
 		console.log(file)
 		pinnedHashes.push(file.hash)
@@ -72,7 +72,7 @@ async function test() {
 
 	for (let hash of pinnedHashes) {
 		try {
-			let res = await ipfsnode.node.pin.rm(hash)
+			let res = await ipfs.node.pin.rm(hash)
 			console.log('res: ', res)
 		} catch (err) {
 			console.error('hash not pinned: ', hash)
@@ -80,7 +80,7 @@ async function test() {
 	}
 
 	pinnedHashes = []
-	pinnedFiles = await ipfsnode.node.pin.ls()
+	pinnedFiles = await ipfs.node.pin.ls()
 	// console.log('pinnedFiles: ', pinnedFiles)
 	for (let file of pinnedFiles) {
 		// console.log(file)
@@ -89,7 +89,7 @@ async function test() {
 
 	let catted
 	try {
-		catted = await ipfsnode.catFile(hash)
+		catted = await ipfs.catFile(hash)
 	} catch (err) {
 		console.error(err)
 	}

@@ -1,6 +1,6 @@
 import IPFS from 'ipfs'
 
-class IpfsNode {
+class JsIpfs {
 	constructor() {
 		this.node = new IPFS()
 		this.ready = false
@@ -9,6 +9,12 @@ class IpfsNode {
 			this.ready = true
 			console.log("ipfs node ready")
 		})
+
+		this.node.on('error', error => {
+			console.error('Something went terribly wrong!', error)
+		})
+
+		this.node.once('stop', () => console.log('Node stopped!'))
 
 	}
 
@@ -89,10 +95,14 @@ class IpfsNode {
 			if (this.isReady()) {res()}
 		})
 	}
+
+	async stop() {
+
+	}
 }
 
 const toMB = function(num){
 	return Math.round((num  / 1024 / 1024) * 100) / 100;
 }
 
-export default IpfsNode
+export default JsIpfs
