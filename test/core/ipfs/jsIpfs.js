@@ -4,13 +4,13 @@ const IPFS = require('ipfs')
 
 
 let test_file_A = {
-	path: `/hello.txt`,
+	path: `hello text`,
 	content: Buffer.from('Hello ryan')
 }
 
 let test_file_B = {
-	path: `/world.txt`,
-	content: Buffer.from('Hello ryan')
+	path: `world text`,
+	content: Buffer.from('Hello world')
 }
 
 let godImg_path = "/home/orpheus/Pictures/Wallpapers/4rdYuG.jpg"
