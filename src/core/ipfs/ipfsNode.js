@@ -23,8 +23,8 @@ class IpfsNode {
 	 * @example
 	 * const files = [
 	 *      {
-	 *          path: '/tmp/myfile.txt',
-	 *          content: ipfs.types.Buffer.from('ABC)
+	 *          path: '/tmp/myfile.txt', // the file path
+	 *          content: <data> // A Buffer, Readable Stream or Pull Stream with the contents of the file
 	 *      }
 	 * ]
 	 *
