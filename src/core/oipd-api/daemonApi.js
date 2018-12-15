@@ -323,7 +323,7 @@ class DaemonApi {
 		try {
 			res = await this.index.get(`/artifact/get/${txid}`);
 		} catch (err) {
-			return new ErrorX(`Failed to get artifact: ${txid}`, err)
+			return new Error(`Failed to get artifact: ${txid} -- ${err}`)
 		}
 		if (res && res.data) {
 			let [artifact] = res.data.results
@@ -354,7 +354,7 @@ class DaemonApi {
 			try {
 				res = await this.getArtifact(txid)
 			} catch (err) {
-				throw new ErrorX(`Failed to get artifacts: ${txids}`, err)
+				throw new Error(`Failed to get artifacts: ${txids} -- ${err}`)
 			}
 			if (res.success) artifacts.push(res.artifact)
 		}
@@ -379,7 +379,7 @@ class DaemonApi {
 				}
 			});
 		} catch (err) {
-			throw new ErrorX(`Failed to get latest artifacts`, err)
+			throw new Error(`Failed to get latest artifacts: ${err}`)
 		}
 		if (res && res.data) {
 			let artifacts = res.data.results
@@ -407,7 +407,7 @@ class DaemonApi {
 				}
 			});
 		} catch (err) {
-			throw new ErrorX(`Failed to get latest 041 artifacts`, err)
+			throw new Error(`Failed to get latest 041 artifacts -- ${err}`)
 		}
 
 		if (res && res.data) {
@@ -431,11 +431,11 @@ class DaemonApi {
 		try {
 			res = await this.index.get(`/oip041/artifact/get/${txid}`);
 		} catch (err) {
-			throw new ErrorX(`Failed to get 041 artifact: ${txid}`, err)
+			throw new Error(`Failed to get 041 artifact: ${txid} -- ${err}`)
 		}
 		if (res && res.data) {
 			let [artifact] = res.data.results
-			return {success: true, artifact: decodeArtifact(artifact)} //ToDo: OIPDecoder
+			return {success: true, artifact: decodeArtifact(artifact)}
 		} else {
 			return {success: false, error: `Missing response data: ${res.data}`}
 		}
@@ -462,7 +462,7 @@ class DaemonApi {
 			try {
 				res = await this.get041Artifact(txid)
 			} catch (err) {
-				throw new ErrorX(`Failed to get 041 artifacts: ${txids}`, err)
+				throw new Error(`Failed to get 041 artifacts: ${txids} -- ${err}`)
 			}
 			if (res.success) artifacts.push(res.artifact)
 		}
@@ -487,7 +487,7 @@ class DaemonApi {
 				}
 			});
 		} catch (err) {
-			throw new ErrorX(`Failed to get latest 042 artifacts`, err)
+			throw new Error(`Failed to get latest 042 artifacts: ${err}`)
 		}
 		if (res && res.data) {
 			let artifacts = res.data.results
@@ -515,7 +515,7 @@ class DaemonApi {
 				}
 			});
 		} catch (err) {
-			throw new ErrorX(`Failed to get latest alexandria media artifacts`, err)
+			throw new Error(`Failed to get latest alexandria media artifacts -- ${err}`)
 		}
 		if (res && res.data) {
 			let artifacts = res.data.results
@@ -538,7 +538,7 @@ class DaemonApi {
 		try {
 			res = await this.index.get(`/alexandria/artifact/get/${txid}`);
 		} catch (err) {
-			throw new ErrorX(`Failed to get alexandria media artifact: ${txid}`, err)
+			throw new Error(`Failed to get alexandria media artifact: ${txid} -- ${err}`)
 		}
 		if (res && res.data) {
 			let [artifact] = res.data.results
@@ -569,7 +569,7 @@ class DaemonApi {
 			try {
 				res = await this.getAlexandriaMediaArtifact(txid)
 			} catch (err) {
-				throw new ErrorX(`Failed to get alexandria media artifacts: ${txids}`, err)
+				throw new Error(`Failed to get alexandria media artifacts: ${txids} -- ${err}`)
 			}
 			if (res.success) artifacts.push(res.artifact)
 
@@ -602,7 +602,7 @@ class DaemonApi {
 				limit
 			})
 		} catch (err) {
-			throw new ErrorX(`Failed to search flo data for: ${query}`, err)
+			throw new Error(`Failed to search flo data for: ${query} -- ${err}`)
 		}
 		if (res && res.data) {
 			let txs = res.data.results
@@ -626,7 +626,7 @@ class DaemonApi {
 		try {
 			res = await this.index.get(`/floData/get/${txid}`)
 		} catch (err) {
-			throw new ErrorX(`Failed to get flo tx: ${txid}`, err)
+			throw new Error(`Failed to get flo tx: ${txid} -- ${err}`)
 		}
 		if (res && res.data) {
 			let [tx] = res.data.results
@@ -649,7 +649,7 @@ class DaemonApi {
 		try {
 			res = await this.index.get(`/multipart/get/id/${txid}`)
 		} catch (err) {
-			throw new ErrorX(`Failed to get multipart by txid: ${txid}`, err)
+			throw new Error(`Failed to get multipart by txid: ${txid} -- ${err}`)
 		}
 		if (res && res.data) {
 			let [mp] = res.data.results
@@ -676,7 +676,7 @@ class DaemonApi {
 		try {
 			res = await this.index.get(querystring)
 		} catch (err) {
-			throw new ErrorX(`Failed to get multiparts by ref: ${ref}`, err)
+			throw new Error(`Failed to get multiparts by ref: ${ref} -- ${err}`)
 		}
 		if (res && res.data) {
 			let results = res.data.results
@@ -706,7 +706,7 @@ class DaemonApi {
 		try {
 			res = await this.index.get(`historian/get/${txid}`)
 		} catch (err) {
-			throw new ErrorX(`Failed to get historian data by txid: ${txid}`, err)
+			throw new Error(`Failed to get historian data by txid: ${txid} -- ${err}`)
 		}
 		if (res && res.data) {
 			let [hdata] = res.data.results
@@ -728,7 +728,7 @@ class DaemonApi {
 		try {
 			res = await this.index.get(`historian/get/latest/${limit}`)
 		} catch (err) {
-			throw new ErrorX(`Failed to get latest historian data`, err)
+			throw new Error(`Failed to get latest historian data: ${err}`)
 		}
 		if (res && res.data) {
 			let hdata = res.data.results
@@ -754,12 +754,16 @@ class DaemonApi {
 		return res.data
 	}
 
+	/**
+	 * Get the Daemon's sync status
+	 * @return {Promise<Object>}
+	 */
 	async getSyncStatus() {
 		let res
 		try {
 			res = await this.index.get('/sync/status')
 		} catch (err) {
-			throw new ErrorX(`Failed to get sync status`, err)
+			throw new Error(`Failed to get sync status: ${err}`)
 		}
 		return res.data
 	}
