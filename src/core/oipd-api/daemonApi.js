@@ -104,7 +104,7 @@ class DaemonApi {
 				limit
 			})
 		} catch (err) {
-			throw new ErrorX(`Failed to search artifacts for: ${query}`, err)
+			throw new Error(`Failed to search artifacts for: ${query} -- ${err}`)
 		}
 		if (res && res.data) {
 			let artifacts = res.data.results
