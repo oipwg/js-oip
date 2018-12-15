@@ -116,6 +116,79 @@ class DaemonApi {
 	}
 
 	/**
+	 * Search Artifacts by type and subtype
+	 * @param {string} type - options: video, music, audio, image, text, research, and property (as of 12/15/18)
+	 * @param {string} [subtype] - options: tomogram (as of (12/15/18)
+	 * @return {Promise<Object>}
+	 * @example
+	 * let {success, artifacts, error} = await DaemonApi.searchArtifactsByType('research', 'tomogram')
+	 */
+	async searchArtifactsByType(type, subtype) {
+		if (type.split("-").length === 2) {
+			let split = type.split("-")[0]
+			type = split[0]
+			subtype = split[1]
+		}
+
+		const typeQs = `artifact.type:`
+		const subtypeQs = `artifact.subtype:`
+
+		type = type.toLowerCase()
+		subtype = subtype ? subtype.toLowerCase() : null
+
+		let typeArr = []
+		switch (type) {
+			//40 and 41s
+			case "video":
+				typeArr.push("video", "Video", "Video-Basic", "Video-Series")
+				break
+			case "music":
+				typeArr.push("music")
+				break
+			case "image":
+				typeArr.push("Image-Basic", "Image-Gallery")
+				break
+			case "audio":
+				typeArr.push("Audio-Basic", "music")
+				break
+			case "text":
+				typeArr.push("Text-Basic")
+				break
+			//42s
+			case "research":
+				typeArr.push("research")
+				break
+			case "property":
+				typeArr.push("Property")
+				break
+			default:
+				throw new Error(`invalid type: ${type}`)
+		}
+
+		let typeQuery = ``, subtypeQuery = ``
+		const OR = "OR", AND = "AND"
+		for (let i = 0; i < typeArr.length; i++) {
+			typeQuery += `${typeQs}${typeArr[i]}`
+			if (i !== typeArr.length-1) {
+				typeQuery += ` ${OR} `
+			}
+		}
+
+		let query = `(${typeQuery}) `
+		if (subtype) {
+			subtypeQuery += `${AND} `
+			subtypeQuery += `${subtypeQs}${subtype}`
+			query += subtypeQuery
+		}
+
+		try {
+			return await this.searchArtifacts(query)
+		} catch (err) {
+			throw err
+		}
+	}
+
+	/**
 	 * Get an Artifact from the Index by TXID
 	 * @param {TXID} txid  - transaction id of the artifact you wish to retrieve
 	 * @return {Promise<Object>}
