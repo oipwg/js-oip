@@ -7,6 +7,8 @@ for (let artifact in Artifacts) {
 	supported_artifact_types[type.toLowerCase()] = Artifacts[artifact]
 }
 
+const BaseArtifact = supported_artifact_types["artifact-"]
+
 /**
  * Parses json to return an Artifact class
  * @param {object} json - json artifact
@@ -20,7 +22,7 @@ for (let artifact in Artifacts) {
  */
 function decodeArtifact(json) {
 	 if (!json.artifact || !json.meta) {
-		 return new supported_artifact_types["artifact-"](json)
+		 return new BaseArtifact(json)
 	 }
 
 	 if (json.meta.type === 'alexandria-media') {
@@ -38,7 +40,7 @@ function decodeArtifact(json) {
 		 return decode(artifactType, json)
 
 	 } else {
-		 return new supported_artifact_types["artifact-"](json)
+		 return new BaseArtifact["artifact-"](json)
 	 }
 }
 
@@ -49,7 +51,7 @@ function decode(a_type, json) {
 		}
 	}
 
-	return new supported_artifact_types["artifact-"](json)
+	return new BaseArtifact(json)
 }
 
 export default decodeArtifact

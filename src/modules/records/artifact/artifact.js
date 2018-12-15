@@ -1013,28 +1013,28 @@ class Artifact extends OIPRecord {
 						return {success: false, error: "No Artifact_DEPRECATED under Version!"}
 					}
 				}
-			}
+			} else {
+				this.setBlock(artifact.meta.block)
+				this.setBlockHash(artifact.meta.block_hash)
+				this.setDeactivated(artifact.meta.deactivated || false)
+				this.setSignature(artifact.meta.signature)
+				this.setTXID(artifact.meta.txid);
+				this.setTime(artifact.meta.time)
+				this.setVersion(artifact.meta.type)
 
-			this.setBlock(artifact.meta.block)
-			this.setBlockHash(artifact.meta.block_hash)
-			this.setDeactivated(artifact.meta.deactivated || false)
-			this.setSignature(artifact.meta.signature)
-			this.setTXID(artifact.meta.txid);
-			this.setTime(artifact.meta.time)
-			this.setVersion(artifact.meta.type)
-
-			switch (artifact.meta.type) {
-				case 'alexandria-media':
-					this.importAlexandriaMedia(artifact.artifact)
-					break
-				case 'oip041':
-					this.import041(artifact.artifact)
-					break
-				case 'oip042':
-					this.import042(artifact.artifact)
-					break
-				default:
-					return {success: false, error: 'Unsupported media type. Check artifact.meta.type', detail: artifact}
+				switch (artifact.meta.type) {
+					case 'alexandria-media':
+						this.importAlexandriaMedia(artifact.artifact)
+						break
+					case 'oip041':
+						this.import041(artifact.artifact)
+						break
+					case 'oip042':
+						this.import042(artifact.artifact)
+						break
+					default:
+						return {success: false, error: 'Unsupported media type. Check artifact.meta.type', detail: artifact}
+				}
 			}
 		} else {
 			return {success: false, error: "Artifact Not Provided!"}
