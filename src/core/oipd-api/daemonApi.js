@@ -12,37 +12,64 @@ import {decodeArtifact} from '../../decoders'
  */
 
 /**
- * For use with DaemonApi.complexArtifactSearch()
+ * Objects that are used to build an elasticsearch complex query
  * @typedef {Object} queryObject
  * @property {string} field - artifact property ex. artifact.info.title
  * @property {string} query - the query term that will be searched on the field ex. 'Some title'
- * @property {string} operator - Can be: "AND", "OR", "NOT", or "wrap" (wrap objects will also have a property called 'type' which can be either 'start' or 'end')
- * @example <caption>The code</caption>
- * let args = [
- *      {operator: "wrap", type: 'start'}, // _1
- *      {field: "artifact.details.defocus", query: "-10"}, // _2
- *      {operator: "AND"}, // _3
- *      {field: "artifact.details.microscopist", query: "Yiwei Chang"}, // _4
- *      {operator: "wrap", type: "end"}, // _5
- *      {operator: "OR"}, // _6
- *      {operator: "wrap", type: "start"}, // _7
- *      {field: "artifact.details.defocus", query: "-8"}, // _8
- *      {operator: "AND"}, // _9
- *      {field: "artifact.details.microscopist", query: "Ariane Briegel"}, // _10
- *      {operator: "wrap", type: "end"}, // _11
+ * @property {string} operator - Can be: "AND", "OR", "NOT", or "wrap" (wrap objects will also have a property called 'type' which can be either 'start', 'end', or 'all')
+ * @property {string} type - Can be: 'start', 'end', or 'all'
+ * @example <caption>Search a query on a specific field</caption>
+ * let fieldObject = {field: "artifact.title", query: "Some Title"}
+ * @example <caption>Search a query on all fields</caption>
+ * let queryObject = {query: "cats"}
+ * @example <caption>Add a Complex Operator (AND, OR, or NOT)</caption>
+ * let complexObject = {operator: "AND"}
+ * @example <caption>Wrap parenthesis around the entire search query</caption>
+ * let wrapAll = {operator: "wrap", type: "all"}
+ * @example <caption>Add a beginning parenthesis</caption>
+ * let wrapStart = {operator: "wrap", type: "start"}
+ * @example <caption> Add an ending parenthesis</caption>
+ * let wrapEnd = {operator: "wrap", type: "end"}
+ * @example <caption>Build a search query</caption>
+ * let searchQuery = [
+ *      {operator: "wrap", type: "start"},
+ *      {field: "artifact.type", query: "research"},
+ *      {operator: "AND"}
+ *      {field: "artifact.info.year", query: "2017"}
+ *      {operator: "wrap", type: "end"},
+ *      {operator: "OR"},
+ *      {operator: "wrap", type: "start"},
+ *      {field: "artifact.info.year", query: "2016"},
+ *      {operator: "AND"},
+ *      {field: "artifact.type", query: "music"},
+ *      {operator: "wrap", type: "end"},
  * ]
- * @example <caption>How the code gets built into a querystring</caption>
- * let _1 = `(`
- * let _2 = `(artifact.details.defocus:"-10`
- * let _3 = `(artifact.details.defocus:"-10" AND`
- * let _4 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang"`
- * let _5 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang")`
- * let _6 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR`
- * let _7 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR (`
- * let _8 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR (artifact.details.defocus:"-8`
- * let _9 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR (artifact.details.defocus:"-8" AND`
- * let _10 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR (artifact.details.defocus:"-8" AND artifact.details.microscopist:"Ariane Briegel"`
- * let _11 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR (artifact.details.defocus:"-8" AND artifact.details.microscopist:"Ariane Briegel")`
+ * let query = DaemonApi.createQs(searchQuery)
+ * //query === "( artifact.type:"research" AND artifact.info.year:"2017" ) OR ( artifact.info.year:"2016" AND artifact.type:"music" )"
+ * let {artifacts} = await DaemonApi.searchArtifacts(query)
+ * @example <caption>Make things easier on yourself with constants and functions</caption>
+ * const field = (field, query) => {return {field, query}}
+ * const query = query => {return {query}}
+ * const WrapAll = {operator: "wrap", type: "all"}
+ * const WrapStart = {operator: "wrap", type: "start"}
+ * const WrapEnd = {operator: "wrap", type: "end"}
+ * const AND = {operator: "AND"}
+ * const OR  = {operator: "OR"}
+ * const NOT = {operator: "NOT"}
+ *
+ * let query = [
+ *      field("artifact.type", "research"),
+ *      AND,
+ *      field("artifact.info.year", "2017"),
+ *      WrapAll,
+ *      OR,
+ *      WrapStart,
+ *      field("artifact.type", "music",
+ *      AND,
+ *      field("artifact.info.year", "2016"),
+ *      WrapEnd
+ * ]
+ * let qs = DaemonApi.createQs(query)
  */
 
 
@@ -77,7 +104,7 @@ class DaemonApi {
 		if (daemonUrl) {
 			this.setUrl(daemonUrl)
 		} else {
-			this.setUrl(defaultOIPdURL) //ToDo: switch back to default
+			this.setUrl(defaultOIPdURL) //ToDo: default for prod
 		}
 	}
 
@@ -204,7 +231,7 @@ class DaemonApi {
 		const OR = "OR", AND = "AND"
 		for (let i = 0; i < typeArr.length; i++) {
 			typeQuery += `${typeQs}${typeArr[i]}`
-			if (i !== typeArr.length-1) {
+			if (i !== typeArr.length - 1) {
 				typeQuery += ` ${OR} `
 			}
 		}
@@ -224,34 +251,34 @@ class DaemonApi {
 	}
 
 	/**
-	 * Generate a complex querystring for elasticsearch usage
+	 * Generate a complex querystring for elasticsearch
 	 * @param {Array.<queryObject>} args - An array of objects that follow given example
 	 * @return {string}
 	 * @example <caption>Search for both Research and Music artifact types that were created in 2017</caption>
 	 * let args = [
-	 * {operator: "wrap", type: 'start'},
-	 * {field: "artifact.details.defocus", query: "-10"},
-	 * {operator: "AND"},
-	 * {field: "artifact.details.microscopist", query: "Yiwei Chang"},
-	 * {operator: "wrap", type: "end"},
-	 * {operator: "OR"},
-	 * {operator: "wrap", type: "start"},
-	 * {field: "artifact.details.defocus", query: "-8"},
-	 * {operator: "AND"},
-	 * {field: "artifact.details.microscopist", query: "Ariane Briegel"},
-	 * {operator: "wrap", type: "end"},
-	 ]
-	 * //the query would end up looking like:
+	 *      {operator: "wrap", type: 'start'},
+	 *      {field: "artifact.details.defocus", query: "-10"},
+	 *      {operator: "AND"},
+	 *      {field: "artifact.details.microscopist", query: "Yiwei Chang"},
+	 *      {operator: "wrap", type: "end"},
+	 *      {operator: "OR"},
+	 *      {operator: "wrap", type: "start"},
+	 *      {field: "artifact.details.defocus", query: "-8"},
+	 *      {operator: "AND"},
+	 *      {field: "artifact.details.microscopist", query: "Ariane Briegel"},
+	 *      {operator: "wrap", type: "end"},
+	 * ]
+	 * //the query would end up looking something like:
 	 * let query = "(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR (artifact.details.defocus:"-8" AND artifact.details.microscopist:"Ariane Briegel")"
 	 * @example
 	 * let querystring = this.generateQs(args)
 	 * querystring === query //true
 	 * let {artifacts} = await this.searchArtifacts(querystring)
 	 */
-	generateQs(args) {
+	createQs(args) {
 		let query = ``
-		const AND = "AND", OR = "OR", NOT= "NOT"
-		for (let i = 0; i < args.length;  i++) {
+		const AND = "AND", OR = "OR", NOT = "NOT"
+		for (let i = 0; i < args.length; i++) {
 			if (i !== 0) {
 				query += " "
 			}

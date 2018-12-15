@@ -29,7 +29,7 @@ describe('DaemonApi', () => {
 			expect(art.isValid().success).toBeTruthy()
 		}
 	})
-	it('generateQs 1 | generateQs()', async () => {
+	it('createQs 1 | createQs()', async () => {
 		let args = [
 			{field: "artifact.type", query: "research"},
 			{operator: "OR"},
@@ -39,12 +39,12 @@ describe('DaemonApi', () => {
 			{field: "artifact.info.year", query: "2017"}
 		]
 
-		let qs = index.generateQs(args)
+		let qs = index.createQs(args)
 		expect(qs).toEqual(`(artifact.type:"research" OR artifact.type:"music") AND artifact.info.year:"2017"`)
 
 	})
 
-	it('generateQs 2 | generateQs()', async () => {
+	it('createQs 2 | createQs()', async () => {
 		let args = [
 			{operator: "wrap", type: 'start'},
 			{field: "artifact.details.defocus", query: "-10"},
@@ -59,20 +59,38 @@ describe('DaemonApi', () => {
 			{operator: "wrap", type: "end"},
 		]
 
-		let qs = index.generateQs(args)
+		let qs = index.createQs(args)
 		expect(qs).toEqual(`( artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang" ) OR ( artifact.details.defocus:"-8" AND artifact.details.microscopist:"Ariane Briegel" )`)
 	})
-	it('generateQs 3 | generateQs()', async () => {
+	it('createQs 3 | createQs()', async () => {
 		let args = [
 			{field: "artifact.info.description", query: "ryan"},
 			{query: "eric"},
 			{query: "bits"}
 		]
 
-		let qs = index.generateQs(args)
+		let qs = index.createQs(args)
 		expect(qs).toEqual(`artifact.info.description:"ryan" eric bits`)
 
 	})
+	it('createQs 4 | createQs()', async () => {
+		let searchQuery = [
+			{operator: "wrap", type: "start"},
+			{field: "artifact.type", query: "research"},
+			{operator: "AND"},
+			{field: "artifact.info.year", query: "2017"},
+			{operator: "wrap", type: "end"}, {operator: "OR"},
+			{operator: "wrap", type: "start"},
+			{field: "artifact.info.year", query: "2016"},
+			{operator: "AND"},
+			{field: "artifact.type", query: "music"},
+			{operator: "wrap", type: "end"},]
+		let qs = index.createQs(searchQuery)
+		console.log(qs)
+		// expect(qs).toEqual(`artifact.info.description:"ryan" eric bits`)
+
+	})
+
 	it('GET Artifact by TXID | getArtifact()', async () => {
 		let txid = 'cc9a11050acdc4401aec3f40c4cce123d99c0f2c27d4403ae4a2536ee38a4716'
 		let {success, error, artifact} = await index.getArtifact(txid)
@@ -241,13 +259,14 @@ describe('DaemonApi', () => {
 		expect(error).toBeUndefined()
 	})
 	it("GET version", async () => {
-		let d = new DaemonApi("http://localhost:1606")
+		let d = new DaemonApi()
 		let v = await d.getVersion()
 		expect(v).toBeDefined()
 	})
 	it("GET sync status", async () => {
-		let d = new DaemonApi("http://localhost:1606")
+		let d = new DaemonApi()
 		let v = await d.getSyncStatus()
+		console.log(v)
 		expect(v).toBeDefined()
 	})
 })
