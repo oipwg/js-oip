@@ -11,6 +11,41 @@ import {decodeArtifact} from '../../decoders'
  * 8a83ec
  */
 
+/**
+ * For use with DaemonApi.complexArtifactSearch()
+ * @typedef {Object} queryObject
+ * @property {string} field - artifact property ex. artifact.info.title
+ * @property {string} query - the query term that will be searched on the field ex. 'Some title'
+ * @property {string} operator - Can be: "AND", "OR", "NOT", or "wrap" (wrap objects will also have a property called 'type' which can be either 'start' or 'end')
+ * @example <caption>The code</caption>
+ * let args = [
+ *      {operator: "wrap", type: 'start'}, // _1
+ *      {field: "artifact.details.defocus", query: "-10"}, // _2
+ *      {operator: "AND"}, // _3
+ *      {field: "artifact.details.microscopist", query: "Yiwei Chang"}, // _4
+ *      {operator: "wrap", type: "end"}, // _5
+ *      {operator: "OR"}, // _6
+ *      {operator: "wrap", type: "start"}, // _7
+ *      {field: "artifact.details.defocus", query: "-8"}, // _8
+ *      {operator: "AND"}, // _9
+ *      {field: "artifact.details.microscopist", query: "Ariane Briegel"}, // _10
+ *      {operator: "wrap", type: "end"}, // _11
+ * ]
+ * @example <caption>How the code gets built into a querystring</caption>
+ * let _1 = `(`
+ * let _2 = `(artifact.details.defocus:"-10`
+ * let _3 = `(artifact.details.defocus:"-10" AND`
+ * let _4 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang"`
+ * let _5 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang")`
+ * let _6 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR`
+ * let _7 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR (`
+ * let _8 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR (artifact.details.defocus:"-8`
+ * let _9 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR (artifact.details.defocus:"-8" AND`
+ * let _10 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR (artifact.details.defocus:"-8" AND artifact.details.microscopist:"Ariane Briegel"`
+ * let _11 = `(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR (artifact.details.defocus:"-8" AND artifact.details.microscopist:"Ariane Briegel")`
+ */
+
+
 const decodeArray = (artifacts) => {
 	let tmpArray = []
 	for (let art of artifacts) {
@@ -181,6 +216,57 @@ class DaemonApi {
 			query += subtypeQuery
 		}
 
+		try {
+			return await this.searchArtifacts(query)
+		} catch (err) {
+			throw err
+		}
+	}
+
+	/**
+	 * Use ElasticSearch's flexible query string parse to search with complex queries
+	 * @param {Array.<queryObject>} args - An array of objects that follow given example
+	 * @return {Promise<Object>}
+	 * @example <caption>Search for both Research and Music artifact types that were created in 2017</caption>
+	 * let args = [
+	 * {operator: "wrap", type: 'start'},
+	 * {field: "artifact.details.defocus", query: "-10"},
+	 * {operator: "AND"},
+	 * {field: "artifact.details.microscopist", query: "Yiwei Chang"},
+	 * {operator: "wrap", type: "end"},
+	 * {operator: "OR"},
+	 * {operator: "wrap", type: "start"},
+	 * {field: "artifact.details.defocus", query: "-8"},
+	 * {operator: "AND"},
+	 * {field: "artifact.details.microscopist", query: "Ariane Briegel"},
+	 * {operator: "wrap", type: "end"},
+	 ]
+	 * //the query would end up looking like:
+	 * let query = "(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR (artifact.details.defocus:"-8" AND artifact.details.microscopist:"Ariane Briegel")"
+	 * @example
+	 * let {success, error, count, total, artifacts} = await this.complexArtifactSearch(args)
+	 */
+	async complexArtifactSearch(args) {
+		let query = ``
+		const AND = "AND", OR = "OR", NOT= "NOT"
+		for (let i = 0; i < args.length;  i++) {
+			if (args[i].operator) {
+				if (args[i].operator.toUpperCase() === AND || args[i].operator.toUpperCase() === OR || args[i].operator.toUpperCase() === NOT) {
+					args[i] = args[i].operator.toUpperCase()
+					query += ` ${args[i]} `
+				} else if (args[i].operator.toLowerCase() === "wrap") {
+					if (args[i]["type"] === "start") {
+						query += "("
+					} else {
+						query += ")"
+					}
+				} else {
+					throw new Error(`Provided invalid operator: Options: "AND", "OR", "NOT", "wrap"`)
+				}
+			} else {
+				query += `${args[i].field}:"${args[i].query}"`
+			}
+		}
 		try {
 			return await this.searchArtifacts(query)
 		} catch (err) {
