@@ -224,9 +224,9 @@ class DaemonApi {
 	}
 
 	/**
-	 * Use ElasticSearch's flexible query string parse to search with complex queries
+	 * Generate a complex querystring for elasticsearch usage
 	 * @param {Array.<queryObject>} args - An array of objects that follow given example
-	 * @return {Promise<Object>}
+	 * @return {string}
 	 * @example <caption>Search for both Research and Music artifact types that were created in 2017</caption>
 	 * let args = [
 	 * {operator: "wrap", type: 'start'},
@@ -244,34 +244,43 @@ class DaemonApi {
 	 * //the query would end up looking like:
 	 * let query = "(artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang") OR (artifact.details.defocus:"-8" AND artifact.details.microscopist:"Ariane Briegel")"
 	 * @example
-	 * let {success, error, count, total, artifacts} = await this.complexArtifactSearch(args)
+	 * let querystring = this.generateQs(args)
+	 * querystring === query //true
+	 * let {artifacts} = await this.searchArtifacts(querystring)
 	 */
-	async complexArtifactSearch(args) {
+	generateQs(args) {
 		let query = ``
 		const AND = "AND", OR = "OR", NOT= "NOT"
 		for (let i = 0; i < args.length;  i++) {
+			if (i !== 0) {
+				query += " "
+			}
 			if (args[i].operator) {
 				if (args[i].operator.toUpperCase() === AND || args[i].operator.toUpperCase() === OR || args[i].operator.toUpperCase() === NOT) {
 					args[i] = args[i].operator.toUpperCase()
-					query += ` ${args[i]} `
+					query += `${args[i]}`
 				} else if (args[i].operator.toLowerCase() === "wrap") {
 					if (args[i]["type"] === "start") {
 						query += "("
-					} else {
+					} else if (args[i]["type"] === "end") {
 						query += ")"
+					} else if (args[i]["type"] === "all") {
+						query = query.slice(0, -1) //this is arbitrary--just to standardize return vals
+						query = `(${query})`
 					}
 				} else {
 					throw new Error(`Provided invalid operator: Options: "AND", "OR", "NOT", "wrap"`)
 				}
 			} else {
-				query += `${args[i].field}:"${args[i].query}"`
+				if (args[i].field) {
+					query += `${args[i].field}:"${args[i].query}"`
+				} else {
+					query += `${args[i].query}` //do these need to be wrapped in quotes?
+				}
 			}
 		}
-		try {
-			return await this.searchArtifacts(query)
-		} catch (err) {
-			throw err
-		}
+		// console.log(query)
+		return query
 	}
 
 	/**

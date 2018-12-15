@@ -29,31 +29,22 @@ describe('DaemonApi', () => {
 			expect(art.isValid().success).toBeTruthy()
 		}
 	})
-	it('GET complex artifact search 1 | complexArtifactSearch()', async () => {
+	it('generateQs 1 | generateQs()', async () => {
 		let args = [
 			{field: "artifact.type", query: "research"},
 			{operator: "OR"},
 			{field: "artifact.type", query: "music"},
-			{operator: "wrap"},
+			{operator: "wrap", type: 'all'},
 			{operator: "AND"},
 			{field: "artifact.info.year", query: "2017"}
 		]
 
-		let {success, error, artifacts, count, total} = await index.complexArtifactSearch(args)
+		let qs = index.generateQs(args)
+		expect(qs).toEqual(`(artifact.type:"research" OR artifact.type:"music") AND artifact.info.year:"2017"`)
 
-		expect(success).toBeTruthy()
-		expect(error).toBeUndefined()
-		expect(artifacts).toBeDefined()
-		expect(count).toBeDefined()
-		expect(total).toBeDefined()
-
-		for (let art of artifacts) {
-			expect(art.getType() === 'research' || art.getType() === 'music')
-			expect(art.getYear() === "2017")
-		}
 	})
 
-	it('GET complex artifact search 2 | complexArtifactSearch()', async () => {
+	it('generateQs 2 | generateQs()', async () => {
 		let args = [
 			{operator: "wrap", type: 'start'},
 			{field: "artifact.details.defocus", query: "-10"},
@@ -68,20 +59,20 @@ describe('DaemonApi', () => {
 			{operator: "wrap", type: "end"},
 		]
 
-		let {success, error, artifacts, count, total} = await index.complexArtifactSearch(args)
-
-		expect(success).toBeTruthy()
-		expect(error).toBeUndefined()
-		expect(artifacts).toBeDefined()
-		expect(count).toBeDefined()
-		expect(total).toBeDefined()
-		console.log(count, total)
-
-		for (let art of artifacts) {
-			expect(art instanceof ResearchTomogram)
-		}
+		let qs = index.generateQs(args)
+		expect(qs).toEqual(`( artifact.details.defocus:"-10" AND artifact.details.microscopist:"Yiwei Chang" ) OR ( artifact.details.defocus:"-8" AND artifact.details.microscopist:"Ariane Briegel" )`)
 	})
+	it('generateQs 3 | generateQs()', async () => {
+		let args = [
+			{field: "artifact.info.description", query: "ryan"},
+			{query: "eric"},
+			{query: "bits"}
+		]
 
+		let qs = index.generateQs(args)
+		expect(qs).toEqual(`artifact.info.description:"ryan" eric bits`)
+
+	})
 	it('GET Artifact by TXID | getArtifact()', async () => {
 		let txid = 'cc9a11050acdc4401aec3f40c4cce123d99c0f2c27d4403ae4a2536ee38a4716'
 		let {success, error, artifact} = await index.getArtifact(txid)
