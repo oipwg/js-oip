@@ -1,7 +1,6 @@
 import {DaemonApi} from '../../../src/core'
 import {MPSingle} from "../../../src/modules";
 import {Artifact} from '../../../src/modules/records/artifact'
-import ResearchTomogram from "../../../src/modules/records/artifact/researchTomogram";
 
 let index = new DaemonApi()
 
