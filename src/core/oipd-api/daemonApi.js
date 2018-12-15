@@ -11,7 +11,7 @@ import {decodeArtifact} from '../../decoders'
  * 8a83ec
  */
 
-const hydrateArray = (artifacts) => {
+const decodeArray = (artifacts) => {
 	let tmpArray = []
 	for (let art of artifacts) {
 		tmpArray.push(decodeArtifact(art))
@@ -95,6 +95,7 @@ class DaemonApi {
 		if (typeof query !== 'string') {
 			return {success: false, error: `'query' must be of type string`}
 		}
+
 		let res;
 		try {
 			res = await this.index.get(`/artifact/search`, {
@@ -107,8 +108,8 @@ class DaemonApi {
 			throw new Error(`Failed to search artifacts for: ${query} -- ${err}`)
 		}
 		if (res && res.data) {
-			let artifacts = res.data.results
-			return {success: true, artifacts: hydrateArray(artifacts)}
+			let {count, total, results} = res.data
+			return {success: true, artifacts: decodeArray(results), count, total}
 		} else {
 			return {success: false, error: `Missing response data: ${res.data}`}
 		}
@@ -187,7 +188,7 @@ class DaemonApi {
 		}
 		if (res && res.data) {
 			let artifacts = res.data.results
-			return {success: true, artifacts: hydrateArray(artifacts)}
+			return {success: true, artifacts: decodeArray(artifacts)}
 		} else {
 			return {success: false, error: `Missing response data: ${res.data}`}
 		}
@@ -216,7 +217,7 @@ class DaemonApi {
 
 		if (res && res.data) {
 			let artifacts = res.data.results
-			return {success: true, artifacts: hydrateArray(artifacts)}
+			return {success: true, artifacts: decodeArray(artifacts)}
 		} else {
 			return {success: false, error: `Missing response data: ${res.data}`}
 		}
@@ -295,7 +296,7 @@ class DaemonApi {
 		}
 		if (res && res.data) {
 			let artifacts = res.data.results
-			return {success: true, artifacts: hydrateArray(artifacts)}
+			return {success: true, artifacts: decodeArray(artifacts)}
 		} else {
 			return {success: false, error: `Missing response data: ${res.data}`}
 		}
@@ -323,7 +324,7 @@ class DaemonApi {
 		}
 		if (res && res.data) {
 			let artifacts = res.data.results
-			return {success: true, artifacts: hydrateArray(artifacts)}
+			return {success: true, artifacts: decodeArray(artifacts)}
 		} else {
 			return {success: false, error: `Missing response data: ${res.data}`}
 		}
