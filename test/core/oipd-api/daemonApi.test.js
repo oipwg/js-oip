@@ -1,6 +1,7 @@
 import {DaemonApi} from '../../../src/core'
 import {MPSingle} from "../../../src/modules";
 import {Artifact} from '../../../src/modules/records/artifact'
+import ResearchTomogram from "../../../src/modules/records/artifact/researchTomogram";
 
 let index = new DaemonApi()
 
@@ -17,6 +18,70 @@ describe('DaemonApi', () => {
 			expect(art.isValid().success).toBeTruthy()
 		}
 	})
+	it('GET complex search by type and subtype | searchArtifactsByType()', async () => {
+		let type = 'research'
+		let subtype = 'tomogram'
+		let {success, error, artifacts, count, total} = await index.searchArtifactsByType(type, subtype)
+		expect(success).toBeTruthy()
+		expect(error).toBeUndefined()
+		expect(artifacts).toBeDefined()
+		for (let art of artifacts) {
+			expect(art.isValid().success).toBeTruthy()
+		}
+	})
+	it('GET complex artifact search 1 | complexArtifactSearch()', async () => {
+		let args = [
+			{field: "artifact.type", query: "research"},
+			{operator: "OR"},
+			{field: "artifact.type", query: "music"},
+			{operator: "wrap"},
+			{operator: "AND"},
+			{field: "artifact.info.year", query: "2017"}
+		]
+
+		let {success, error, artifacts, count, total} = await index.complexArtifactSearch(args)
+
+		expect(success).toBeTruthy()
+		expect(error).toBeUndefined()
+		expect(artifacts).toBeDefined()
+		expect(count).toBeDefined()
+		expect(total).toBeDefined()
+
+		for (let art of artifacts) {
+			expect(art.getType() === 'research' || art.getType() === 'music')
+			expect(art.getYear() === "2017")
+		}
+	})
+
+	it('GET complex artifact search 2 | complexArtifactSearch()', async () => {
+		let args = [
+			{operator: "wrap", type: 'start'},
+			{field: "artifact.details.defocus", query: "-10"},
+			{operator: "AND"},
+			{field: "artifact.details.microscopist", query: "Yiwei Chang"},
+			{operator: "wrap", type: "end"},
+			{operator: "OR"},
+			{operator: "wrap", type: "start"},
+			{field: "artifact.details.defocus", query: "-8"},
+			{operator: "AND"},
+			{field: "artifact.details.microscopist", query: "Ariane Briegel"},
+			{operator: "wrap", type: "end"},
+		]
+
+		let {success, error, artifacts, count, total} = await index.complexArtifactSearch(args)
+
+		expect(success).toBeTruthy()
+		expect(error).toBeUndefined()
+		expect(artifacts).toBeDefined()
+		expect(count).toBeDefined()
+		expect(total).toBeDefined()
+		console.log(count, total)
+
+		for (let art of artifacts) {
+			expect(art instanceof ResearchTomogram)
+		}
+	})
+
 	it('GET Artifact by TXID | getArtifact()', async () => {
 		let txid = 'cc9a11050acdc4401aec3f40c4cce123d99c0f2c27d4403ae4a2536ee38a4716'
 		let {success, error, artifact} = await index.getArtifact(txid)
