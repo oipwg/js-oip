@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      modules/flo/flotx.js - Documentation
+      core/ipfs/jsIpfs.js - Documentation
   </title>
 
   <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
@@ -82,7 +82,7 @@
   <div id="main">
     
       <h1 class="page-title">
-        modules/flo/flotx.js
+        core/ipfs/jsIpfs.js
       </h1>
     
 
@@ -91,88 +91,118 @@
 
 <section>
   <article>
-    <pre class="prettyprint source linenums"><code>//ToDo: Fill out/finish class
-class FloTx {
-	constructor(floData) {
-		this._source = floData
+    <pre class="prettyprint source linenums"><code>import IPFS from 'ipfs'
 
-		this.floData = undefined
-		this.blockhash = undefined
-		this.size = undefined
-		this.txid = undefined
-		this.time = undefined
+class JsIpfs {
+	constructor() {
+		this.node = new IPFS()
+		this.ready = false
 
-		this.fromJSON(floData)
+		this.node.once('ready', () => {
+			this.ready = true
+			console.log("Ipfs node ready")
+		})
+
+		this.node.on('error', error => {
+			console.error('Something went terribly wrong!', error)
+		})
+
+		this.node.once('stop', () => console.log('Ipfs node stopped!'))
+
 	}
 
 	/**
-	 * Return FloData
-	 * @returns {*}
+	 * Add files and data to IPFS
+	 * @param {Buffer|ReadableStream|PullStream|Array.&lt;object>} data
+	 * @param {object} [options] - see: {@link https://github.com/ipfs/interface-ipfs-core/blob/master/SPEC/FILES.md#add} for options
+	 * @example
+	 * let content = ipfs.types.Buffer.from('ABC');
+	 * let results = await ipfs.files.add(content);
+	 * let hash = results[0].hash; // "Qm...WW"
+	 * @example
+	 * const files = [
+	 *      {
+	 *          path: '/tmp/myfile.txt', // the file path
+	 *          content: &lt;data> // A Buffer, Readable Stream or Pull Stream with the contents of the file
+	 *      }
+	 * ]
+	 *
+	 * const results = await ipfs.files.add(files)
+	 * @example
+	 * //results array
+	 * [
+	 *      {
+	 *          "path": "tmp",
+	 *          "hash": "QmWXdjNC362aPDtwHPUE9o2VMqPeNeCQuTBTv1NsKtwypg",
+	 *          "size": 67
+	 *      },
+	 *      {
+	 *          "path": "/tmp/myfile.txt",
+	 *          "hash": "QmNz1UBzpdd4HfZ3qir3aPiRdX5a93XwTuDNyXRc6PKhWW",
+	 *          "size": 11
+	 *      }
+	 * ]
 	 */
-	getFloData() {
-		return this.floData
+	async addFiles(data, options = {}) {
+		await this.readyCheck()
+
+		//get fileSize
+		// options = options || {progress: (bytesAdded) => {console.log("Added " + toMB(bytesAdded) + " MB out of " + `${options.fileSize || "NaN"}` + " MB")}}
+
+		let filesAdded
+		try {
+			filesAdded = await this.node.files.add(data, options)
+		} catch (err) {
+			throw new Error(`Failed to add files: ${err}`)
+		}
+
+		// console.log('files added: ', filesAdded)
+		return filesAdded
 	}
 
 	/**
-	 * Return Block Hash
-	 * @returns {*}
+	 * Returns a file addressed by a valid IPFS Path
+	 * @param {CID|string} ipfsPath - type cid: (a CID instance, Buffer, the raw Buffer of the cid, String, the base58 encoded version of the cid.) type String: (including the ipfs handler, a cid and a path to traverse to)
+	 * @param {object} [options]
+	 * @param [options.offset] - an optional byte offset to start the stream at
+	 * @param {number} [options.length] - an optional number of bytes to read from the stream
+	 * @return {Promise&lt;Buffer>}
 	 */
-	getBlockHash() {
-		return this.blockhash
+	async catFile(ipfsPath, options) {
+		await this.readyCheck()
+
+		try {
+			return await this.node.files.cat(ipfsPath)
+		} catch (err) {
+			throw new Error(`Failed to get back file: ${err}`)
+		}
 	}
 
-	/**
-	 * Return Size
-	 * @returns {*}
-	 */
-	getSize() {
-		return this.size
+	isReady() {
+		return this.ready
 	}
 
-	/**
-	 * Get TXID
-	 * @returns {string|*}
-	 */
-	getTXID() {
-		return this.txid
+	async readyCheck() {
+		return new Promise(res => {
+			this.node.once('ready', res)
+			if (this.isReady()) {res()}
+		})
 	}
 
-	/**
-	 * Get Time
-	 * @returns {string|*}
-	 */
-	getTime() {
-		return this.time
-	}
-
-	isValid() {
-		return !!(this.blockhash &amp;&amp; this.txid &amp;&amp; this.floData);
-	}
-
-	fromJSON(floData) {
-		if (typeof floData === 'string')
-			floData = JSON.parse(floData)
-
-		floData = floData.tx
-
-		if (floData.floData)
-			this.floData = floData.floData
-
-		if (floData.blockhash)
-			this.blockhash = floData.blockhash
-
-		if (floData.size)
-			this.size = floData.size
-
-		if (floData.txid)
-			this.txid = floData.txid
-
-		if (floData.time)
-			this.time = floData.time
+	async stop() {
+		try {
+			await this.node.stop()
+		} catch (error) {
+			console.error('Node failed to stop cleanly!', error)
+		}
 	}
 }
 
-export default FloTx</code></pre>
+const toMB = function(num){
+	return Math.round((num  / 1024 / 1024) * 100) / 100;
+}
+
+export default JsIpfs</code></pre>
   </article>
 </section>
 
