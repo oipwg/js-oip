@@ -85,8 +85,8 @@ describe('DaemonApi', () => {
 			{field: "artifact.type", query: "music"},
 			{operator: "wrap", type: "end"},]
 		let qs = index.createQs(searchQuery)
-		console.log(qs)
-		// expect(qs).toEqual(`artifact.info.description:"ryan" eric bits`)
+		// console.log(qs)
+		expect(qs).toEqual(`( artifact.type:"research" AND artifact.info.year:"2017" ) OR ( artifact.info.year:"2016" AND artifact.type:"music" )`)
 
 	})
 
@@ -262,10 +262,10 @@ describe('DaemonApi', () => {
 		let v = await d.getVersion()
 		expect(v).toBeDefined()
 	})
-	it("GET sync status", async () => {
+	it.skip("GET sync status", async () => {
 		let d = new DaemonApi()
 		let v = await d.getSyncStatus()
-		console.log(v)
+		// console.log(v)
 		expect(v).toBeDefined()
 	})
 })
