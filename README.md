@@ -1,3 +1,5 @@
+[![npm version](https://badge.fury.io/js/js-oip.svg)](https://badge.fury.io/js/js-oip)
+
 # js-oip
 The `js-oip` is a javascript module that allows you to easily interact with the Open Index using the Open Index Protocol.
 
