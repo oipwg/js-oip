@@ -28,6 +28,7 @@ The `js-oip` is a javascript module that allows you to easily interact with the 
     * [Adding files to IPFS](https://github.com/oipwg/js-oip/#adding-files-to-ipfs)
     * [Creating an Artifact Record](https://github.com/oipwg/js-oip/#creating-an-artifact-record)
         * [Using the Artifact Decoder](https://github.com/oipwg/js-oip/#using-the-artifact-decoder)
+    * [Networks](https://github.com/oipwg/js-oip/#networks)
     * [Importing submodules](https://github.com/oipwg/js-oip/#importing-submodules)
 * [API Documentation](https://github.com/oipwg/js-oip/#api-documentation)
 * [License](https://github.com/oipwg/js-oip/#license)
