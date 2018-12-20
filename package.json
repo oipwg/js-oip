@@ -1,7 +1,7 @@
 {
   "name": "js-oip",
   "version": "1.0.0",
-  "description": "Javascript Library to fully interact with the Open Index Protocol",
+  "description": "A Javascript Library to fully interact with the Open Index Protocol",
   "main": "lib/main.js",
   "scripts": {
     "test": "jest --coverage --detectOpenHandles",
