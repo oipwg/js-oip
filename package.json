@@ -2,7 +2,7 @@
   "name": "js-oip",
   "version": "1.0.0",
   "description": "A Javascript Library to fully interact with the Open Index Protocol",
-  "main": "lib/main.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "jest --coverage --detectOpenHandles",
     "compile": "./node_modules/.bin/babel -d lib/ src/",
@@ -36,7 +36,6 @@
     "@babel/preset-env": "^7.0.0-beta.51",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.4.2",
-    "fcoin": "^1.0.0-beta.34",
     "jest": "^23.6.0",
     "jsdoc": "^3.5.5",
     "jsdoc-template": "git+https://github.com/oipwg/jsdoc-template.git"
@@ -46,6 +45,7 @@
     "bitcoinjs-lib": "git+https://github.com/oipwg/bitcoinjs-lib.git#export-classify",
     "bitcoinjs-message": "^2.0.0",
     "coinselect": "^3.1.11",
+    "fcoin": "^1.0.0-beta.34",
     "insight-explorer": "^1.0.10",
     "ipfs": "^0.33.1",
     "ipfs-http-client": "^28.0.0",
