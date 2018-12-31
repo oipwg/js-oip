@@ -35,6 +35,8 @@ The `js-oip` is a javascript module that allows you to easily interact with the 
 * [License](https://github.com/oipwg/js-oip/#license)
 
 ## Installation Instructions
+Make sure you have the latest version of npm and nodejs installed. Instructions on installing the latest versions can be found on nodesource: [nodesource](https://github.com/nodesource/distributions#debinstall).
+
 You can install the latest version by running the following `npm install` command.
 ```bash
 $ npm install --save js-oip
