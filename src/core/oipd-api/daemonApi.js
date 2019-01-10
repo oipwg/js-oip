@@ -120,10 +120,7 @@ class DaemonApi {
 		this.url = daemonUrl;
 
 		this.index = new axios.create({
-			baseURL: this.url,
-			headers: {
-				'Access-Control-Allow-Origin': '*',
-			},
+			baseURL: this.url
 		})
 	}
 

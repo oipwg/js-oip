@@ -1,5 +1,9 @@
 import bitcoin from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
+
+//This dependency was not found:
+//
+// * fs in ./node_modules/bindings/bindings.js
 import floTx from 'fcoin/lib/primitives/tx'
 import {isValidWIF} from '../../util'
 import {MultipartX} from '../../modules'
