@@ -594,9 +594,9 @@ class DaemonApi {
 		try {
 			res = await this.index.get(`/floData/search`, {
 				params: {
-					q: query
-				},
-				limit
+					q: query,
+					limit
+				}
 			})
 		} catch (err) {
 			throw new Error(`Failed to search flo data for: ${query} -- ${err}`)

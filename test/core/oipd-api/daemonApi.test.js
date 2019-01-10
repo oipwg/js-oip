@@ -207,6 +207,14 @@ describe('DaemonApi', () => {
 		expect(txs).toBeDefined()
 		expect(error).toBeUndefined()
 	})
+	it('GET search floData by query WITH LIMIT | searchFloData()', async () => {
+		let q = 'ryan', limit = 5
+		let {txs, success, error} = await index.searchFloData(q, limit)
+		expect(txs.length).toEqual(5)
+		expect(success).toBeTruthy()
+		expect(txs).toBeDefined()
+		expect(error).toBeUndefined()
+	})
 	it('GET floData by txid', async () => {
 		let txid = '83452d60230d3c2c69000c2a79da79fe60cdf63012f946ac46e6df3409fb1fa7'
 		let {success, tx, error} = await index.getFloData(txid)
