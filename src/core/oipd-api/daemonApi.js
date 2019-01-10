@@ -582,8 +582,8 @@ class DaemonApi {
 	 * @example
 	 * let query = 'myQuery'
 	 * let {success, txs, error} = await DaemonApi.searchFloData(query)
-	 * for (let tx of txs) {
-	 *     let floData = tx.floData
+	 * for (let i of txs) {
+	 *     let floData = i.tx.floData
 	 * }
 	 */
 	async searchFloData(query, limit) {
