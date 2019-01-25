@@ -1,6 +1,11 @@
 import axios from 'axios'
 import uid from 'uid'
 
+// 1 satoshis per byte (1000 satoshi per kb) (100 million satoshi in 1 FLO)
+const TX_FEE_PER_BYTE = 0.00000001
+// Average size of tx data (without floData) to calculate min txFee
+const TX_AVG_BYTE_SIZE = 193
+
 class RPCWallet {
 	constructor(options){
 		if (!options.rpc)
@@ -20,6 +25,9 @@ class RPCWallet {
 			auth: {
 				username: options.rpc.username,
 				password: options.rpc.password
+			},
+			validateStatus: function (status) {
+				return true
 			}
 		})
 
@@ -72,9 +80,49 @@ class RPCWallet {
 			}
 		}
 
-		console.log(inputs)
+		let myTxFee = TX_FEE_PER_BYTE * (TX_AVG_BYTE_SIZE + Buffer.from(data).length)
 
-		return inputs
+		let output = {}
+		output[this.publicAddress] = input.amount - myTxFee
+
+		let createTXResponse = await this.rpc.post("/", {
+			"jsonrpc": "2.0", 
+			"id": uid(16), 
+			"method": "createrawtransaction", 
+			"params": [ [ input ], output, 0, true, data ] 
+		})
+
+		if (createTXResponse.data.error && createTXResponse.data.error !== null)
+			throw new Error("Error creating raw tx: " + input + output + data + "\n" + createTXResponse.data.error)
+
+		let rawUnsignedTXHex = createTXResponse.data.result
+
+		let signTXResponse = await this.rpc.post("/", {
+			"jsonrpc": "2.0", 
+			"id": uid(16), 
+			"method": "signrawtransaction", 
+			"params": [ rawUnsignedTXHex ] 
+		})
+
+		if (signTXResponse.data.error && signTXResponse.data.error !== null)
+			throw new Error("Error signing raw tx: " + rawTXHex + "\n" + JSON.stringify(signTXResponse.data.error))
+
+		if (!signTXResponse.data.result.complete)
+			throw new Error("Raw tx signature is incomplete! " + JSON.stringify(signTXResponse.data))
+
+		let rawTXHex = signTXResponse.data.result.hex
+
+		let broadcastTXResponse = await this.rpc.post("/", {
+			"jsonrpc": "2.0", 
+			"id": uid(16), 
+			"method": "sendrawtransaction", 
+			"params": [ rawTXHex ] 
+		})
+
+		if (broadcastTXResponse.data.error && broadcastTXResponse.data.error !== null)
+			throw new Error("Error broadcasting raw tx: " + rawTXHex + "\n" + JSON.stringify(broadcastTXResponse.data.error))
+
+		return broadcastTXResponse.data.result
 	}
 }
 
