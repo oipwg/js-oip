@@ -45,7 +45,14 @@ class RPCWallet {
 		return true
 	}
 
-	async sendDataToChain(){
+	async sendDataToChain(data){
+		if (typeof data !== 'string') {
+			throw new Error(`Data must be of type string. Got: ${typeof data}`)
+		}
+		if (data.length > 1040) {
+			throw new Error(`Error: 'data' length exceeds 1040 characters. Please send a smaller data package.`)
+		}
+
 		let unspentResponse = await this.rpc.post("/", {
 			"jsonrpc": "2.0", 
 			"id": uid(16), 
@@ -57,10 +64,12 @@ class RPCWallet {
 			throw new Error("Unable to get unspent transactions for: " + this.publicAddress + "\n" + unspentResponse.data.error)
 
 		let utxos = unspentResponse.data.result
-		let inputs = []
+		let input
 
 		for (let utxo of utxos){
-			if (utxo.amount > 0.0001)
+			if (utxo.amount > 0.0001){
+				input = utxo
+			}
 		}
 
 		console.log(inputs)
