@@ -26,3 +26,10 @@ test.skip("Can initialize", async () => {
 
 	expect(init).toBe(true)
 })
+
+test.skip("Can send data to chain", async () => {
+	let txid = await wallet.sendDataToChain("skyoung test")
+
+	console.log("Success! " + txid)
+	expect(txid).toBeDefined()
+})
