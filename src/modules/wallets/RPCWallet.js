@@ -53,14 +53,21 @@ class RPCWallet {
 		return true
 	}
 
-	async sendDataToChain(data, extraOutputs){
-		if (typeof data !== 'string') {
-			throw new Error(`Data must be of type string. Got: ${typeof data}`)
-		}
-		if (data.length > 1040) {
-			throw new Error(`Error: 'data' length exceeds 1040 characters. Please send a smaller data package.`)
-		}
+	async getUTXOs(){
+		let unspentResponse = await this.rpc.post("/", {
+			"jsonrpc": "2.0", 
+			"id": uid(16), 
+			"method": "listunspent", 
+			"params": [ 0, 9999999, [ this.publicAddress ] ] 
+		})
 
+		if (unspentResponse.data.error && unspentResponse.data.error !== null)
+			throw new Error("Unable to get unspent transactions for: " + this.publicAddress + "\n" + JSON.stringify(unspentResponse.data.error))
+
+		return unspentResponse.data.result
+	}
+
+	async fillUTXOs(){
 		let unspentResponse = await this.rpc.post("/", {
 			"jsonrpc": "2.0", 
 			"id": uid(16), 
@@ -72,6 +79,19 @@ class RPCWallet {
 			throw new Error("Unable to get unspent transactions for: " + this.publicAddress + "\n" + JSON.stringify(unspentResponse.data.error))
 
 		let utxos = unspentResponse.data.result
+
+		console.log(utxos.length)
+
+		if (utxos.length < 100) {
+			
+		}
+
+		return true
+	}
+
+	async sendDataToChain(data){
+		let utxos = await this.getUTXOs()
+
 		let input
 
 		for (let i = (utxos.length - 1); i >= 0; i--) {
@@ -86,11 +106,24 @@ class RPCWallet {
 		let output = {}
 		output[this.publicAddress] = parseFloat((input.amount - myTxFee).toFixed(8))
 
+		let txid = await this.sendTX(data, [ input ], output)
+
+		return txid
+	}
+
+	async sendTX(floData, inputs, outputs) {
+		if (typeof floData !== 'string') {
+			throw new Error(`Data must be of type string. Got: ${typeof floData}`)
+		}
+		if (floData.length > 1040) {
+			throw new Error(`Error: 'floData' length exceeds 1040 characters. Please send a smaller data package.`)
+		}
+
 		let createTXResponse = await this.rpc.post("/", {
 			"jsonrpc": "2.0", 
 			"id": uid(16), 
 			"method": "createrawtransaction", 
-			"params": [ [ input ], output, 0, true, data ] 
+			"params": [ inputs, outputs, 0, true, floData ] 
 		})
 
 		if (createTXResponse.data.error && createTXResponse.data.error !== null)
