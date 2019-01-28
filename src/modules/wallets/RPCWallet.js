@@ -53,7 +53,7 @@ class RPCWallet {
 		return true
 	}
 
-	async sendDataToChain(data){
+	async sendDataToChain(data, extraOutputs){
 		if (typeof data !== 'string') {
 			throw new Error(`Data must be of type string. Got: ${typeof data}`)
 		}
@@ -69,21 +69,22 @@ class RPCWallet {
 		})
 
 		if (unspentResponse.data.error && unspentResponse.data.error !== null)
-			throw new Error("Unable to get unspent transactions for: " + this.publicAddress + "\n" + unspentResponse.data.error)
+			throw new Error("Unable to get unspent transactions for: " + this.publicAddress + "\n" + JSON.stringify(unspentResponse.data.error))
 
 		let utxos = unspentResponse.data.result
 		let input
 
-		for (let utxo of utxos){
-			if (utxo.amount > 0.0001){
-				input = utxo
+		for (let i = (utxos.length - 1); i >= 0; i--) {
+			if (utxos[i].amount > 0.0001){
+				input = utxos[i]
+				break
 			}
 		}
 
 		let myTxFee = TX_FEE_PER_BYTE * (TX_AVG_BYTE_SIZE + Buffer.from(data).length)
 
 		let output = {}
-		output[this.publicAddress] = input.amount - myTxFee
+		output[this.publicAddress] = parseFloat((input.amount - myTxFee).toFixed(8))
 
 		let createTXResponse = await this.rpc.post("/", {
 			"jsonrpc": "2.0", 
@@ -93,7 +94,7 @@ class RPCWallet {
 		})
 
 		if (createTXResponse.data.error && createTXResponse.data.error !== null)
-			throw new Error("Error creating raw tx: " + input + output + data + "\n" + createTXResponse.data.error)
+			throw new Error("Error creating raw tx: " + JSON.stringify(input, null, 4) + JSON.stringify(output, null, 4) + data + "\n" + JSON.stringify(createTXResponse.data.error, null, 4))
 
 		let rawUnsignedTXHex = createTXResponse.data.result
 
