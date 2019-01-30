@@ -1,7 +1,8 @@
-import RPCWallet from '../../../src/modules/wallets/RPCWallet'
+const RPCWallet = require('./lib/modules/wallets/RPCWallet.js').default
 
-let pubAddress = "pubaddress"
-let wif = "wif"
+let pubAddress = "oRtmhv4iS7v8XT5bf8iGFvV1cz5v4Hq1BK"
+let wif = "cPLQ5sLsQgEnq9UG4aEegTJ4LkWorkJxKavdffv8myx4VQ2bJ3Jc"
+
 
 let wallet = new RPCWallet({
 	publicAddress: pubAddress,
@@ -10,34 +11,16 @@ let wallet = new RPCWallet({
 	rpc: {
 		port: 17313,
 		host: "127.0.0.1",
-		username: "username",
-		password: "password"
+		username: "recorder",
+		password: "0jnu71yc9a"
 	}
 })
 
-test("Filler test (ignore me)", () => {
-	let x = true
-	expect(x).toBe(true)
-})
-
-test.skip("Can initialize", async () => {
-	let init = await wallet.initialize()
-
-	expect(init).toBe(true)
-})
-
-test.skip("Can send data to chain", async () => {
-	let txid = await wallet.sendDataToChain("skyoung test")
-
-	console.log("Success! " + txid)
-	expect(txid).toBeDefined()
-})
-
-const BULK_TX_COUNT = 1000
+const BULK_TX_COUNT = 1250
 const FILL_FLO_DATA_FULL = false
-const FILL_FLO_DATA_TO = 1040
+const FILL_FLO_DATA_TO = 200
 
-test.skip("Can send " + BULK_TX_COUNT + " transactions to chain in rapidfire :)", async () => {
+async function run () {
 	let startTime = Date.now()
 	let txs = []
 
@@ -45,7 +28,7 @@ test.skip("Can send " + BULK_TX_COUNT + " transactions to chain in rapidfire :)"
 	for (let i = 1; i <= BULK_TX_COUNT; i++){
 		let floData = "skyoung bulk #" + i
 
-		if (FILL_FLO_DATA_FULL) {
+		if (FILL_FLO_DATA_FULL){
 			floData += " | "
 
 			while (floData.length < FILL_FLO_DATA_TO)
@@ -68,6 +51,6 @@ test.skip("Can send " + BULK_TX_COUNT + " transactions to chain in rapidfire :)"
 	let runDuration = endTime - startTime
 
 	console.log("Runtime for " + txs.length + " transactions: " + (runDuration/1000).toFixed(2) + " seconds")
+}
 
-	expect(txs.length).toBe(1000)
-}, 100 * 1000)
+run().then(() => {}).catch((e) => { throw e })
