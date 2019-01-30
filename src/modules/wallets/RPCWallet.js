@@ -67,28 +67,6 @@ class RPCWallet {
 		return unspentResponse.data.result
 	}
 
-	async fillUTXOs(){
-		let unspentResponse = await this.rpc.post("/", {
-			"jsonrpc": "2.0", 
-			"id": uid(16), 
-			"method": "listunspent", 
-			"params": [ 0, 9999999, [ this.publicAddress ] ] 
-		})
-
-		if (unspentResponse.data.error && unspentResponse.data.error !== null)
-			throw new Error("Unable to get unspent transactions for: " + this.publicAddress + "\n" + JSON.stringify(unspentResponse.data.error))
-
-		let utxos = unspentResponse.data.result
-
-		console.log(utxos.length)
-
-		if (utxos.length < 100) {
-			
-		}
-
-		return true
-	}
-
 	async sendDataToChain(data){
 		let utxos = await this.getUTXOs()
 
