@@ -72,7 +72,7 @@ class RPCWallet {
 
 		let input
 
-		for (let i = (utxos.length - 1); i >= 0; i--) {
+		for (let i = 0; i < utxos.length; i++) {
 			if (utxos[i].amount > 0.0001){
 				input = utxos[i]
 				break
