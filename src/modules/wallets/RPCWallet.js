@@ -1,10 +1,12 @@
 import axios from 'axios'
 import uid from 'uid'
 
+import { varIntBuffer } from '../../util'
+
 // 1 satoshis per byte (1000 satoshi per kb) (100 million satoshi in 1 FLO)
 const TX_FEE_PER_BYTE = 0.00000001
 // Average size of tx data (without floData) to calculate min txFee
-const TX_AVG_BYTE_SIZE = 193
+const TX_AVG_BYTE_SIZE = 192
 
 class RPCWallet {
 	constructor(options){
@@ -79,10 +81,11 @@ class RPCWallet {
 			}
 		}
 
-		let myTxFee = TX_FEE_PER_BYTE * (TX_AVG_BYTE_SIZE + Buffer.from(data).length)
+		let myTxFee = TX_FEE_PER_BYTE * (TX_AVG_BYTE_SIZE + varIntBuffer(data.length).toString('hex').length + Buffer.from(data).length)
 
 		let output = {}
 		output[this.publicAddress] = parseFloat((input.amount - myTxFee).toFixed(8))
+
 
 		let txid = await this.sendTX(data, [ input ], output)
 
