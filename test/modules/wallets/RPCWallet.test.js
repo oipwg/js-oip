@@ -33,8 +33,8 @@ test.skip("Can send data to chain", async () => {
 	expect(txid).toBeDefined()
 })
 
-const BULK_TX_COUNT = 1000
-const FILL_FLO_DATA_FULL = false
+const BULK_TX_COUNT = 10000
+const FILL_FLO_DATA_FULL = true
 const FILL_FLO_DATA_TO = 1040
 
 test.skip("Can send " + BULK_TX_COUNT + " transactions to chain in rapidfire :)", async () => {
@@ -56,10 +56,8 @@ test.skip("Can send " + BULK_TX_COUNT + " transactions to chain in rapidfire :)"
 
 		let completionTimestamp = Date.now()
 		let runtime = completionTimestamp - lastTimestamp
-		let tx = { txid, runtime }
+		let tx = { i, txid, runtime }
 		txs.push(tx)
-
-		//await new Promise((resolve, reject) => ( setTimeout(() => { resolve() }, 25) ))
 
 		lastTimestamp = Date.now()
 	}
