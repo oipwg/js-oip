@@ -3,10 +3,18 @@ import uid from 'uid'
 
 import { varIntBuffer } from '../../util'
 
+// Helper const
+const ONE_MB = 1000000
+const ONE_SECOND = 1000
+
 // 1 satoshis per byte (1000 satoshi per kb) (100 million satoshi in 1 FLO)
 const TX_FEE_PER_BYTE = 0.00000001
 // Average size of tx data (without floData) to calculate min txFee
 const TX_AVG_BYTE_SIZE = 192
+
+// Prevent chaining over ancestor limit
+const MAX_MEMPOOL_ANCESTORS = 1250
+const MAX_MEMPOOL_ANCESTOR_SIZE = 1.75 * ONE_MB
 
 /**
  * Easily interact with an RPC Wallet to send Bulk transactions extremely quickly in series
@@ -52,6 +60,10 @@ class RPCWallet {
 		// Store the Private Key and the Public Key
 		this.wif = this.options.wif
 		this.publicAddress = this.options.publicAddress
+
+		// Variables to count utxo ancestors (maximum number of unconfirmed transactions you can chain)
+		this.currentAncestorCount = 0
+		this.currentAncestorSize = 0
 	}
 
 	/**
@@ -84,6 +96,99 @@ class RPCWallet {
 	}
 
 	/**
+	 * Grab the latest unconfirmed tx and check how many ancestors it has
+	 * @return {Boolean} Returns true if the update was successful
+	 */
+	async updateAncestorStatus(){
+		// We next check to see if there are any transactions currently in the mempool that we need to be aware of.
+		// To check the mempool, we start by grabbing the UTXO's to get the txid of the most recent transaction that was sent
+		let utxos = await this.getUTXOs()
+
+		// Check if we have no transaction outputs available to spend from
+		if (utxos.length === 0)
+			throw new Error("No previous unspent output available! Please send some FLO to " + this.publicAddress + " and then try again!")
+		
+		// Grab the most recent txid
+		let mostRecentTXID = utxos[0].txid
+		// Check to see if the utxo is still in the mempool and if it has ancestors
+		let getMempoolEntry = await this.rpcRequest("getmempoolentry", [ mostRecentTXID ] )
+		// Check if we have an error and handle it
+		if (getMempoolEntry.error && getMempoolEntry.error !== null) {
+			// If the error 'Transaction not in mempool' occurs, that means that the most recent transaction 
+			// has already recieved a confirmation, so it has no ancestors we need to worry about.
+
+			// If the error is different, than throw it up for further inspection.
+			if (getMempoolEntry.error.message !== 'Transaction not in mempool')
+				throw new Error("Error Importing Private Key to RPC Wallet: " + getMempoolEntry.error)
+		}
+
+		// If the tx is still in the mempool, it will have results
+		if (getMempoolEntry.result) {
+			let txMempoolStatus = getMempoolEntry.result
+
+			// Store the current ancestor count & size
+			this.currentAncestorCount = txMempoolStatus.ancestorcount
+			this.currentAncestorSize = txMempoolStatus.ancestorsize
+		}
+
+		return true
+	}
+
+	/**
+	 * Add a transaction we just sent to the ancestor count/size
+	 * @param {String} hex - The transaction hex to count
+	 * @return {Boolean} Returns true on success
+	 */
+	addAncestor(hex) {
+		// Increase the ancestor count
+		this.currentAncestorCount++
+		// Increase the ancestor size (byte length)
+		this.currentAncestorSize += Buffer.from(hex, 'hex').length
+
+		return true
+	}
+
+	/**
+	 * Checks the current ancestor count and returns when it is safe to send more transactions. 
+	 * This method will wait for tx's in the mempool to be confirmed before continuing.
+	 * @async
+	 * @return {Boolean} Returns `true` once it is safe to continue sending transactions
+	 */
+	async checkAncestorCount(){
+		let firstLoop = true
+		let hadMaxAncestors = false
+
+		let startAncestorCount = this.currentAncestorCount
+		let startAncestorSize = this.currentAncestorSize
+
+		// Check if we have too many ancestors, and if we do, wait for the ancestor count to decrease (aka, some transactions to get confirmed in a block)
+		while (this.currentAncestorCount >= MAX_MEMPOOL_ANCESTORS || this.currentAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE) {
+			// Wait for 0.1 seconds (don't run on the first loop through)
+			if (!firstLoop)
+				await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, 0.1 * ONE_SECOND)})
+			// Update the ancestor status (this is what will break us out of our while loop)
+			await this.updateAncestorStatus()
+
+			// Only log ancestor count if it is the first loop, and we still have too many ancestors
+			if (firstLoop && (this.currentAncestorCount >= MAX_MEMPOOL_ANCESTORS || this.currentAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE)){
+				console.log(`[RPC Wallet] Maximum Ancestor count reached, pausing sending of transactions until some of the current transactions get confirmed | Ancestor Count: ${this.currentAncestorCount} - Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`)
+				hadMaxAncestors = true
+			}
+
+			firstLoop = false
+		}
+
+		if (startAncestorCount >= MAX_MEMPOOL_ANCESTORS || startAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE)
+			console.log(`[RPC Wallet] ${startAncestorCount - this.currentAncestorCount} Transactions Confirmed! (${((startAncestorSize - this.currentAncestorSize) / ONE_MB).toFixed(2)} MB)`)
+
+		if (hadMaxAncestors)
+			console.log(`[RPC Wallet] Ancestor count has decreased, resuming sending transactions! | Ancestor Count: ${this.currentAncestorCount} - Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`)
+
+		// There are fewer ancestors than the maximum, so we can send the next transaction!
+		return true
+	}
+
+	/**
 	 * Initialize the RPC Wallet. This imports the Private Key, and then checks for unconfirmed transactions in the mempool.
 	 * @async
 	 * @return {Boolean} Returns true on Success
@@ -92,13 +197,13 @@ class RPCWallet {
 		// First, we import the Private Key to make sure it exists when we attempt to send transactions.
 		let importPrivKey = await this.rpcRequest("importprivkey", [ this.wif, "", true ] )
 
+		// Check for an error importing the private key. If there is no error, the private key import was successful. 
+		// No error and no result signify that the Private Key was already imported previously to the wallet.
 		if (importPrivKey.error && importPrivKey.error !== null)
 			throw new Error("Error Importing Private Key to RPC Wallet: " + importPrivKeyRes.data.error)
-
-		// If there is no error, the private key add was successful
 		
-
-
+		// Update our ancestor count & status
+		await this.updateAncestorStatus()
 
 		// Return true, signifying that the initialization was successful
 		return true
@@ -169,6 +274,9 @@ class RPCWallet {
 		if (floData.length > 1040)
 			throw new Error(`Error: 'floData' length exceeds 1040 characters. Please send a smaller data package.`)
 
+		// Make sure that we don't have too many ancestors. If we do, then waits for some transactions to be confirmed.
+		await this.checkAncestorCount()
+
 		// Create the initial transaction hex
 		let createTXHex = await this.rpcRequest("createrawtransaction", [ inputs, outputs, 0, true, floData ])
 		// Check if there was an error creating the transaction hex
@@ -190,6 +298,9 @@ class RPCWallet {
 		// Check if there was an error broadcasting the transaction
 		if (broadcastTX.error && broadcastTXerror !== null)
 			throw new Error("Error broadcasting raw tx: " + rawTXHex + "\n" + JSON.stringify(broadcastTX.error))
+
+		// Add the tx we just sent to the Ancestor count
+		this.addAncestor(rawTXHex)
 
 		// Return the TXID of the transaction
 		return broadcastTX.result
