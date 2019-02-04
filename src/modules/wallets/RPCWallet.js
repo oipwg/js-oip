@@ -2,6 +2,7 @@ import axios from 'axios'
 import uid from 'uid'
 
 import { varIntBuffer } from '../../util'
+import { FLODATA_MAX_LEN } from '../../core/oip/oip'
 
 // Helper const
 const ONE_MB = 1000000
@@ -200,13 +201,22 @@ class RPCWallet {
 		// Check for an error importing the private key. If there is no error, the private key import was successful. 
 		// No error and no result signify that the Private Key was already imported previously to the wallet.
 		if (importPrivKey.error && importPrivKey.error !== null)
-			throw new Error("Error Importing Private Key to RPC Wallet: " + importPrivKeyRes.data.error)
+			throw new Error("Error Importing Private Key to RPC Wallet: " + importPrivKeyRes.error)
 		
 		// Update our ancestor count & status
 		await this.updateAncestorStatus()
 
 		// Return true, signifying that the initialization was successful
 		return true
+	}
+
+	async signMessage(message){
+		let signMyMessage = await this.rpcRequest("signmessage", [ this.publicAddress, message ] )
+
+		if (signMyMessage.error && signMyMessage.error !== null)
+			throw new Error("Error signing message using RPC Wallet: " + signMyMessage.error)
+
+		return signMyMessage.result
 	}
 
 	/**
@@ -271,8 +281,8 @@ class RPCWallet {
 		// Perform validation checks on the floData being added to the chain
 		if (typeof floData !== 'string')
 			throw new Error(`Data must be of type string. Got: ${typeof floData}`)
-		if (floData.length > 1040)
-			throw new Error(`Error: 'floData' length exceeds 1040 characters. Please send a smaller data package.`)
+		if (floData.length > FLODATA_MAX_LEN)
+			throw new Error(`Error: 'floData' length exceeds ${FLODATA_MAX_LEN} characters. Please send a smaller data package.`)
 
 		// Make sure that we don't have too many ancestors. If we do, then waits for some transactions to be confirmed.
 		await this.checkAncestorCount()
