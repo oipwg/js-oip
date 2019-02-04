@@ -3,6 +3,8 @@ import Artifact from './artifact'
 class PropertySpatialUnit extends Artifact {
 	constructor(artifact) {
 		super(artifact)
+		this.artifact.type = "property"
+		this.artifact.subtype = "spatialUnit"
 	}
 
 	/**
@@ -19,55 +21,145 @@ class PropertySpatialUnit extends Artifact {
 	 * @returns {string}
 	 */
 	static getArtifactSubtype() {
-		return "spacialUnit"
+		return "spatialUnit"
 	}
 
 	/**
-	 * Set Geometry
+	 * Get Modified Date
+	 * ISO 8601 date string
+	 * @returns {"string"}
+	 */
+	getModifiedDate() {
+		return this.artifact.details.modifiedDate
+	}
+
+	/**
+	 * Set Modified Date
+	 * ISO 8601 date string
+	 * @param {"string"} modifiedDate
+	 */
+	setModifiedDate(modifiedDate) {
+		if(modifiedDate)
+			this.artifact.details.modifiedDate = modifiedDate
+	}
+
+	/**
+	 * Get Spatial Type
+	 * @returns {string}
+	 */
+	getSpatialType() {
+		return this.artifact.details.spatialType
+	}
+
+	/**
+	 * Set Spatial type
+	 * @param {string} spatialType
+	 */
+	setSpatialType(spatialType) {
+		if(spatialType)
+			this.artifact.details.spatialType = spatialType
+	}
+
+	/**
+	 * Get Spatial Data Type
+	 * @returns {string}
+	 */
+	getSpatialDataType() {
+		return this.artifact.details.spatialDataType
+	}
+
+	/**
+	 * Set Spatial Data type
+	 * @param {string} spatialDataType
+	 */
+	setSpatialDataType(spatialDataType) {
+		if(spatialDataType)
+			this.artifact.details.spatialDataType = spatialDataType
+	}
+
+	/**
+	 * Get Spatial Data
 	 * @returns {Object}
 	 */
-	getGeometry() {
-		return this.artifact.details.geometry
+	getSpatialData() {
+		return this.artifact.details.spatialData
 	}
 
 	/**
-	 * Set Geometry
-	 * @param {Object} geometry
+	 * Set Spatial Data
+	 * @param {Object} spatialData
 	 */
-	setGeometry(geometry) {
-		this.artifact.details.geometry = geometry
+	setSpatialData(spatialData) {
+		if(spatialData)
+			this.artifact.details.spatialData = spatialData
 	}
 
 	/**
-	 * Get Geometry Data
-	 * @returns {*}
+	 * Get Textual Data
+	 * @returns {string}
 	 */
-	getGeometryData() {
-		return this.artifact.details.geometry.data
+	getTextualData() {
+		return this.artifact.details.textualData
 	}
 
 	/**
-	 * Set Geometry Data
-	 * @param {Object} data
+	 * Set Textual Data
+	 * @param {string} textualData
 	 */
-	setGeometryData(data) {
-		this.artifact.details.geometry.data = data
+	setTextualData(textualData) {
+		if(textualData)
+			this.artifact.details.textualData = textualData
 	}
 
 	/**
-	 * Get the Geometry Type
-	 * @returns {*}
+	 * Get Address Data
+	 * @returns {Object}
 	 */
-	getGeometryType() {
-		return this.artifact.details.geometry.type
+	getAddressData() {
+		return this.artifact.details.addressData
 	}
 
 	/**
-	 * Set the Geometry Type
-	 * @param {string} type
+	 * Set Address Data
+	 * @param {Object} addressData
 	 */
-	setGeometryType(type) {
-		this.artifact.details.geometry.type = type
+	setAddressData(addressData) {
+		if(addressData)
+			this.artifact.details.addressData = addressData
+	}
+
+	/**
+	 * Get Official ID
+	 * @returns {string}
+	 */
+	getOfficialID() {
+		return this.artifact.details.officialID
+	}
+
+	/**
+	 * Set Official ID
+	 * @param {string} officialID
+	 */
+	setOfficialID(officialID) {
+		if(officialID)
+			this.artifact.details.officialID = officialID
+	}
+
+	/**
+	 * Get Parent ID
+	 * @returns {string}
+	 */
+	getParentID() {
+		return this.artifact.details.parentID
+	}
+
+	/**
+	 * Set Parent ID
+	 * @param {string} parentID
+	 */
+	setParentID(parentID) {
+		if(parentID)
+			this.artifact.details.parentID = parentID
 	}
 
 	/**
@@ -83,39 +175,25 @@ class PropertySpatialUnit extends Artifact {
 	 * @param ns
 	 */
 	setNamespace(ns) {
-		this.artifact.details.geometry.ns = ns
+		if(ns)
+			this.artifact.details.ns = ns
 	}
 
 	/**
-	 * Get Spacial Type
+	 * Get Spatial Type
 	 * @returns {*}
 	 */
-	getSpacialType() {
-		return this.artifact.details.spacialType
+	getSpatialType() {
+		return this.artifact.details.spatialType
 	}
 
 	/**
-	 * Set Spacial Type
-	 * @param spacialType
+	 * Set Spatial Type
+	 * @param spatialType
 	 */
-	setSpacialType(spacialType) {
-		this.artifact.details.spacialType = spacialType
-	}
-
-	/**
-	 * Get bbox (bounding box)
-	 * @returns {Array.<Number>}
-	 */
-	getBoundingBox() {
-		return this.artifact.details.bbox
-	}
-
-	/**
-	 * Set bbox (bounding box)
-	 * @param {Array.<Number>} bbox
-	 */
-	setBoundingBox(bbox) {
-		this.artifact.details.bbox = bbox
+	setSpatialType(spatialType) {
+		if(spatialType)
+			this.artifact.details.spatialType = spatialType
 	}
 
 	/**
@@ -131,9 +209,14 @@ class PropertySpatialUnit extends Artifact {
 	 * @param {Object} attrs
 	 */
 	setAttributes(attrs) {
-		this.artifact.details.attrs = attrs
+		if(attrs) {
+			this.artifact.details.attrs = {}
+			for(let attr in attrs) {
+				if(attrs[attr])
+					this.artifact.details.attrs[attr] = attrs[attr]
+			}	
+		}
 	}
-
 }
 
 export default PropertySpatialUnit
