@@ -291,19 +291,18 @@ describe("Artifact", () => {
 			artifact.setPubAddress("main-address")
 			expect(artifact.getPubAddress()).toBe("main-address")
 		})
-		it("setTimestamp and getTimestamp", () => {
+		it("setTimestamp and getTimestamp allow seconds", () => {
 			let artifact = new Artifact();
 			let milisecondsTime = Date.now()
 			let secondsTime = parseInt(milisecondsTime / 1000)
 			artifact.setTimestamp(secondsTime)
 			expect(artifact.getTimestamp()).toEqual(secondsTime)
 		})
-		it("setTimestamp and getTimestamp miliseconds to seconds", () => {
+		it("setTimestamp and getTimestamp allow miliseconds", () => {
 			let artifact = new Artifact();
 			let milisecondsTime = Date.now()
 			artifact.setTimestamp(milisecondsTime)
-			let secondsTime = parseInt(milisecondsTime / 1000)
-			expect(artifact.getTimestamp()).toEqual(secondsTime)
+			expect(artifact.getTimestamp()).toEqual(milisecondsTime)
 		})
 		it("setTimestamp enforces that it is a number", () => {
 			let artifact = new Artifact();
