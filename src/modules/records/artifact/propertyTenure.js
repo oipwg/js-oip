@@ -3,6 +3,8 @@ import Artifact from './artifact'
 class PropertyTenure extends Artifact {
 	constructor(artifact) {
 		super(artifact)
+		this.artifact.type = "property"
+		this.artifact.subtype = "tenure"
 	}
 
 	/**
@@ -35,23 +37,8 @@ class PropertyTenure extends Artifact {
 	 * @param {string} tenureType
 	 */
 	setTenureType(tenureType) {
-		this.artifact.details.tenureType = tenureType
-	}
-
-	/**
-	 * Return Tenures
-	 * @returns {Array<String>}
-	 */
-	getTenures() {
-		return this.artifact.details.tenures
-	}
-
-	/**
-	 * Set Tenures
-	 * @param {Array.<String>}tenures
-	 */
-	setTenures(tenures) {
-		this.artifact.details.tenures = tenures
+		if(tenureType)
+			this.artifact.details.tenureType = tenureType
 	}
 
 	/**
@@ -67,39 +54,119 @@ class PropertyTenure extends Artifact {
 	 * @param {string} ns
 	 */
 	setNamespace(ns) {
-		this.artifact.details.geometry.ns = ns
+		if(ns)
+			this.artifact.details.ns = ns
 	}
 
 	/**
-	 * Get Spacial Unit
-	 * @returns {*}
+	 * Get Spatial Unit
+	 * @returns {Array<String>}
 	 */
-	getSpacialUnit() {
-		return this.artifact.details.spacialUnit
+	getSpatialUnits() {
+		return this.artifact.details.spatialUnits
 	}
 
 	/**
-	 * Set Spacial Unit
-	 * @param {string} spacialUnit
+	 * Set Spatial Unit
+	 * @param {Array<string>} spatialUnits
 	 */
-	setSpacialUnit(spacialUnit) {
-		this.artifact.details.spacialUnit = spacialUnit
+	setSpatialUnits(spatialUnits) {
+		if(spatialUnits) {
+			if(!Array.isArray(spatialUnits))
+				throw new Error(`spatialUnits must be an array`)
+			if(spatialUnits.length > 0)
+			this.artifact.details.spatialUnits = spatialUnits
+		}	
 	}
 
 	/**
-	 * Get Party
+	 * Get Modified Date
+	 * ISO 8601 date string
+	 * @returns {"string"}
+	 */
+	getModifiedDate() {
+		return this.artifact.details.modifiedDate
+	}
+
+	/**
+	 * Set Modified Date
+	 * ISO 8601 date string
+	 * @param {"string"} modifiedDate
+	 */
+	setModifiedDate(modifiedDate) {
+		if(modifiedDate)
+			this.artifact.details.modifiedDate = modifiedDate
+	}
+
+	/**
+	 * Get Effective Date
+	 * ISO 8601 date string
+	 * @returns {"string"}
+	 */
+	getEffectiveDate() {
+		return this.artifact.details.effectiveDate
+	}
+
+	/**
+	 * Set Effective Date
+	 * ISO 8601 date string
+	 * @param {"string"} effectiveDate
+	 */
+	setEffectiveDate(effectiveDate) {
+		if(effectiveDate)
+			this.artifact.details.effectiveDate = effectiveDate
+	}
+
+	/**
+	 * Get Expiration Date
+	 * ISO 8601 date string
+	 * @returns {"string"}
+	 */
+	getExpirationDate() {
+		return this.artifact.details.expirationDate
+	}
+
+	/**
+	 * Set Expiration Date
+	 * ISO 8601 date string
+	 * @param {"string"} expirationDate
+	 */
+	setExpirationDate(expirationDate) {
+		if(expirationDate)
+			this.artifact.details.expirationDate = expirationDate
+	}
+
+	/**
+	 * Get Parties
 	 * @returns {string}
 	 */
-	getParty() {
-		return this.details.party
+	getParties() {
+		return this.details.parties
 	}
 
 	/**
-	 * Set party
-	 * @param {string} party
+	 * Set parties
+	 * @param {Array} parties
 	 */
-	setParty(party) {
-		this.artifact.details.party = party
+	setParties(parties) {
+		if(parties) {
+			if(!Array.isArray(parties))
+				throw new Error(`parties must be an array of objects`)
+
+			if(parties.length > 0) {
+				this.artifact.details.parties = []
+				for(let party of parties) {
+					if(!party.role)
+						throw new Error(`Objects in parties must contain role property.`)
+					if(!party.party)
+						throw new Error(`Objects in parties must contain party property.`)
+					this.artifact.details.parties.push({
+						role: party.role,
+						party: party.party
+					})
+				}
+			}
+		}
 	}
 
 	/**
@@ -115,9 +182,14 @@ class PropertyTenure extends Artifact {
 	 * @param {Object} attrs
 	 */
 	setAttributes(attrs) {
-		this.artifact.details.attrs = attrs
+		if(attrs) {
+			this.artifact.details.attrs = {}
+			for(let attr in attrs) {
+				if(attrs[attr])
+					this.artifact.details.attrs[attr] = attrs[attr]
+			}	
+		}
 	}
-
 }
 
 export default PropertyTenure

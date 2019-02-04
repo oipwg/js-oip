@@ -3,6 +3,8 @@ import Artifact from './artifact'
 class PropertyParty extends Artifact {
 	constructor(artifact) {
 		super(artifact)
+		this.artifact.type = "property"
+		this.artifact.subtype = "party"
 	}
 
 	/**
@@ -35,28 +37,13 @@ class PropertyParty extends Artifact {
 	 * @param {string} partyType
 	 */
 	setPartyType(partyType) {
-		this.artifact.details.partyType = partyType
-	}
-
-	/**
-	 * Get Party Role
-	 * @returns {string}
-	 */
-	getPartRole() {
-		return this.artifact.details.partyRole
-	}
-
-	/**
-	 * Set Party Role
-	 * @param {string} partyRole
-	 */
-	setPartyRole(partyRole) {
-		this.artifact.details.partyRole = partyRole
+		if(partyType)
+			this.artifact.details.partyType = partyType
 	}
 
 	/**
 	 * Get Members
-	 * @returns {Array.<String>}
+	 * @returns {Array.<Object>}
 	 */
 	getMembers() {
 		return this.artifact.details.members
@@ -64,10 +51,30 @@ class PropertyParty extends Artifact {
 
 	/**
 	 * Set Members
-	 * @param {Array.<String>}members
+	 * @param {Array.<Object>}members
 	 */
 	setMembers(members) {
-		this.artifact.details.members = members
+		if(members)
+			this.artifact.details.members = members
+	}
+
+	/**
+	 * Get Modified Date
+	 * ISO 8601 date string
+	 * @returns {"string"}
+	 */
+	getModifiedDate() {
+		return this.artifact.details.modifiedDate
+	}
+
+	/**
+	 * Set Modified Date
+	 * ISO 8601 date string
+	 * @param {"string"} modifiedDate
+	 */
+	setModifiedDate(modifiedDate) {
+		if(modifiedDate)
+			this.artifact.details.modifiedDate = modifiedDate
 	}
 
 	/**
@@ -83,7 +90,8 @@ class PropertyParty extends Artifact {
 	 * @param {string} ns
 	 */
 	setNamespace(ns) {
-		this.artifact.details.geometry.ns = ns
+		if(ns)
+			this.artifact.details.ns = ns
 	}
 
 
@@ -100,9 +108,14 @@ class PropertyParty extends Artifact {
 	 * @param {Object} attrs
 	 */
 	setAttributes(attrs) {
-		this.artifact.details.attrs = attrs
+		if(attrs) {
+			this.artifact.details.attrs = {}
+			for(let attr in attrs) {
+				if(attrs[attr])
+					this.artifact.details.attrs[attr] = attrs[attr]
+			}	
+		}
 	}
-
 }
 
 export default PropertyParty
