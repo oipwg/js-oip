@@ -440,9 +440,9 @@ class MPSingle {
 	 * }
 	 * ```
 	 */
-	signSelf(ECPair) {
-		if (!ECPair)
-			return {success: false, error: "No Private Key available! Unable to sign message!"}
+	async signSelf(signMessage) {
+		if (!signMessage)
+			return {success: false, error: "No signMessage function available! Unable to sign message!"}
 
 		if (this.getPart() === undefined) {
 			return {success: false, error: "Missing part number! Unable to sign message!"}
@@ -461,18 +461,13 @@ class MPSingle {
 			return {success: false, error: "Missing data! Unable to sign message!"}
 		}
 
-		let privateKeyBuffer = ECPair.privateKey;
-
-		let compressed = ECPair.compressed || true;
-
-		let signature_buffer
+		let signature
 		try {
-			signature_buffer = sign(this.getSignatureData(), privateKeyBuffer, compressed, ECPair.network.messagePrefix)
+			signature = await signMessage(this.getSignatureData())
 		} catch (e) {
 			return {success: false, error: e}
 		}
 
-		let signature = signature_buffer.toString('base64')
 		this.setSignature(signature)
 		return {success: true, signature}
 	}
