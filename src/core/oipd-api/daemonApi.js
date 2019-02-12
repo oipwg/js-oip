@@ -120,10 +120,7 @@ class DaemonApi {
 		this.url = daemonUrl;
 
 		this.index = new axios.create({
-			baseURL: this.url,
-			headers: {
-				'Access-Control-Allow-Origin': '*',
-			},
+			baseURL: this.url
 		})
 	}
 
@@ -162,9 +159,9 @@ class DaemonApi {
 		try {
 			res = await this.index.get(`/artifact/search`, {
 				params: {
-					q: query
-				},
-				limit
+					q: query,
+					limit
+				}
 			})
 		} catch (err) {
 			throw new Error(`Failed to search artifacts for: ${query} -- ${err}`)
@@ -373,9 +370,10 @@ class DaemonApi {
 	async getLatestArtifacts(limit = 100, nsfw = false) {
 		let res
 		try {
-			res = await this.index.get(`/artifact/get/latest/${limit}`, {
+			res = await this.index.get(`/artifact/get/latest`, {
 				params: {
-					nsfw
+					nsfw,
+					limit
 				}
 			});
 		} catch (err) {
@@ -401,9 +399,10 @@ class DaemonApi {
 	async getLatest041Artifacts(limit = 100, nsfw = false) {
 		let res
 		try {
-			res = await this.index.get(`/oip041/artifact/get/latest/${limit}`, {
+			res = await this.index.get(`/oip041/artifact/get/latest`, {
 				params: {
-					nsfw
+					nsfw,
+					limit
 				}
 			});
 		} catch (err) {
@@ -481,9 +480,10 @@ class DaemonApi {
 	async getLatest042Artifacts(limit = 100, nsfw = false) {
 		let res
 		try {
-			res = await this.index.get(`/oip042/artifact/get/latest/${limit}`, {
+			res = await this.index.get(`/oip042/artifact/get/latest`, {
 				params: {
-					nsfw
+					nsfw,
+					limit
 				}
 			});
 		} catch (err) {
@@ -509,9 +509,10 @@ class DaemonApi {
 	async getLatestAlexandriaMediaArtifacts(limit = 100, nsfw = false) {
 		let res
 		try {
-			res = await this.index.get(`/alexandria/artifact/get/latest/${limit}`, {
+			res = await this.index.get(`/alexandria/artifact/get/latest`, {
 				params: {
-					nsfw
+					nsfw,
+					limit
 				}
 			});
 		} catch (err) {
@@ -585,8 +586,8 @@ class DaemonApi {
 	 * @example
 	 * let query = 'myQuery'
 	 * let {success, txs, error} = await DaemonApi.searchFloData(query)
-	 * for (let tx of txs) {
-	 *     let floData = tx.floData
+	 * for (let i of txs) {
+	 *     let floData = i.tx.floData
 	 * }
 	 */
 	async searchFloData(query, limit) {
@@ -597,9 +598,9 @@ class DaemonApi {
 		try {
 			res = await this.index.get(`/floData/search`, {
 				params: {
-					q: query
-				},
-				limit
+					q: query,
+					limit
+				}
 			})
 		} catch (err) {
 			throw new Error(`Failed to search flo data for: ${query} -- ${err}`)
@@ -672,9 +673,12 @@ class DaemonApi {
 	async getMultiparts(ref, limit) {
 		let res;
 		let querystring = `/multipart/get/ref/${ref}`
-		if (limit) querystring += `/${limit}`
 		try {
-			res = await this.index.get(querystring)
+			res = await this.index.get(querystring,{
+				params: {
+					limit
+				}
+			})
 		} catch (err) {
 			throw new Error(`Failed to get multiparts by ref: ${ref} -- ${err}`)
 		}
@@ -726,7 +730,11 @@ class DaemonApi {
 	async getLastestHistorianData(limit = 100) {
 		let res
 		try {
-			res = await this.index.get(`historian/get/latest/${limit}`)
+			res = await this.index.get(`historian/get/latest`,{
+				params: {
+					limit
+				}
+			})
 		} catch (err) {
 			throw new Error(`Failed to get latest historian data: ${err}`)
 		}
