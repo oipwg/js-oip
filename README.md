@@ -26,6 +26,7 @@ The `js-oip` is a javascript module that allows you to easily interact with the 
         * [Importing the OIP API](https://github.com/oipwg/js-oip/#importing-the-oip-api)
         * [Publishing an Artifact Record](https://github.com/oipwg/js-oip/#publishing-an-artifact-record)
         * [Using MultipartX and MPSingle](https://github.com/oipwg/js-oip/#using-multipartx-and-mpsingle)
+        * [Publish using an RPC Wallet](https://github.com/oipwg/js-oip/#publish-using-an-rpc-wallet)
     * [Adding files to IPFS](https://github.com/oipwg/js-oip/#adding-files-to-ipfs)
     * [Creating an Artifact Record](https://github.com/oipwg/js-oip/#creating-an-artifact-record)
         * [Using the Artifact Decoder](https://github.com/oipwg/js-oip/#using-the-artifact-decoder)
@@ -221,6 +222,26 @@ let mpx = new MultipartX(mps)
 expect(mpx.toString()).toEqual(assembled)
 expect(mpx.getMultiparts().length).toEqual(2) //this would return an array of two MPSingle[s]
 ```
+### Publish using an RPC Wallet
+You can publish an Artifact using an RPC Wallet instead of the built in Web Explorer Wallet by including RPC settings as a third parameter when initializing OIP. After that, just use the OIP class like normal.
+
+```javascript
+import {OIP} from 'js-oip'
+
+let wif = '5HueCGU8rMjxEXxiPuD5BDk_SAMPLE_PRIVATE_KEY_DO_NOT_IMPORT_u4MkFqeZyd4dZ1jvhTVqvbTLvyTJ'
+let oip = new OIP(wif, "testnet", {
+    rpc: {
+        port: 17313,
+        host: "127.0.0.1",
+        username: "username",
+        password: "password"
+    }
+})
+
+let artifact = new Artifact(someValidArtifactJSON)
+let results = await OIP.publish(artifact)
+```
+
 ## Adding files to IPFS
 [IPFS](https://ipfs.io/) is a peer-to-peer file transfer network (techincally a 'hypermedia protocol'). Anyway's we need IPFS for 
 the actual storage of raw data and they let us have that for free and in a decentralized manner. Perfect! To create a valid Artifact, you need to include
