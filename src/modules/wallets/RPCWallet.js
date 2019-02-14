@@ -91,7 +91,7 @@ class RPCWallet {
 			rpcRequest = await this.rpc.post("/", { "jsonrpc": "2.0", "id": uid(16), "method": method, "params": parameters })
 		} catch (e) {
 			// Throw if there was some weird error for some reason.
-			throw new Error("Unable to perform RPC request! Method: '" + method + "' - Params: '" + JSON.stringify(params) + "' | " + JSON.stringify(this.options.rpc))
+			throw new Error("Unable to perform RPC request! Method: '" + method + "' - Params: '" + JSON.stringify(parameters) + "' | " + JSON.stringify(this.options.rpc))
 		}
 
 		// Remove the `id` field from the response, since we do not care about it
@@ -317,7 +317,7 @@ class RPCWallet {
 		// Broadcast the transaction hex we created to the network
 		let broadcastTX = await this.rpcRequest("sendrawtransaction", [ rawTXHex ])
 		// Check if there was an error broadcasting the transaction
-		if (broadcastTX.error && broadcastTXerror !== null)
+		if (broadcastTX.error && broadcastTX.error !== null)
 			throw new Error("Error broadcasting raw tx: " + rawTXHex + "\n" + JSON.stringify(broadcastTX.error))
 
 		// Add the tx we just sent to the Ancestor count
