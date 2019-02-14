@@ -126,6 +126,11 @@ class RPCWallet {
 			// If the error is different, than throw it up for further inspection.
 			if (getMempoolEntry.error.message !== 'Transaction not in mempool')
 				throw new Error("Error grabbing the mempool entry! " + getMempoolEntry.error)
+
+			// If we get here that means the transaciton was not in the mempool
+			// if the transaction is not in the mempool, then it has no ancestors so reset for now.
+			this.currentAncestorCount = 0
+			this.currentAncestorSize = 0
 		}
 
 		// If the tx is still in the mempool, it will have results
