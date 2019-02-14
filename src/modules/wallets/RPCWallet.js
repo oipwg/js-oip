@@ -14,11 +14,11 @@ const TX_FEE_PER_BYTE = 0.00000001
 const TX_AVG_BYTE_SIZE = 192
 
 // Prevent chaining over ancestor limit
-const MAX_MEMPOOL_ANCESTORS = 1250
-const MAX_MEMPOOL_ANCESTOR_SIZE = 1.75 * ONE_MB
+const MAX_MEMPOOL_ANCESTORS = 1100
+const MAX_MEMPOOL_ANCESTOR_SIZE = 1.50 * ONE_MB
 
 // Timer lengths used to track and fix the Ancestor chain
-const UPDATE_ANCESTOR_STATUS = 0.1 * ONE_SECOND
+const UPDATE_ANCESTOR_STATUS = 5 * ONE_SECOND
 /**
  * Easily interact with an RPC Wallet to send Bulk transactions extremely quickly in series
  */
