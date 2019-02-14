@@ -13,6 +13,9 @@ const TX_FEE_PER_BYTE = 0.00000001
 // Average size of tx data (without floData) to calculate min txFee
 const TX_AVG_BYTE_SIZE = 192
 
+// The minimum amount a utxo is allowed to be for us to use
+const MIN_UTXO_AMOUNT = 0.0001
+
 // Prevent chaining over ancestor limit
 const MAX_MEMPOOL_ANCESTORS = 1100
 const MAX_MEMPOOL_ANCESTOR_SIZE = 1.50 * ONE_MB
@@ -280,7 +283,7 @@ class RPCWallet {
 		// Select the first input that has > 0.0001 FLO
 		let input
 		for (let i = 0; i < utxos.length; i++) {
-			if (utxos[i].amount > 0.0001){
+			if (utxos[i].amount > MIN_UTXO_AMOUNT){
 				input = utxos[i]
 				break
 			}
@@ -349,6 +352,9 @@ class RPCWallet {
 			amount: outputs[this.publicAddress],
 			vout: 0
 		}
+
+		if (!this.previousTXOutput.amount > MIN_UTXO_AMOUNT)
+			this.previousTXOutput = undefined
 
 		// Return the TXID of the transaction
 		return broadcastTX.result
