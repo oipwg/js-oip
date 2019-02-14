@@ -125,7 +125,7 @@ class RPCWallet {
 
 			// If the error is different, than throw it up for further inspection.
 			if (getMempoolEntry.error.message !== 'Transaction not in mempool')
-				throw new Error("Error Importing Private Key to RPC Wallet: " + getMempoolEntry.error)
+				throw new Error("Error grabbing the mempool entry! " + getMempoolEntry.error)
 		}
 
 		// If the tx is still in the mempool, it will have results
