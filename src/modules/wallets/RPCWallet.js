@@ -17,6 +17,8 @@ const TX_AVG_BYTE_SIZE = 192
 const MAX_MEMPOOL_ANCESTORS = 1250
 const MAX_MEMPOOL_ANCESTOR_SIZE = 1.75 * ONE_MB
 
+// Timer lengths used to track and fix the Ancestor chain
+const UPDATE_ANCESTOR_STATUS = 0.1 * ONE_SECOND
 /**
  * Easily interact with an RPC Wallet to send Bulk transactions extremely quickly in series
  */
@@ -167,9 +169,9 @@ class RPCWallet {
 
 		// Check if we have too many ancestors, and if we do, wait for the ancestor count to decrease (aka, some transactions to get confirmed in a block)
 		while (this.currentAncestorCount >= MAX_MEMPOOL_ANCESTORS || this.currentAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE) {
-			// Wait for 0.1 seconds (don't run on the first loop through)
+			// Wait for UPDATE_ANCESTOR_STATUS seconds (don't run on the first loop through)
 			if (!firstLoop)
-				await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, 0.1 * ONE_SECOND)})
+				await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, UPDATE_ANCESTOR_STATUS)})
 			// Update the ancestor status (this is what will break us out of our while loop)
 			await this.updateAncestorStatus()
 
