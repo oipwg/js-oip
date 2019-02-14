@@ -19,6 +19,8 @@ const MAX_MEMPOOL_ANCESTOR_SIZE = 1.50 * ONE_MB
 
 // Timer lengths used to track and fix the Ancestor chain
 const UPDATE_ANCESTOR_STATUS = 5 * ONE_SECOND
+const REPAIR_ANCESTORS_AFTER = 60 * ONE_SECOND
+
 /**
  * Easily interact with an RPC Wallet to send Bulk transactions extremely quickly in series
  */
@@ -70,6 +72,9 @@ class RPCWallet {
 		// Variables to count utxo ancestors (maximum number of unconfirmed transactions you can chain)
 		this.currentAncestorCount = 0
 		this.currentAncestorSize = 0
+
+		// Repair mode tracker
+		this.repairMode = false
 	}
 
 	/**
@@ -172,6 +177,8 @@ class RPCWallet {
 		let startAncestorCount = this.currentAncestorCount
 		let startAncestorSize = this.currentAncestorSize
 
+		let reachedAncestorLimitTimestamp
+
 		// Check if we have too many ancestors, and if we do, wait for the ancestor count to decrease (aka, some transactions to get confirmed in a block)
 		while (this.currentAncestorCount >= MAX_MEMPOOL_ANCESTORS || this.currentAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE) {
 			// Wait for UPDATE_ANCESTOR_STATUS seconds (don't run on the first loop through)
@@ -184,7 +191,12 @@ class RPCWallet {
 			if (firstLoop && (this.currentAncestorCount >= MAX_MEMPOOL_ANCESTORS || this.currentAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE)){
 				console.log(`[RPC Wallet] Maximum Ancestor count reached, pausing sending of transactions until some of the current transactions get confirmed | Ancestor Count: ${this.currentAncestorCount} - Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`)
 				hadMaxAncestors = true
+				reachedAncestorLimitTimestamp = Date.now()
 			}
+
+			// After it has been REPAIR_ANCESTORS_AFTER amount of time since the max ancestor limit was reached, enable repair mode
+			if ((Date.now() - REPAIR_ANCESTORS_AFTER) > reachedAncestorLimitTimestamp && !this.repairMode)
+				this.repairMode = true
 
 			firstLoop = false
 		}
@@ -194,6 +206,9 @@ class RPCWallet {
 
 		if (hadMaxAncestors)
 			console.log(`[RPC Wallet] Ancestor count has decreased, resuming sending transactions! | Ancestor Count: ${this.currentAncestorCount} - Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`)
+
+		// If we enabled repair mode, then
+		this.repairMode = false
 
 		// There are fewer ancestors than the maximum, so we can send the next transaction!
 		return true
