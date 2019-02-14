@@ -62,6 +62,9 @@ class RPCWallet {
 		this.wif = this.options.wif
 		this.publicAddress = this.options.publicAddress
 
+		// Initialize the transaction output checking.
+		this.previousTXOutput = undefined
+
 		// Variables to count utxo ancestors (maximum number of unconfirmed transactions you can chain)
 		this.currentAncestorCount = 0
 		this.currentAncestorSize = 0
@@ -225,6 +228,12 @@ class RPCWallet {
 	 * @return {Array.<Object>} Returns an Array of UTXO's
 	 */
 	async getUTXOs(){
+		// If we have a previous txo, then just return that one!
+		if (this.previousTXOutput)
+			return [ this.previousTXOutput ]
+
+		console.log("[RPC Wallet] Grabbing initial transaction output to use, this may take a few seconds...")
+
 		// Request the list of unspent transactions
 		let MIN_CONFIRMATIONS = 0
 		let MAX_CONFIRMATIONS = 9999999
@@ -311,6 +320,13 @@ class RPCWallet {
 
 		// Add the tx we just sent to the Ancestor count
 		this.addAncestor(rawTXHex)
+
+		// Set the new tx to be used as the next output.
+		this.previousTXOutput = {
+			txid: broadcastTX.result,
+			amount: outputs[this.publicAddress],
+			vout: 0
+		}
 
 		// Return the TXID of the transaction
 		return broadcastTX.result
