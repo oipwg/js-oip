@@ -139,8 +139,16 @@ class RPCWallet {
 
 			// If the error is different, than throw it up for further inspection.
 			if (getMempoolEntry.error.message === 'Transaction not in mempool' || getMempoolEntry.error.message === 'Transaction not in mempool.'){
+				// Grab the transaction and check the number of confirmations
+				let checkConfirmations = await this.rpcRequest("gettransaction", [ mostRecentTXID ] )
+
+				// Ignore if there was an error, but set the number of confirmations if available
+				if (checkConfirmations.result && checkConfirmations.result.confirmations)
+					mostRecentUTXO.confirmations = checkConfirmations.result.confirmations
+						
 				// Check to make sure if it is not in the mempool, that it at least has one confirmation.
 				if (mostRecentUTXO.confirmations >= 1) {
+					// Reset utxo count if the most recent one was confirmed
 					this.currentAncestorCount = 0
 					this.currentAncestorSize = 0
 				} else {
