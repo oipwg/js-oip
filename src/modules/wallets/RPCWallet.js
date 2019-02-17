@@ -127,7 +127,8 @@ class RPCWallet {
 		let utxos = await this.getUTXOs()
 		
 		// Grab the most recent txid
-		let mostRecentTXID = utxos[0].txid
+		let mostRecentUTXO = utxos[0]
+		let mostRecentTXID = mostRecentUTXO.txid
 		// Check to see if the utxo is still in the mempool and if it has ancestors
 		let getMempoolEntry = await this.rpcRequest("getmempoolentry", [ mostRecentTXID ] )
 		// Check if we have an error and handle it
@@ -136,13 +137,18 @@ class RPCWallet {
 			// has already recieved a confirmation, so it has no ancestors we need to worry about.
 
 			// If the error is different, than throw it up for further inspection.
-			if (getMempoolEntry.error.message !== 'Transaction not in mempool' && getMempoolEntry.error.message !== 'Transaction not in mempool.')
+			if (getMempoolEntry.error.message === 'Transaction not in mempool' || getMempoolEntry.error.message === 'Transaction not in mempool.'){
+				// Check to make sure if it is not in the mempool, that it at least has one confirmation.
+				if (mostRecentUTXO.confirmations >= 1) {
+					this.currentAncestorCount = 0
+					this.currentAncestorSize = 0
+				} else {
+					// If we have gotten here, that means the transaction has zero confirmations, and is not included in the mempool, and so we need to repair it's chain...
+					throw new Error("Most recent transaction has zero confirmations and is not in the mempool!!! (txid: " + mostRecentTXID + ") " + JSON.stringify(getMempoolEntry))
+				}
+			} else {
 				throw new Error("Error grabbing the mempool entry! " + JSON.stringify(getMempoolEntry.error))
-
-			// If we get here that means the transaciton was not in the mempool
-			// if the transaction is not in the mempool, then it has no ancestors so reset for now.
-			this.currentAncestorCount = 0
-			this.currentAncestorSize = 0
+			}
 		}
 
 		// If the tx is still in the mempool, it will have results
