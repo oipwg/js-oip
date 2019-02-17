@@ -145,7 +145,11 @@ class RPCWallet {
 					this.currentAncestorSize = 0
 				} else {
 					// If we have gotten here, that means the transaction has zero confirmations, and is not included in the mempool, and so we need to repair it's chain...
-					throw new Error("Most recent transaction has zero confirmations and is not in the mempool!!! (txid: " + mostRecentTXID + ") " + JSON.stringify(getMempoolEntry))
+					console.log("[RPC Wallet] [WARNING] The most recent unspent transaction has zero confirmations and is not in the mempool! Attempting to repair mempool by rebroadcasting transactions, please wait... (txid: " + mostRecentTXID + ")")
+					await this.rebroadcastTransactions()
+
+					// Don't update anything, and return for now, so that `updateAncestorStatus` will run again
+					return 
 				}
 			} else {
 				throw new Error("Error grabbing the mempool entry! " + JSON.stringify(getMempoolEntry.error))
