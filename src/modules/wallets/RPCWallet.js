@@ -28,6 +28,7 @@ const MAX_MEMPOOL_ANCESTOR_SIZE = 1.75 * ONE_MB
 // Timer lengths used to track and fix the Ancestor chain
 const UPDATE_ANCESTOR_STATUS = 1 * ONE_SECOND
 const REPAIR_ANCESTORS_AFTER = 1 * ONE_MINUTE
+const REPAIR_MIN_TX = 100
 
 /**
  * Easily interact with an RPC Wallet to send Bulk transactions extremely quickly in series
@@ -230,8 +231,14 @@ class RPCWallet {
 		for (let i = 0; i < numberConfirmed; i++)
 			this.unconfirmedTransactions.shift()
 
-		if (startAncestorCount >= MAX_MEMPOOL_ANCESTORS || startAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE)
+		if (startAncestorCount >= MAX_MEMPOOL_ANCESTORS || startAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE){
 			console.log(`[RPC Wallet] ${numberConfirmed} Transactions Confirmed! (${((startAncestorSize - this.currentAncestorSize) / ONE_MB).toFixed(2)} MB)`)
+
+			if (numberConfirmed < REPAIR_MIN_TX){
+				console.log(`[RPC Wallet] Detected low number of transactions confirmed, re-announcing transactions to make sure miners saw them.`)
+				await this.rebroadcastTransactions()
+			}
+		}
 
 		if (hadMaxAncestors)
 			console.log(`[RPC Wallet] Unconfirmed count has decreased, resuming sending transactions! | Ancestor Count: ${this.currentAncestorCount} - Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`)
