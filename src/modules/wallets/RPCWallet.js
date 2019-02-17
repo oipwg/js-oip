@@ -207,15 +207,17 @@ class RPCWallet {
 			// Update the ancestor status (this is what will break us out of our while loop)
 			await this.updateAncestorStatus()
 
+			let hasMaxAncestors = (this.currentAncestorCount >= MAX_MEMPOOL_ANCESTORS || this.currentAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE)
+
 			// Only log ancestor count if it is the first loop, and we still have too many ancestors
-			if (firstLoop && (this.currentAncestorCount >= MAX_MEMPOOL_ANCESTORS || this.currentAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE)){
+			if (hasMaxAncestors && firstLoop){
 				console.log(`[RPC Wallet] Maximum Unconfirmed Transaction count reached, pausing sending of transactions until some of the current transactions get confirmed | Ancestor Count: ${this.currentAncestorCount} - Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`)
 				hadMaxAncestors = true
 				reachedAncestorLimitTimestamp = Date.now()
 			}
 
 			// After it has been REPAIR_ANCESTORS_AFTER amount of time since the max ancestor limit was reached, enable repair mode
-			if ((Date.now() - REPAIR_ANCESTORS_AFTER) > reachedAncestorLimitTimestamp){
+			if (hasMaxAncestors && reachedAncestorLimitTimestamp && (Date.now() - REPAIR_ANCESTORS_AFTER) > reachedAncestorLimitTimestamp){
 				console.log(`[RPC Wallet] [WARNING] Unconfirmed Transaction count has not decreased in ${REPAIR_ANCESTORS_AFTER / ONE_MINUTE} minutes, rebroadcasting transactions in an attempt to repair the utxo chain!`)
 				await this.rebroadcastTransactions()
 			}
