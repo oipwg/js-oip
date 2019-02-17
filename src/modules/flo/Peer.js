@@ -49,7 +49,6 @@ class Peer {
 				this.txMap[mytx.hash('hex')] = hex
 
 				this.peer.announceTX(mytx)
-				this.peer.sendInv(this.peer.invQueue)
 			} catch (e) {
 				console.error("Announce TX Error: " + e)
 			}
