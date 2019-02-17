@@ -14,6 +14,8 @@ class Peer {
 		this.connected = false
 
 		this.txMap = {}
+
+		this.singleLog = 0
 	}
 	async connect(){
 		let log = logger({ level: 'spam' })
@@ -61,6 +63,9 @@ class Peer {
 		}
 	}
 	async handleGetData(getDataPacket){
+		let txsRelayed = 0
+		let lastHash
+		// console.log(`[RPC Wallet] Peer ${this.settings.ip} requested ${getDataPacket.items.length} items...`)
 		for (let item of getDataPacket.items){
 			let regTX = (item.type === invitem.types.TX)
 			let segTX = (item.type === invitem.types.WITNESS_TX)
@@ -73,8 +78,21 @@ class Peer {
 
 				// Send out the packet
 				this.peer.send(txPacket)
-				console.log(`[RPC Wallet] Relayed tx ${mytx.rhash()} to ${this.settings.ip}`)
+				txsRelayed++
+				lastHash = mytx.rhash()
 			}
+		}
+
+		if (txsRelayed > 0){
+			// If we have logged a single tx being relayed more than 5 times, then just skip logging (to prevent spam)
+			if (txsRelayed === 1 && this.singleLog > 5)
+				return
+
+			if (txsRelayed === 1)
+				this.singleLog++
+
+			console.log(`[RPC Wallet] Relayed ${txsRelayed} requested transactions to ${this.settings.ip} (last txid ${lastHash})`)
+
 		}
 	}
 }
