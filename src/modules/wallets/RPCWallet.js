@@ -1,5 +1,4 @@
 import axios from 'axios'
-import uid from 'uid'
 import {sign} from "bitcoinjs-message"
 import bitcoin from 'bitcoinjs-lib'
 
@@ -23,12 +22,12 @@ const SAT_PER_FLO = 100000000
 const MIN_UTXO_AMOUNT = 0.0001
 
 // Prevent chaining over ancestor limit
-const MAX_MEMPOOL_ANCESTORS = 1100
-const MAX_MEMPOOL_ANCESTOR_SIZE = 1.50 * ONE_MB
+const MAX_MEMPOOL_ANCESTORS = 1250
+const MAX_MEMPOOL_ANCESTOR_SIZE = 1.75 * ONE_MB
 
 // Timer lengths used to track and fix the Ancestor chain
-const UPDATE_ANCESTOR_STATUS = 5 * ONE_SECOND
-const REPAIR_ANCESTORS_AFTER = 60 * ONE_SECOND
+const UPDATE_ANCESTOR_STATUS = 1 * ONE_SECOND
+const REPAIR_ANCESTORS_AFTER = 10 * ONE_MINUTE
 
 /**
  * Easily interact with an RPC Wallet to send Bulk transactions extremely quickly in series
@@ -105,7 +104,7 @@ class RPCWallet {
 		// Perform the RPC request using Axios
 		let rpcRequest
 		try {
-			rpcRequest = await this.rpc.post("/", { "jsonrpc": "2.0", "id": uid(16), "method": method, "params": parameters })
+			rpcRequest = await this.rpc.post("/", { "jsonrpc": "2.0", "id": 1, "method": method, "params": parameters })
 		} catch (e) {
 			// Throw if there was some weird error for some reason.
 			throw new Error("Unable to perform RPC request! Method: '" + method + "' - Params: '" + JSON.stringify(parameters) + "' | RPC settings: " + JSON.stringify(this.options.rpc) + " | Thrown Error: " + e)
@@ -172,6 +171,10 @@ class RPCWallet {
 		// Increase the ancestor size (byte length)
 		this.currentAncestorSize += Buffer.from(hex, 'hex').length
 
+		// Log every 50
+		if (this.currentAncestorCount % 50 === 0)
+			console.log(`[RPC Wallet] Updated Ancestor Count: ${this.currentAncestorCount} - Updated Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`)
+
 		return true
 	}
 
@@ -200,23 +203,30 @@ class RPCWallet {
 
 			// Only log ancestor count if it is the first loop, and we still have too many ancestors
 			if (firstLoop && (this.currentAncestorCount >= MAX_MEMPOOL_ANCESTORS || this.currentAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE)){
-				console.log(`[RPC Wallet] Maximum Ancestor count reached, pausing sending of transactions until some of the current transactions get confirmed | Ancestor Count: ${this.currentAncestorCount} - Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`)
+				console.log(`[RPC Wallet] Maximum Unconfirmed Transaction count reached, pausing sending of transactions until some of the current transactions get confirmed | Ancestor Count: ${this.currentAncestorCount} - Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`)
 				hadMaxAncestors = true
 				reachedAncestorLimitTimestamp = Date.now()
 			}
 
 			// After it has been REPAIR_ANCESTORS_AFTER amount of time since the max ancestor limit was reached, enable repair mode
-			// if ((Date.now() - REPAIR_ANCESTORS_AFTER) > reachedAncestorLimitTimestamp && !this.repairMode)
-			// 	this.repairMode = true
+			if ((Date.now() - REPAIR_ANCESTORS_AFTER) > reachedAncestorLimitTimestamp){
+				console.log(`[RPC Wallet] [WARNING] Unconfirmed Transaction count has not decreased in ${REPAIR_ANCESTORS_AFTER / ONE_MINUTE} minutes, rebroadcasting transactions in an attempt to repair the utxo chain!`)
+				await this.rebroadcastTransactions()
+			}
 
 			firstLoop = false
 		}
 
+		let numberConfirmed = startAncestorCount - this.currentAncestorCount
+		// Remove the transactions that just got confirmed
+		for (let i = 0; i < numberConfirmed; i++)
+			this.unconfirmedTransactions.shift()
+
 		if (startAncestorCount >= MAX_MEMPOOL_ANCESTORS || startAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE)
-			console.log(`[RPC Wallet] ${startAncestorCount - this.currentAncestorCount} Transactions Confirmed! (${((startAncestorSize - this.currentAncestorSize) / ONE_MB).toFixed(2)} MB)`)
+			console.log(`[RPC Wallet] ${numberConfirmed} Transactions Confirmed! (${((startAncestorSize - this.currentAncestorSize) / ONE_MB).toFixed(2)} MB)`)
 
 		if (hadMaxAncestors)
-			console.log(`[RPC Wallet] Ancestor count has decreased, resuming sending transactions! | Ancestor Count: ${this.currentAncestorCount} - Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`)
+			console.log(`[RPC Wallet] Unconfirmed count has decreased, resuming sending transactions! | Ancestor Count: ${this.currentAncestorCount} - Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`)
 
 		// If we enabled repair mode, then
 		this.repairMode = false
@@ -225,26 +235,27 @@ class RPCWallet {
 		return true
 	}
 
-	async repairUTXOChain(){
-		console.log(`[RPC Wallet] Rebroadcasting ${this.unconfirmedTransactions.length} transactions to ${this.peers.length} Peers...`)
+	async rebroadcastTransactions(){
+		console.log(`[RPC Wallet] Announcing ${this.unconfirmedTransactions.length} transactions to ${this.peers.length} Peers...`)
 
-		while (true){
-			await this.connectToPeers()
+		await this.connectToPeers()
 
-			let i = 0;
-			for (let txHex of this.unconfirmedTransactions){
-				for (let peer of this.peers)
-					if (peer.connected)
-						await peer.announceTX(txHex)
+		let i = 0;
+		for (let txHex of this.unconfirmedTransactions){
+			for (let peer of this.peers)
+				if (peer.connected)
+					await peer.announceTX(txHex)
 
-				i++
-				if (i % 50 === 0)
-					console.log(`[RPC Wallet] Rebroadcasted ${i}/${this.unconfirmedTransactions.length} transactions so far...`)
-			}
-			console.log(`[RPC Wallet] Rebroadcasted ${i} transactions!`)
-
-			await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, 1 * 60 * 1000)})
+			i++
+			if (i % 50 === 0)
+				console.log(`[RPC Wallet] Announced ${i}/${this.unconfirmedTransactions.length} transactions so far...`)
 		}
+		console.log(`[RPC Wallet] Announced ${i} transactions!`)
+
+		// Wait for 1 minute in order to give some time for transactions to be requested, and sent out.
+		await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, 10 * 1000)})
+
+		this.destroyPeers()
 	}
 
 	/**
@@ -300,12 +311,6 @@ class RPCWallet {
 
 		console.log(`[RPC Wallet] Loaded ${this.unconfirmedTransactions.length} transactions into local mempool!`)
 
-
-		// let sendTXs = await this.rpcRequest("resendwallettransactions", [ ] )
-		// if (sendTXs.error && sendTXs.error !== null)
-		// 	throw new Error("Error re-sending wallet txs: " + JSON.stringify(sendTXs.error))
-		// await this.repairUTXOChain()
-
 		// Return true, signifying that the initialization was successful
 		return true
 	}
@@ -337,6 +342,13 @@ class RPCWallet {
 				i++
 
 		console.log(`[RPC Wallet] Connected to ${i} Peers!`)
+	}
+
+	destroyPeers(){
+		for (let peer of this.peers){
+			peer.peer.destroy()
+		}
+		this.peers = []
 	}
 
 	async signMessage(message){
