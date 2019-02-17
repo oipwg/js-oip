@@ -27,7 +27,7 @@ const MAX_MEMPOOL_ANCESTOR_SIZE = 1.75 * ONE_MB
 
 // Timer lengths used to track and fix the Ancestor chain
 const UPDATE_ANCESTOR_STATUS = 1 * ONE_SECOND
-const REPAIR_ANCESTORS_AFTER = 10 * ONE_MINUTE
+const REPAIR_ANCESTORS_AFTER = 1 * ONE_MINUTE
 
 /**
  * Easily interact with an RPC Wallet to send Bulk transactions extremely quickly in series
