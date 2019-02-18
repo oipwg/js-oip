@@ -243,6 +243,9 @@ class RPCWallet {
 				console.log(`[RPC Wallet] [WARNING] Unconfirmed Transaction count has not decreased in ${REPAIR_ANCESTORS_AFTER / ONE_MINUTE} minutes, rebroadcasting transactions in an attempt to repair the utxo chain!`)
 				// Attempt the actual repair
 				await this.rebroadcastTransactions()
+
+				// Reset the timestamp so that we wait for REPAIR_ANCESTORS_AFTER seconds/minutes
+				reachedAncestorLimitTimestamp = Date.now()
 			}
 
 			firstLoop = false
