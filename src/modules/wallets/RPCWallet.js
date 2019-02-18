@@ -28,6 +28,8 @@ const MAX_MEMPOOL_ANCESTOR_SIZE = 1.75 * ONE_MB
 // Timer lengths used to track and fix the Ancestor chain
 const UPDATE_ANCESTOR_STATUS = 1 * ONE_SECOND
 const REPAIR_ANCESTORS_AFTER = 1 * ONE_MINUTE
+const PEER_CONNECT_LENGTH = 2 * ONE_SECOND
+const REBROADCAST_LENGTH = 10 * ONE_SECOND
 const REPAIR_MIN_TX = 100
 
 /**
@@ -79,6 +81,8 @@ class RPCWallet {
 		// Store information about our tx chain and the previous tx output
 		this.unconfirmedTransactions = []
 		this.previousTXOutput = undefined
+
+		// Initialize our initial peer array
 		this.peers = []
 
 		// Variables to count utxo ancestors (maximum number of unconfirmed transactions you can chain)
@@ -160,6 +164,7 @@ class RPCWallet {
 					return 
 				}
 			} else {
+				// Throw an error if the transaction error is not that it is missing from the mempool.
 				throw new Error("Error grabbing the mempool entry! " + JSON.stringify(getMempoolEntry.error))
 			}
 		}
@@ -204,11 +209,13 @@ class RPCWallet {
 	 * @return {Boolean} Returns `true` once it is safe to continue sending transactions
 	 */
 	async checkAncestorCount(){
-		let firstLoop = true
-		let hadMaxAncestors = false
-
+		// Store our starting count
 		let startAncestorCount = this.currentAncestorCount
 		let startAncestorSize = this.currentAncestorSize
+
+		// Variables to track loop state
+		let firstLoop = true
+		let hadMaxAncestors = false
 
 		let reachedAncestorLimitTimestamp
 
@@ -220,6 +227,7 @@ class RPCWallet {
 			// Update the ancestor status (this is what will break us out of our while loop)
 			await this.updateAncestorStatus()
 
+			// Check if we currently have the maximum number of ancestors
 			let hasMaxAncestors = (this.currentAncestorCount >= MAX_MEMPOOL_ANCESTORS || this.currentAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE)
 
 			// Only log ancestor count if it is the first loop, and we still have too many ancestors
@@ -230,28 +238,34 @@ class RPCWallet {
 			}
 
 			// After it has been REPAIR_ANCESTORS_AFTER amount of time since the max ancestor limit was reached, enable repair mode
-			if (hasMaxAncestors && reachedAncestorLimitTimestamp && (Date.now() - REPAIR_ANCESTORS_AFTER) > reachedAncestorLimitTimestamp){
+			if (hasMaxAncestors && (Date.now() - REPAIR_ANCESTORS_AFTER) > reachedAncestorLimitTimestamp){
+				// Announce that we are going to attempt the repair
 				console.log(`[RPC Wallet] [WARNING] Unconfirmed Transaction count has not decreased in ${REPAIR_ANCESTORS_AFTER / ONE_MINUTE} minutes, rebroadcasting transactions in an attempt to repair the utxo chain!`)
+				// Attempt the actual repair
 				await this.rebroadcastTransactions()
 			}
 
 			firstLoop = false
 		}
 
+		// Count the number of confirmed
 		let numberConfirmed = startAncestorCount - this.currentAncestorCount
 		// Remove the transactions that just got confirmed
 		for (let i = 0; i < numberConfirmed; i++)
 			this.unconfirmedTransactions.shift()
 
+		// Check to see how many transactions got confirmed
 		if (startAncestorCount >= MAX_MEMPOOL_ANCESTORS || startAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE){
 			console.log(`[RPC Wallet] ${numberConfirmed} Transactions Confirmed! (${((startAncestorSize - this.currentAncestorSize) / ONE_MB).toFixed(2)} MB)`)
 
+			// If there are less confirmed than REPAIR_MIN_TX, then rebroadcast the transactions
 			if (numberConfirmed < REPAIR_MIN_TX){
 				console.log(`[RPC Wallet] Detected low number of transactions confirmed, re-announcing transactions to make sure miners saw them.`)
 				await this.rebroadcastTransactions()
 			}
 		}
 
+		// If we had started with maximum ancestors, then log the status
 		if (hadMaxAncestors)
 			console.log(`[RPC Wallet] Unconfirmed count has decreased, resuming sending transactions! | Ancestor Count: ${this.currentAncestorCount} - Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`)
 
@@ -262,26 +276,35 @@ class RPCWallet {
 		return true
 	}
 
+	/**
+	 * Rebroadcast out all transactions on our local mempool
+	 */
 	async rebroadcastTransactions(){
+		// Announce that we are starting
 		console.log(`[RPC Wallet] Announcing ${this.unconfirmedTransactions.length} transactions to ${this.peers.length} Peers...`)
 
+		// Connect to Peers to use for the rebroadcast
 		await this.connectToPeers()
 
-		let i = 0;
+		// Announce all of our local unconfirmed transactions
+		let numAnnounced = 0;
 		for (let txHex of this.unconfirmedTransactions){
+			// Loop through all peers and announce TX individually to each (if we have connected to them\
 			for (let peer of this.peers)
 				if (peer.connected)
 					await peer.announceTX(txHex)
 
-			i++
-			if (i % 50 === 0)
-				console.log(`[RPC Wallet] Announced ${i}/${this.unconfirmedTransactions.length} transactions so far...`)
+			// Log every 50 transactions
+			numAnnounced++
+			if (announcedSoFar % 50 === 0)
+				console.log(`[RPC Wallet] Announced ${numAnnounced}/${this.unconfirmedTransactions.length} transactions so far...`)
 		}
-		console.log(`[RPC Wallet] Announced ${i} transactions!`)
+		console.log(`[RPC Wallet] Announced ${numAnnounced} transactions!`)
 
-		// Wait for 1 minute in order to give some time for transactions to be requested, and sent out.
-		await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, 10 * 1000)})
+		// Wait for REBROADCAST_LENGTH in order to give some time for transactions to be requested, and sent out.
+		await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, REBROADCAST_LENGTH)})
 
+		// Destroy the peers we connected too
 		this.destroyPeers()
 	}
 
@@ -302,7 +325,7 @@ class RPCWallet {
 		// Update our ancestor count & status
 		await this.updateAncestorStatus()
 
-		// If we have no ancestors, skip grabbing the ancestor transaction hex and return true early
+		// If we have no ancestors (i.e. if our tx already got confirmed), skip grabbing the ancestor transaction hex and return true early
 		if (this.currentAncestorCount === 0)
 			return true
 
@@ -315,23 +338,29 @@ class RPCWallet {
 		// Then, while we have ancestors, lookup the transaction hex, and add it to the start of the unconfirmed transaction chain
 		let nextTXID = utxos[0].txid
 		while (nextTXID) {
+			// Grab the raw transaction hex for the txid
 			let txHex = await this.rpcRequest("getrawtransaction", [ nextTXID ])
 			if (txHex.error && txHex.error !== null)
 				throw new Error("Error gathering raw transaction for (" + nextTXID + "): " + JSON.stringify(txHex.error))
 
+			// Add the raw tx hex to the start of the unconfirmed transactions list
 			this.unconfirmedTransactions.unshift(txHex.result)
 
+			// Then lookup to see if it is in the mempool
 			let txMemInfo = await this.rpcRequest("getmempoolentry", [ nextTXID ] )
 			if (txMemInfo.error && txMemInfo.error !== null)
 				throw new Error("Error gathering mempool entry for (" + nextTXID + "): " + JSON.stringify(txMemInfo.error))
 
-			// See if there are any parent transactions that need to be confirmed
-			if (txMemInfo.result.depends.length > 0)
+			// See if there are any parent txs that our tx "depends" on and need to be confirmed
+			if (txMemInfo.result.depends.length > 0){
+				// Store the parent tx to search through next
 				nextTXID = txMemInfo.result.depends[0]
-			else
+			} else {
+				// If there are no transactions that ours depend on, then we can exit the loop
 				nextTXID = undefined
+			}
 
-			// Log every 100 added
+			// Log every 50 added
 			if (this.unconfirmedTransactions.length % 50 === 0)
 				console.log(`[RPC Wallet] Loaded ${this.unconfirmedTransactions.length}/${this.currentAncestorCount} transactions into local mempool so far...`)
 		}
@@ -344,46 +373,69 @@ class RPCWallet {
 
 	/**
 	 * Create fcoin "Peers" for all peers that the rpc full node as access to.
+	 * @async
 	 */
 	async connectToPeers(){
+		// Initialize/wipe peers
 		this.peers = []
 
+		// Request peers to connect to from the RPC node we have access to 
 		let getPeerInfo = await this.rpcRequest("getpeerinfo", [])
 		if (getPeerInfo.error)
 			throw new Error(getPeerInfo.error)
 
 		console.log(`[RPC Wallet] Connecting to ${getPeerInfo.result.length} Peers...`)
 
+		// For each of those peers, open up a connection
 		for (let peerInfo of getPeerInfo.result){
+			// Create an fcoin peer
 			let peer = new Peer({ ip: peerInfo.addr })
+			// Start the connection attempt
 			peer.connect()
-
+			// Add it to our peerrs array
 			this.peers.push(peer)
 		}
 
-		await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, 2 * 1000)})
+		// Wait for PEER_CONNECT_LENGTH in order to allow peers to initialize
+		await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, PEER_CONNECT_LENGTH)})
 
-		let i = 0
+		// Count how many peers we have successfully connected to
+		let connectedPeers = 0
 		for (let peer of this.peers)
 			if (peer.connected)
-				i++
+				connectedPeers++
 
-		console.log(`[RPC Wallet] Connected to ${i} Peers!`)
+		// Log the connected count
+		console.log(`[RPC Wallet] Connected to ${connectedPeers} Peers!`)
 	}
 
+	/**
+	 * Destroy peers created in rebroadcastTransactions
+	 */
 	destroyPeers(){
+		// Destroy each `fcoin` peer
 		for (let peer of this.peers){
 			peer.peer.destroy()
 		}
+		// Wipe out the array
 		this.peers = []
 	}
 
+	/**
+	 * Sign a message using the internal private key
+	 * @async
+	 * @param  {String} message - The message you wish to have signed
+	 * @return {String}  Returns the base64 version of the Signature
+	 */
 	async signMessage(message){
+		// Create the ECPair to sign with (this is the Private Key basically)
 		let ECPair = bitcoin.ECPair.fromWIF(this.wif, flo_testnet.network)
 		let privateKeyBuffer = ECPair.privateKey;
 
+		// Check if we are a compress privKey
 		let compressed = ECPair.compressed || true;
 
+		// Create the actual signature
 		let signature_buffer
 		try {
 			signature_buffer = sign(message, privateKeyBuffer, compressed, ECPair.network.messagePrefix)
@@ -391,8 +443,10 @@ class RPCWallet {
 			throw new Error(e)
 		}
 
+		// Convert the signature to a base64 string
 		let signature = signature_buffer.toString('base64')
 
+		// Return the base64 signature
 		return signature
 	}
 
@@ -406,6 +460,7 @@ class RPCWallet {
 		if (this.previousTXOutput && this.previousTXOutput.amount > MIN_UTXO_AMOUNT)
 			return [ this.previousTXOutput ]
 
+		// On the first run, log that we are requesting the transaction output.
 		if (!this.initialUTXOLog) {
 			console.log("[RPC Wallet] Grabbing initial transaction output to use, this may take a few seconds...")
 			this.initialUTXOLog = true
@@ -415,10 +470,11 @@ class RPCWallet {
 		const MIN_CONFIRMATIONS = 0
 		const MAX_CONFIRMATIONS = 9999999
 		let utxoRes = await this.rpcRequest("listunspent", [ MIN_CONFIRMATIONS, MAX_CONFIRMATIONS, [this.publicAddress],  ])
-
+		// Throw if there was an error
 		if (utxoRes.error && utxoRes.error !== null)
 			throw new Error("Unable to get unspent transactions for: " + this.publicAddress + "\n" + JSON.stringify(utxoRes.error))
 
+		// Pull out the utxos array
 		let utxos = utxoRes.result
 
 		// Filter out transactions that don't meet our minimum UTXO value
@@ -429,14 +485,16 @@ class RPCWallet {
 			return false
 		})
 
-		// Check if we have no transaction outputs available to spend from
+		// Check if we have no transaction outputs available to spend from, and throw an error if so
 		if (filtered.length === 0)
 			throw new Error("No previous unspent output available! Please send some FLO to " + this.publicAddress + " and then try again!")
 
+		// Sort by confirmations ascending (lowest conf first)
 		filtered.sort((a, b) => {
 			return a.confirmations - b.confirmations
 		})
 
+		// Return the filtered and sorted utxos
 		return filtered
 	}
 
@@ -450,19 +508,8 @@ class RPCWallet {
 		// Grab the unspent outputs for our address
 		let utxos = await this.getUTXOs()
 
-		// console.log(utxos)
-
-		// Select the first input that has > MIN_UTXO_AMOUNT FLO
-		let input
-		for (let i = 0; i < utxos.length; i++) {
-			if (utxos[i].amount > MIN_UTXO_AMOUNT){
-				input = utxos[i]
-				// console.log("set utxo")
-				break
-			}
-		}
-
-		// console.log(input)
+		// Select the first input (since we have already sorted and filtered)
+		let input = utxos[0]
 
 		// Calculate the minimum Transaction fee for our transaction by counting the size of the inputs, outputs, and floData
 		let myTxFee = TX_FEE_PER_BYTE * (TX_AVG_BYTE_SIZE + varIntBuffer(floData.length).toString('hex').length + Buffer.from(floData).length)
@@ -478,28 +525,43 @@ class RPCWallet {
 		return txid
 	}
 
+	/**
+	 * Create and sign a transaction using bitcoinjs-lib and js-oip libraries
+	 * @param  {Object} input   [description]
+	 * @param  {Object} outputs [description]
+	 * @param  {String} floData [description]
+	 * @return {String} Returns the built hex string
+	 */
 	createAndSignTransaction(input, outputs, floData){
+		// Create a Bitcoinjs-lib transaction builder, and pass it the FLO network params
 		let txb = new bitcoin.TransactionBuilder(this.coin.network)
 
+		// Set the transaction version (>2 means it contains floData)
 		txb.setVersion(this.coin.txVersion)
 
+		// Add our single input
 		txb.addInput(input.txid, input.vout)
+		// Add our output
 		txb.addOutput(this.publicAddress, parseInt(outputs[this.publicAddress] * SAT_PER_FLO))
 
+		// Convert the floData to a byte string
 		let extraBytes = this.coin.getExtraBytes({floData})
 
+		// Sign our transaction using the local `flosigner` at `src/config/networks/flo/flosigner.js`
 		this.coin.sign(txb, extraBytes, 0, bitcoin.ECPair.fromWIF(this.wif, this.coin.network))
 
+		// Build the hex
 		let builtHex
-
 		try {
 			builtHex = txb.build().toHex();
 		} catch (err) {
 			throw new Error(`Unable to build Transaction Hex!: ${err}`)
 		}
 
+		// Append on our floData
 		builtHex += extraBytes
 
+		// Return the completed hex as a string
 		return builtHex
 	}
 
@@ -522,7 +584,7 @@ class RPCWallet {
 		await this.checkAncestorCount()
 
 		// Create the initial transaction hex
-		/*
+		/* Code commented out for now as `fcoin` does not properly sign transactions. This can be used again once the RPC node used supports signing via RPC
 
 		const LOCKTIME = 0
 		const REPLACABLE = false
@@ -546,6 +608,7 @@ class RPCWallet {
 
 		*/
 	
+		// Create the raw transction hex using our local code instead of RPC for now
 		let rawTXHex = this.createAndSignTransaction(inputs[0], outputs, floData)
 
 		// Broadcast the transaction hex we created to the network
