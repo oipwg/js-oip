@@ -144,7 +144,7 @@ class RPCWallet {
 			// If the error is different, than throw it up for further inspection.
 			if (getMempoolEntry.error.message === 'Transaction not in mempool' || getMempoolEntry.error.message === 'Transaction not in mempool.'){
 				// Grab the transaction and check the number of confirmations
-				let checkConfirmations = await this.rpcRequest("gettransaction", [ mostRecentTXID ] )
+				let checkConfirmations = await this.rpcRequest("getrawtransaction", [ mostRecentTXID, true ] )
 
 				// Ignore if there was an error, but set the number of confirmations if available
 				if (checkConfirmations.result && checkConfirmations.result.confirmations)
