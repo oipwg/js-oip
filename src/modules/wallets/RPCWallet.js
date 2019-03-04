@@ -299,7 +299,7 @@ class RPCWallet {
 
 			// Log every 50 transactions
 			numAnnounced++
-			if (announcedSoFar % 50 === 0)
+			if (numAnnounced % 50 === 0)
 				console.log(`[RPC Wallet] Announced ${numAnnounced}/${this.unconfirmedTransactions.length} transactions so far...`)
 		}
 		console.log(`[RPC Wallet] Announced ${numAnnounced} transactions!`)
