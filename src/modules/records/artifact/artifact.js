@@ -107,6 +107,7 @@ class Artifact extends OIPRecord {
 			time: undefined,
 			tx: undefined,
 			txid: undefined,
+			version: undefined,
 			type: undefined,
 		}
 
