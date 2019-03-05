@@ -4,9 +4,10 @@
   "description": "A Javascript Library to fully interact with the Open Index Protocol",
   "main": "lib/index.js",
   "scripts": {
-    "test": "jest --coverage --detectOpenHandles",
+    "test": "npm run code-format && jest --coverage --detectOpenHandles",
     "compile": "./node_modules/.bin/babel -d lib/ src/",
-    "prepare": "npm run compile",
+    "prepare": "npm run test && npm run compile",
+    "code-format": "standard",
     "generate-docs": "node_modules/.bin/jsdoc --readme ./README.md -c jsdoc.json"
   },
   "repository": {
@@ -36,6 +37,7 @@
     "@babel/preset-env": "^7.0.0-beta.51",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.4.2",
+    "standard": "*",
     "jest": "^23.6.0",
     "jsdoc": "^3.5.5",
     "jsdoc-template": "git+https://github.com/oipwg/jsdoc-template.git"
@@ -61,5 +63,9 @@
   },
   "jest": {
     "testEnvironment": "node"
+  },
+  "standard": {
+    "env": [ "jest" ],
+    "ignore": [ "/lib/*", "/docs/*" ]
   }
 }
