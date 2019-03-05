@@ -119,12 +119,11 @@ class OIP {
 	// } //ToDo
 
 	/**
-	 * Publish an Edit Record
-	 * @param  {OIPRecord} previousRecord - The previously latest version of the Record you wish to edit
-	 * @param  {OIPRecord} newRecord      - The new version of the Record
-	 * @return {Promise<string|Array<string>>} txid - a txid or an array of txids (if your record is too large to fit onto one tx)
+	 * Publish an Edit for a Record
+	 * @param  {OIPRecord} editedRecord - The new version of the Record
+	 * @return {Promise<string|Array<string>>} txid - a txid or an array of txids (if your edit is too large to fit onto one tx)
 	 */
-	async edit(previousRecord, newRecord) {
+	async edit(editedRecord) {
 
 	} 
 
