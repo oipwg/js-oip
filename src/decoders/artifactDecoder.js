@@ -1,13 +1,13 @@
-import {Artifacts} from '../modules/records'
+import { Artifacts } from '../modules/records'
 
 let supported_artifact_types = {}
 
 for (let artifact in Artifacts) {
-	let type = Artifacts[artifact].getArtifactType() + '-' + Artifacts[artifact].getArtifactSubtype()
-	supported_artifact_types[type.toLowerCase()] = Artifacts[artifact]
+  let type = Artifacts[artifact].getArtifactType() + '-' + Artifacts[artifact].getArtifactSubtype()
+  supported_artifact_types[type.toLowerCase()] = Artifacts[artifact]
 }
 
-const BaseArtifact = supported_artifact_types["artifact-"]
+const BaseArtifact = supported_artifact_types['artifact-']
 
 /**
  * Parses json to return an Artifact class
@@ -20,38 +20,35 @@ const BaseArtifact = supported_artifact_types["artifact-"]
  * let artifact = decodeArtifact(json)
  * artifact instanceof Artifact //true
  */
-function decodeArtifact(json) {
-	 if (!json.artifact || !json.meta) {
-		 return new BaseArtifact(json)
-	 }
+function decodeArtifact (json) {
+  if (!json.artifact || !json.meta) {
+    return new BaseArtifact(json)
+  }
 
-	 if (json.meta.type === 'alexandria-media') {
-		 let artifactType = json.artifact.type.toLowerCase()
-		 return decode(artifactType, json)
-
-	 } else if (json.meta.type === 'oip041') {
-		 let artifactType = json.artifact.type.toLowerCase()
-		 return decode(artifactType, json)
-
-	 } else if (json.meta.type === 'oip042') {
-		 let type = json.artifact.type
-		 let subtype = json.artifact.subtype || ""
-		 let artifactType = (type+'-'+subtype).toLowerCase()
-		 return decode(artifactType, json)
-
-	 } else {
-		 return new BaseArtifact["artifact-"](json)
-	 }
+  if (json.meta.type === 'alexandria-media') {
+    let artifactType = json.artifact.type.toLowerCase()
+    return decode(artifactType, json)
+  } else if (json.meta.type === 'oip041') {
+    let artifactType = json.artifact.type.toLowerCase()
+    return decode(artifactType, json)
+  } else if (json.meta.type === 'oip042') {
+    let type = json.artifact.type
+    let subtype = json.artifact.subtype || ''
+    let artifactType = (type + '-' + subtype).toLowerCase()
+    return decode(artifactType, json)
+  } else {
+    return new BaseArtifact['artifact-'](json)
+  }
 }
 
-function decode(a_type, json) {
-	for (let type in supported_artifact_types) {
-		if (supported_artifact_types.hasOwnProperty(type) && type === a_type) {
-			return new supported_artifact_types[type](json)
-		}
-	}
+function decode (a_type, json) {
+  for (let type in supported_artifact_types) {
+    if (supported_artifact_types.hasOwnProperty(type) && type === a_type) {
+      return new supported_artifact_types[type](json)
+    }
+  }
 
-	return new BaseArtifact(json)
+  return new BaseArtifact(json)
 }
 
 export default decodeArtifact

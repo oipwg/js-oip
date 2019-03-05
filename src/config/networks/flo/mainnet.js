@@ -1,5 +1,5 @@
-import {Insight} from 'insight-explorer';
-import {varIntBuffer} from '../../../util/btc'
+import { Insight } from 'insight-explorer'
+import { varIntBuffer } from '../../../util/btc'
 import sign from './flosigner'
 
 const floFeePerKb = 10000
@@ -23,26 +23,26 @@ const floFeePerKb = 10000
  *
  * @example
  * {
-	name: 'oip',
-	displayName: 'Flo',
-	ticker: 'FLO',
-	satPerCoin: 1e8,
-	feePerKb: floFeePerKb,
-	feePerByte: floFeePerKb / 1024,
-	maxFeePerByte: 100,
-	minFee: floFeePerKb,
-	dust: 100000,
+  name: 'oip',
+  displayName: 'Flo',
+  ticker: 'FLO',
+  satPerCoin: 1e8,
+  feePerKb: floFeePerKb,
+  feePerByte: floFeePerKb / 1024,
+  maxFeePerByte: 100,
+  minFee: floFeePerKb,
+  dust: 100000,
 
-	txVersion: 2,
+  txVersion: 2,
 
-	explorer: new Insight('https://livenet.flocha.in/api'),
+  explorer: new Insight('https://livenet.flocha.in/api'),
 
-	getExtraBytes: function(options){
-		var fData = options.floData || ""
-		return varIntBuffer(fData.length).toString("hex") + Buffer.from(fData).toString("hex")
-	},
+  getExtraBytes: function(options){
+    var fData = options.floData || ""
+    return varIntBuffer(fData.length).toString("hex") + Buffer.from(fData).toString("hex")
+  },
 
-	network: CoinNetwork
+  network: CoinNetwork
 }
  */
 
@@ -60,51 +60,50 @@ const floFeePerKb = 10000
  *
  * @example
  * {
-	bip32: {
-		public: 0x0134406b,
-		private: 0x01343c31
-	},
-	slip44: 216,
-	messagePrefix: '\x1bFlorincoin Signed Message:\n',
-	pubKeyHash: 35,
-	scriptHash: 94,
-	wif: 163
+  bip32: {
+    public: 0x0134406b,
+    private: 0x01343c31
+  },
+  slip44: 216,
+  messagePrefix: '\x1bFlorincoin Signed Message:\n',
+  pubKeyHash: 35,
+  scriptHash: 94,
+  wif: 163
 }
  */
 
 module.exports = {
-	name: 'flo',
-	displayName: 'Flo',
-	ticker: 'FLO',
-	satPerCoin: 1e8,
-	feePerKb: floFeePerKb,
-	feePerByte: floFeePerKb / 1024,
-	maxFeePerByte: 100,
-	minFee: floFeePerKb,
-	dust: 100000,
-	txVersion: 2,
-	explorer: new Insight('https://livenet.flocha.in/api'),
-	getExtraBytes: function (options) {
-		let fData = options.floData || ""
+  name: 'flo',
+  displayName: 'Flo',
+  ticker: 'FLO',
+  satPerCoin: 1e8,
+  feePerKb: floFeePerKb,
+  feePerByte: floFeePerKb / 1024,
+  maxFeePerByte: 100,
+  minFee: floFeePerKb,
+  dust: 100000,
+  txVersion: 2,
+  explorer: new Insight('https://livenet.flocha.in/api'),
+  getExtraBytes: function (options) {
+    let fData = options.floData || ''
 
-		let string_buffer = Buffer.from(fData, 'utf8')
-		let length_buffer = varIntBuffer(string_buffer.length)
+    let string_buffer = Buffer.from(fData, 'utf8')
+    let length_buffer = varIntBuffer(string_buffer.length)
 
-		let built_string = length_buffer.toString("hex") + string_buffer.toString("hex")
+    let built_string = length_buffer.toString('hex') + string_buffer.toString('hex')
 
-		return built_string
-	},
-	sign,
-	network: {
-		bip32: {
-			public: 0x0134406b,
-			private: 0x01343c31
-		},
-		slip44: 216,
-		messagePrefix: '\u001bFlorincoin Signed Message:\n',
-		pubKeyHash: 35,
-		scriptHash: 94,
-		wif: 163
-	}
+    return built_string
+  },
+  sign,
+  network: {
+    bip32: {
+      public: 0x0134406b,
+      private: 0x01343c31
+    },
+    slip44: 216,
+    messagePrefix: '\u001bFlorincoin Signed Message:\n',
+    pubKeyHash: 35,
+    scriptHash: 94,
+    wif: 163
+  }
 }
-
