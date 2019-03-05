@@ -1,8 +1,8 @@
 import { Artifact, PropertyParty, PropertyTenure, PropertySpatialUnit, ResearchTomogram } from '../../../src/modules/records/artifact/index'
 
-const oip41_artifact_wJSON = '5f399eef8f93c03502efbd51691350cbacbf3c16eba228409bf7453ffff78207'
+const oip41ArtifactwJSON = '5f399eef8f93c03502efbd51691350cbacbf3c16eba228409bf7453ffff78207' // eslint-disable-line
 
-const artifact041JSON = {
+const artifact041JSON = {  // eslint-disable-line
   'artifact': {
     'publisher': 'FPkvwEHjddvva2smpYwQ4trgudwFcrXJ1X',
     'payment': {
@@ -44,7 +44,7 @@ const artifact041JSON = {
   }
 }
 
-const artifactResearchTomogramJSON = {
+const artifactResearchTomogramJSON = {  // eslint-disable-line
   'artifact': {
     'signature': 'IEoXQRwrF5AqT8imORattfcyin2xGDBHx2vpSLZf6+NHPT6G/TMhrDmWXyN8FasxV9zP9hopExx/yuFFrqoEsdM=',
     'subtype': 'tomogram',
@@ -167,7 +167,7 @@ const artifactResearchTomogramJSON = {
   }
 }
 
-const artifact041Payments = {
+const artifact041Payments = {  // eslint-disable-line
   'artifact': {
     'publisher': 'FLZXRaHzVPxJJfaoM32CWT4GZHuj2rx63k',
     'payment': {
@@ -1088,7 +1088,7 @@ describe('Artifact', () => {
 
 // it("Construct Artifact with floData that has a json: prefix", async (done) => {
 //     let Network = new Index();
-//     let flo_data = await Network.getFloData(oip41_artifact_wJSON)
+//     let flo_data = await Network.getFloData(oip41ArtifactwJSON)
 //     let art = new new Artifact(flo_data)
 //     expect(art.isValid()).toBeTruthy()
 //     done()
@@ -1105,7 +1105,7 @@ describe('Artifact', () => {
 //
 // it("Construct Artifact with floData", async () => {
 //     let Network = new Index();
-//     let flo_data = await Network.getFloData(oip41_artifact_wJSON)
+//     let flo_data = await Network.getFloData(oip41ArtifactwJSON)
 //     if (flo_data.startsWith("json:")) {flo_data = flo_data.slice(5)}
 //     let art = new new Artifact(flo_data)
 //     // console.log(art.isValid())

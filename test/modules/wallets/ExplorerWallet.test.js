@@ -1,16 +1,13 @@
 import bitcoin from 'bitcoinjs-lib'
-import { flo_testnet } from '../../../src/config'
+import { floTestnet } from '../../../src/config'
 import { isValidWIF } from '../../../src/util/btc'
 import { ExplorerWallet } from '../../../src/modules/wallets'
 import floTx from 'fcoin/lib/primitives/tx'
-import Network from 'fcoin/lib/protocol/network'
-import { artifactSmall, artifactLarge } from '../../../examples/exampleArtifact'
-import Artifact from '../../../src/modules/records/artifact/artifact'
 
-const network = flo_testnet.network
+const network = floTestnet.network
 
 if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
-  if (typeof localStorage === 'undefined') {
+  if (typeof localStorage === 'undefined') { // eslint-disable-line
     // var is needed her for the javascript hoisting effect or else localstorage won't be scoped
     var LocalStorage = require('node-localstorage').LocalStorage
     var localStorage = new LocalStorage('./localStorage')
@@ -102,7 +99,7 @@ describe(`ExplorerWallet`, () => {
       let wallet = new ExplorerWallet(wif, 'testnet')
       let output = {
         address: 'oNAydz5TjkhdP3RPuu3nEirYQf49Jrzm4S',
-        value: Math.floor(0.0001 * flo_testnet.satPerCoin)
+        value: Math.floor(0.0001 * floTestnet.satPerCoin)
       }
       let txid = await wallet.sendTx(output, 'to testnet')
       // console.log(txid)

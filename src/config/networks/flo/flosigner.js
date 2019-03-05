@@ -9,6 +9,11 @@ let SCRIPT_TYPES = classify.types
 
 let EMPTY_SCRIPT = Buffer.allocUnsafe(0)
 let ONE = Buffer.from('0000000000000000000000000000000000000000000000000000000000000001', 'hex')
+const VALUE_UINT64_MAX = Buffer.from('ffffffffffffffff', 'hex')
+const BLANK_OUTPUT = {
+  script: EMPTY_SCRIPT,
+  valueBuffer: VALUE_UINT64_MAX
+}
 
 function canSign (input) {
   return input.signScript !== undefined &&
@@ -368,7 +373,7 @@ function hashForSignature (transaction, extraBytes, inIndex, prevOutScript, hash
   txHexStr += hashTypeBuf.toString('hex')
 
   // Convert hex string to buffer and hash256 it
-  return bcrypto.hash256(new Buffer(txHexStr, 'hex'))
+  return bcrypto.hash256(Buffer.from(txHexStr, 'hex'))
 }
 
 export default sign

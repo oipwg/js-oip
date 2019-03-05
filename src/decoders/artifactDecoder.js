@@ -1,13 +1,13 @@
 import { Artifacts } from '../modules/records'
 
-let supported_artifact_types = {}
+let SupportedArtifactTypes = {}
 
 for (let artifact in Artifacts) {
   let type = Artifacts[artifact].getArtifactType() + '-' + Artifacts[artifact].getArtifactSubtype()
-  supported_artifact_types[type.toLowerCase()] = Artifacts[artifact]
+  SupportedArtifactTypes[type.toLowerCase()] = Artifacts[artifact]
 }
 
-const BaseArtifact = supported_artifact_types['artifact-']
+const BaseArtifact = SupportedArtifactTypes['artifact-']
 
 /**
  * Parses json to return an Artifact class
@@ -37,14 +37,14 @@ function decodeArtifact (json) {
     let artifactType = (type + '-' + subtype).toLowerCase()
     return decode(artifactType, json)
   } else {
-    return new BaseArtifact['artifact-'](json)
+    return new BaseArtifact['artifact-'](json) // eslint-disable-line
   }
 }
 
-function decode (a_type, json) {
-  for (let type in supported_artifact_types) {
-    if (supported_artifact_types.hasOwnProperty(type) && type === a_type) {
-      return new supported_artifact_types[type](json)
+function decode (aType, json) {
+  for (let btype in SupportedArtifactTypes) {
+    if (SupportedArtifactTypes.hasOwnProperty(btype) && btype === aType) {
+      return new SupportedArtifactTypes[btype](json)
     }
   }
 

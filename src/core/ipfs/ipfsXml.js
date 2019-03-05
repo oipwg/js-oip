@@ -27,13 +27,13 @@ class IpfsXml {
     this.file = file
     this.options = options
 
-    this.upload_xmlhttprequest = new XMLHttpRequest()
+    this.uploadXmlhttprequest = new XMLHttpRequest() // eslint-disable-line
 
-    this.progress_subscribers = []
+    this.progressSubscribers = []
   }
   /**
    * Subscribe to upload Progress events
-   * @param  {Function} progress_function - The function you want called when there is a progress update available
+   * @param  {Function} progressFunction - The function you want called when there is a progress update available
    *
    * @example
    * let uploader = new XMLRequestIPFSAdd(input.files[0], {
@@ -51,8 +51,8 @@ class IpfsXml {
    *  console.log("Progress! " + JSON.stringify(progress_message))
    * })
    */
-  onProgress (progress_function) {
-    this.progress_subscribers.push(progress_function)
+  onProgress (progressFunction) {
+    this.progressSubscribers.push(progressFunction)
   }
   /**
    * Start the File Upload to the server
@@ -81,8 +81,8 @@ class IpfsXml {
   start () {
     return new Promise((resolve, reject) => {
       // The "load" event is fired when the request has finished
-      this.upload_xmlhttprequest.addEventListener('load', () => {
-        var response = JSON.parse(this.upload_xmlhttprequest.responseText)
+      this.uploadXmlhttprequest.addEventListener('load', () => {
+        var response = JSON.parse(this.uploadXmlhttprequest.responseText)
 
         // Normalize to match regular ipfs-api add output
         resolve({
@@ -92,12 +92,12 @@ class IpfsXml {
         })
       })
 
-      this.upload_xmlhttprequest.upload.onprogress = (progress) => {
+      this.uploadXmlhttprequest.upload.onprogress = (progress) => {
         if (progress.lengthComputable) {
           var percent = parseFloat(((progress.loaded / progress.total) * 100).toFixed(2))
 
-          for (var progress_function of this.progress_subscribers) {
-            progress_function({
+          for (var progressFunction of this.progressSubscribers) {
+            progressFunction({
               upload_progress: percent,
               bytes_uploaded: progress.loaded,
               bytes_total: progress.total
@@ -107,35 +107,35 @@ class IpfsXml {
       }
 
       // Create the upload URL
-      var built_url = ''
+      var builtURL = ''
 
-      built_url += this.options.protocol + '://'
-      built_url += this.options.host
+      builtURL += this.options.protocol + '://'
+      builtURL += this.options.host
 
-      var add_port = true
+      var addPort = true
 
       // Don't add the port if the protocol matches the port
-      if (this.options.protocol === 'http' && this.options.port === 80) { add_port = false }
-      if (this.options.protocol === 'https' && this.options.port === 443) { add_port = false }
+      if (this.options.protocol === 'http' && this.options.port === 80) { addPort = false }
+      if (this.options.protocol === 'https' && this.options.port === 443) { addPort = false }
 
-      if (add_port) { built_url += ':' + this.options.port }
+      if (addPort) { builtURL += ':' + this.options.port }
 
       // Set the upload to use the URL
-      this.upload_xmlhttprequest.open('POST', built_url + '/api/v0/add?json=true')
+      this.uploadXmlhttprequest.open('POST', builtURL + '/api/v0/add?json=true')
       // We are expecting a JSON response
-      this.upload_xmlhttprequest.setRequestHeader('accept', 'application/json')
+      this.uploadXmlhttprequest.setRequestHeader('accept', 'application/json')
 
-      this.upload_xmlhttprequest.setRequestHeader('OIP-Auth', JSON.stringify(this.options.oip_auth))
+      this.uploadXmlhttprequest.setRequestHeader('OIP-Auth', JSON.stringify(this.options.oip_auth))
 
       // Set the encoding type since we are going to be sending FormData
-      this.upload_xmlhttprequest.enctype = 'multipart/form-data'
+      this.uploadXmlhttprequest.enctype = 'multipart/form-data'
 
       // Create a Form to send to the server
-      var form = new FormData()
+      var form = new FormData() // eslint-disable-line
       form.append('path', this.file, this.file.name)
 
       // Start the upload
-      this.upload_xmlhttprequest.send(form)
+      this.uploadXmlhttprequest.send(form)
     })
   }
 }

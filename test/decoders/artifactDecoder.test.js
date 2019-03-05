@@ -3,7 +3,7 @@ import { decodeArtifact } from '../../src/decoders'
 import { Artifacts } from '../../src/modules/records'
 
 let daemonUrl = 'http://snowflake.oip.fun:1606' // ToDo: switch to snowflake for travis
-let api = new axios.create({
+let api = new axios.create({ // eslint-disable-line
   baseURL: daemonUrl,
   headers: {
     'Access-Control-Allow-Origin': '*'

@@ -81,7 +81,7 @@ const decodeArray = (artifacts) => {
 }
 
 // ToDo: change to 'https' when ready
-const localhost = 'http://localhost:1606'
+// const defaultOIPdURL = 'http://localhost:1606'
 const defaultOIPdURL = 'http://snowflake.oip.fun:1606'
 
 /**
@@ -118,7 +118,7 @@ class DaemonApi {
   setUrl (daemonUrl) {
     this.url = daemonUrl
 
-    this.index = new axios.create({
+    this.index = new axios.create({ // eslint-disable-line
       baseURL: this.url
     })
   }

@@ -55,8 +55,8 @@ export default class Publisher extends OIPRecord {
     if (typeof timestamp !== 'number') { throw new Error('Timestamp must be a Number!') }
 
     if (String(timestamp).length === 13) {
-      let seconds_time_string = parseInt(timestamp / 1000)
-      this._publisher.timestamp = seconds_time_string
+      let secondsTimeString = parseInt(timestamp / 1000)
+      this._publisher.timestamp = secondsTimeString
     } else if (String(timestamp).length === 10) {
       this._publisher.timestamp = timestamp
     }
@@ -74,10 +74,10 @@ export default class Publisher extends OIPRecord {
     return this._publisher.authorized
   }
 
-  setEmailMD5 (email_md5) {
-    if (typeof email_md5 !== 'string') { throw new Error('Email MD5 must be a string!') }
+  setEmailMD5 (emailmd5) {
+    if (typeof emailmd5 !== 'string') { throw new Error('Email MD5 must be a string!') }
 
-    this._publisher.info.emailmd5 = email_md5
+    this._publisher.info.emailmd5 = emailmd5
   }
 
   getEmailMD5 () {
@@ -124,26 +124,26 @@ export default class Publisher extends OIPRecord {
     return this._publisher.info.headerImage
   }
 
-  setVerification (type, verification_url) {
+  setVerification (type, verificationUrl) {
     if (typeof type !== 'string') { throw new Error('Verification Type must be a string!') }
 
-    if (typeof verification_url !== 'string') { throw new Error('Verification URL must be a string!') }
+    if (typeof verificationUrl !== 'string') { throw new Error('Verification URL must be a string!') }
 
     // Test if verification type is allowed
-    let supported_verification_types = Object.keys(this._publisher.verification)
+    let supportedVerificationTypes = Object.keys(this._publisher.verification)
 
-    if (supported_verification_types.indexOf(type) === -1) { throw new Error(`Verification for ${type} is not yet supported!`) }
+    if (supportedVerificationTypes.indexOf(type) === -1) { throw new Error(`Verification for ${type} is not yet supported!`) }
 
-    this._publisher.verification[type] = verification_url
+    this._publisher.verification[type] = verificationUrl
   }
 
   getVerification (type) {
     if (typeof type !== 'string') { throw new Error('Verification Type must be a string!') }
 
     // Test if verification type is allowed
-    let supported_verification_types = Object.keys(this._publisher.verification)
+    let supportedVerificationTypes = Object.keys(this._publisher.verification)
 
-    if (supported_verification_types.indexOf(type) === -1) { throw new Error(`Verification for ${type} is not yet supported!`) }
+    if (supportedVerificationTypes.indexOf(type) === -1) { throw new Error(`Verification for ${type} is not yet supported!`) }
 
     return this._publisher.verification[type]
   }

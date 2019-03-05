@@ -1,20 +1,13 @@
-import bitcoin from 'bitcoinjs-lib'
-import { flo_testnet } from '../../../src/config'
-import { isValidWIF } from '../../../src/util/btc'
 import { OIP } from '../../../src'
-import floTx from 'fcoin/lib/primitives/tx'
-import Network from 'fcoin/lib/protocol/network'
 import { artifactSmall, artifactLarge } from '../../../examples/exampleArtifact'
 import Artifact from '../../../src/modules/records/artifact/artifact'
-
-const network = flo_testnet.network
 
 // const keypair = bitcoin.ECPair.makeRandom({network})
 // const tmpWif = keypair.toWIF()
 // console.log(isValidWIF(tmpWif, network))
 
 if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
-  if (typeof localStorage === 'undefined') {
+  if (typeof localStorage === 'undefined') { // eslint-disable-line
     // var is needed her for the javascript hoisting effect or else localstorage won't be scoped
     var LocalStorage = require('node-localstorage').LocalStorage
     var localStorage = new LocalStorage('./localStorage')
@@ -24,8 +17,6 @@ if (typeof window === 'undefined' || typeof window.localStorage === 'undefined')
 }
 
 const wif = 'cRVa9rNx5N1YKBw8PhavegJPFCiYCfC4n8cYmdc3X1Y6TyFZGG4B'
-const ECPair = bitcoin.ECPair.fromWIF(wif, network)
-// const p2pkh = bitcoin.payments.p2pkh({pubkey: ECPair.publicKey, network}).address
 
 const rpcSettings = {
   port: 17313,

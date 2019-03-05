@@ -89,9 +89,9 @@ class JsIpfs {
   }
 
   async readyCheck () {
-    return new Promise(res => {
-      this.node.once('ready', res)
-      if (this.isReady()) { res() }
+    return new Promise(resolve => {
+      this.node.once('ready', resolve)
+      if (this.isReady()) { resolve() }
     })
   }
 
@@ -104,8 +104,8 @@ class JsIpfs {
   }
 }
 
-const toMB = function (num) {
-  return Math.round((num / 1024 / 1024) * 100) / 100
-}
+// const toMB = function (num) {
+//   return Math.round((num / 1024 / 1024) * 100) / 100
+// }
 
 export default JsIpfs

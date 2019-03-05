@@ -1,5 +1,4 @@
 import { verify } from 'bitcoinjs-message'
-import bitcoin from 'bitcoinjs-lib'
 
 class OIPRecord {
   constructor () {
@@ -14,7 +13,7 @@ class OIPRecord {
   async signSelf (signMessage) {
     if (!signMessage) { return { success: false, error: 'Must provide a function to sign with!' } }
 
-    let preimage = this.create_preimage()
+    let preimage = this.createPreimage()
 
     let signature
     try {
@@ -72,12 +71,12 @@ class OIPRecord {
   /**
    * Default method. Classes that extend OIPRecord must override this method with a unique preimage generator
    * @example
-   * create_preimage() {
+   * createPreimage() {
    *     return `${uniqueVariable}-${publisherAddress}-${timestamp}`
    * }
    */
-  create_preimage () {
-    throw new Error(`Classes that extend OIPRecord must contain a 'create_preimage' method`)
+  createPreimage () {
+    throw new Error(`Classes that extend OIPRecord must contain a 'createPreimage' method`)
   }
   /**
    * Returns the preimage that was generated on signature creation. (to be used for validation)

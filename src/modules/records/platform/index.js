@@ -1,1 +1,5 @@
-export Platform from './platform'
+import Platform from './platform'
+
+export {
+  Platform
+}

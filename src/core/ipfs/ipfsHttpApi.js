@@ -1,4 +1,4 @@
-import ipfsClient from 'ipfs-http-client'
+import IpfsClient from 'ipfs-http-client'
 
 /**
  * A Class used for uploading/adding files to IPFS
@@ -33,7 +33,7 @@ class IpfsHttpApi {
     this.file = file
     this.options = options
 
-    this.ipfs = new ipfsClient({
+    this.ipfs = new IpfsClient({
       host: options.host,
       port: options.port,
       protocol: options.protocol,
@@ -42,7 +42,7 @@ class IpfsHttpApi {
       }
     })
 
-    this.progress_subscribers = []
+    this.progressSubscribers = []
   }
   /**
    * Subscribe to upload Progress events
@@ -62,8 +62,8 @@ class IpfsHttpApi {
    *  console.log("Progress! " + JSON.stringify(progress_message))
    * })
    */
-  onProgress (progress_function) {
-    this.progress_subscribers.push(progress_function)
+  onProgress (progressFunction) {
+    this.progressSubscribers.push(progressFunction)
   }
   /**
    * Start the File Upload to the server
@@ -88,28 +88,28 @@ class IpfsHttpApi {
    * })
    */
   async start () {
-    let file_object = {
+    let fileObject = {
       path: this.options.filename || '',
       content: this.file
     }
     let onProgressFunc = (bytesAdded) => {
-      let progress_object = {
+      let progressObject = {
         bytes_uploaded: bytesAdded
       }
 
       if (this.options.filesize) {
         let percent = parseFloat(((bytesAdded / this.options.filesize) * 100).toFixed(2))
 
-        progress_object.upload_progress = percent
-        progress_object.bytes_total = this.options.filesize
+        progressObject.uploadProgress = percent
+        progressObject.bytesTotal = this.options.filesize
       }
 
-      for (let progress_function of this.progress_subscribers) { progress_function(progress_object) }
+      for (let progressFunction of this.progressSubscribers) { progressFunction(progressObject) }
     }
 
     let response
     try {
-      response = await this.ipfs.add(file_object, { progress: onProgressFunc })
+      response = await this.ipfs.add(fileObject, { progress: onProgressFunc })
     } catch (err) {
       throw new Error(`Failed to add file to ipfs: ${err}`)
     }

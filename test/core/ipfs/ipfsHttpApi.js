@@ -1,13 +1,13 @@
 import fs from 'fs'
 import IpfsHttpApi from '../../../src/core/ipfs/ipfsHttpApi'
 
-let godImg_path = '/home/orpheus/Pictures/Wallpapers/4rdYuG.jpg'
-let godImg_stats = fs.statSync(godImg_path)
-let godImg_size = godImg_stats.size
-let godImg_stream = fs.createReadStream(godImg_path)
+let godImgPath = '/home/orpheus/Pictures/Wallpapers/4rdYuG.jpg'
+let godImgStats = fs.statSync(godImgPath)
+let godImgSize = godImgStats.size
+let godImgStream = fs.createReadStream(godImgPath)
 let options = {
   filename: 'creator.mp4',
-  filesize: godImg_size,
+  filesize: godImgSize,
   host: 'ipfs-dev.alexandria.io',
   port: 443,
   protocol: 'https',
@@ -19,7 +19,7 @@ let options = {
 }
 
 async function test () {
-  let api = new IpfsHttpApi(godImg_stream, options)
+  let api = new IpfsHttpApi(godImgStream, options)
   let response = await api.start()
   console.log(response)
 }

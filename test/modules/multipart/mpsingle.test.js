@@ -1,8 +1,7 @@
 import { sign } from 'bitcoinjs-message'
 import bitcoin from 'bitcoinjs-lib'
-import { flo_testnet } from '../../../src/config/networks'
+import { floTestnet } from '../../../src/config/networks'
 import MPSingle from '../../../src/modules/multipart/mpsingle'
-import ExplorerWallet from '../../../src/modules/wallets/ExplorerWallet'
 import Oipindex from '../../../src/core/oipd-api/daemonApi'
 
 const index = new Oipindex()
@@ -76,7 +75,7 @@ describe('MPSingle', () => {
   })
   describe('Signing', () => {
     it('Create and verify signature', async () => {
-      let network = flo_testnet.network
+      let network = floTestnet.network
       let ECPair = bitcoin.ECPair.makeRandom({ network })
 
       let signMessage = async (message) => {
@@ -84,14 +83,14 @@ describe('MPSingle', () => {
 
         let compressed = ECPair.compressed || true
 
-        let signature_buffer
+        let signatureBuffer
         try {
-          signature_buffer = sign(message, privateKeyBuffer, compressed, ECPair.network.messagePrefix)
+          signatureBuffer = sign(message, privateKeyBuffer, compressed, ECPair.network.messagePrefix)
         } catch (e) {
           throw new Error(e)
         }
 
-        let signature = signature_buffer.toString('base64')
+        let signature = signatureBuffer.toString('base64')
 
         return signature
       }

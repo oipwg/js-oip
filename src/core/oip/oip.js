@@ -3,7 +3,7 @@ import bitcoin from 'bitcoinjs-lib'
 import { MultipartX } from '../../modules'
 import { OIPRecord } from '../../modules/records'
 import { ExplorerWallet, RPCWallet } from '../../modules/wallets'
-import { flo_mainnet, flo_testnet } from '../../config'
+import { floMainnet, floTestnet } from '../../config'
 
 // The maximum floData that fits in one transaction
 export const FLODATA_MAX_LEN = 1040
@@ -38,8 +38,8 @@ class OIP {
 
     // If public address is not defined, calculate it using bitcoin-js (used by RPC-Wallet)
     if (!this.options.publicAddress) {
-      let tmpNetwork = flo_mainnet
-      if (network === 'testnet') { tmpNetwork = flo_testnet }
+      let tmpNetwork = floMainnet
+      if (network === 'testnet') { tmpNetwork = floTestnet }
 
       let ECPair = bitcoin.ECPair.fromWIF(this.options.wif, tmpNetwork.network)
       this.options.publicAddress = bitcoin.payments.p2pkh({ pubkey: ECPair.publicKey, network: tmpNetwork.network }).address
@@ -92,18 +92,18 @@ class OIP {
     }
 
     const methodType = 'publish'
-    let broadcast_string = record.serialize(methodType)
+    let broadcastString = record.serialize(methodType)
     let txids
 
-    if (broadcast_string.length > FLODATA_MAX_LEN) {
+    if (broadcastString.length > FLODATA_MAX_LEN) {
       try {
-        txids = await this.publishMultiparts(broadcast_string)
+        txids = await this.publishMultiparts(broadcastString)
       } catch (err) {
         throw new Error(`Failed to publish multiparts: ${err}`)
       }
     } else {
       try {
-        let txid = await this.wallet.sendDataToChain(broadcast_string)
+        let txid = await this.wallet.sendDataToChain(broadcastString)
         txids = [txid]
       } catch (err) {
         throw new Error(`Failed to broadcast message: ${err}`)

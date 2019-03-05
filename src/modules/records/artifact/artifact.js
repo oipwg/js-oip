@@ -4,8 +4,6 @@ import OIPRecord from '../oip-record'
 const DEFAULT_NETWORK = 'IPFS'
 const SUPPORTED_TYPES = ['Audio', 'Video', 'Image', 'Text', 'Software', 'Web', 'Research', 'Property']
 
-const CHOP_MAX_LEN = 890
-const FLODATA_MAX_LEN = 1040
 /**
  * @typedef {Object} StatusObject
  * @property {Boolean} success - If the attempt was successful
@@ -648,36 +646,36 @@ class Artifact extends OIPRecord {
    * @return {(String|Array.<String>)}
    */
   getSupportedCoins (coins) {
-    let coin_check = coins || undefined
-    let supported_coins = []
+    let coinCheck = coins || undefined
+    let supportedCoins = []
     let addrs = this.getPaymentAddresses()
     if (typeof addrs === 'object') {
       for (let coin in addrs) {
-        supported_coins.push(coin)
+        supportedCoins.push(coin)
       }
     } else {
       throw new Error('Invalid parameter. Expecting an Array of Objects: [{[coin][addr]},]')
     }
 
-    if (coin_check) {
-      if (Array.isArray(coin_check)) {
+    if (coinCheck) {
+      if (Array.isArray(coinCheck)) {
         let _coins = []
-        for (let my_coin of coin_check) {
-          for (let sup_coin of supported_coins) {
-            if (my_coin === sup_coin) { _coins.push(my_coin) }
+        for (let myCoin of coinCheck) {
+          for (let supCoin of supportedCoins) {
+            if (myCoin === supCoin) { _coins.push(myCoin) }
           }
         }
         return _coins
-      } else if (typeof coin_check === 'string') {
-        if (supported_coins.includes(coin_check)) {
-          return coin_check
+      } else if (typeof coinCheck === 'string') {
+        if (supportedCoins.includes(coinCheck)) {
+          return coinCheck
         } else {
           return ''
         }
       }
     }
 
-    return supported_coins
+    return supportedCoins
   }
 
   /**
@@ -1342,7 +1340,7 @@ class Artifact extends OIPRecord {
    * Create message to use for signature
    * @return {string}
    */
-  create_preimage () {
+  createPreimage () {
     this.setTimestamp(Date.now())
     let preimage = `${this.getLocation() || ''}-${this.getPubAddress()}-${this.getTimestamp()}`
     this.preimage = preimage
@@ -1355,11 +1353,11 @@ class Artifact extends OIPRecord {
     let art = artJSON.artifact
 
     // setup initial object
-    let pub_message = { oip042: {} }
+    let pubMessage = { oip042: {} }
     // insert method type
-    pub_message['oip042'][method] = { artifact: art }
+    pubMessage['oip042'][method] = { artifact: art }
     // add json prefix
-    return 'json:' + JSON.stringify(pub_message)
+    return 'json:' + JSON.stringify(pubMessage)
   }
 }
 

@@ -171,22 +171,6 @@ class PropertySpatialUnit extends Artifact {
   }
 
   /**
-   * Get Spatial Type
-   * @returns {*}
-   */
-  getSpatialType () {
-    return this.artifact.details.spatialType
-  }
-
-  /**
-   * Set Spatial Type
-   * @param spatialType
-   */
-  setSpatialType (spatialType) {
-    if (spatialType) { this.artifact.details.spatialType = spatialType }
-  }
-
-  /**
    * Return Attributes
    * @returns {Object}
    */

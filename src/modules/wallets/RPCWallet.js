@@ -4,7 +4,7 @@ import bitcoin from 'bitcoinjs-lib'
 
 import { varIntBuffer } from '../../util'
 import { FLODATA_MAX_LEN } from '../../core/oip/oip'
-import { flo_mainnet, flo_testnet } from '../../config'
+import { floMainnet, floTestnet } from '../../config'
 import Peer from '../flo/Peer'
 
 // Helper const
@@ -69,7 +69,13 @@ class RPCWallet {
     // Store the Private Key and the Public Key
     this.wif = this.options.wif
     this.publicAddress = this.options.publicAddress
-    this.coin = flo_testnet
+
+    // Store the "coin" network we should use
+    if (this.options.network === 'livenet' || this.options.network === 'mainnet') {
+      this.coin = floMainnet
+    } else if (this.options.network === 'testnet') {
+      this.coin = floTestnet
+    }
 
     // Store information about our tx chain and the previous tx output
     this.unconfirmedTransactions = []
@@ -411,22 +417,22 @@ class RPCWallet {
    */
   async signMessage (message) {
     // Create the ECPair to sign with (this is the Private Key basically)
-    let ECPair = bitcoin.ECPair.fromWIF(this.wif, flo_testnet.network)
+    let ECPair = bitcoin.ECPair.fromWIF(this.wif, this.coin.network)
     let privateKeyBuffer = ECPair.privateKey
 
     // Check if we are a compress privKey
     let compressed = ECPair.compressed || true
 
     // Create the actual signature
-    let signature_buffer
+    let signatureBuffer
     try {
-      signature_buffer = sign(message, privateKeyBuffer, compressed, ECPair.network.messagePrefix)
+      signatureBuffer = sign(message, privateKeyBuffer, compressed, ECPair.network.messagePrefix)
     } catch (e) {
       throw new Error(e)
     }
 
     // Convert the signature to a base64 string
-    let signature = signature_buffer.toString('base64')
+    let signature = signatureBuffer.toString('base64')
 
     // Return the base64 signature
     return signature

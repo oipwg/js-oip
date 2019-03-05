@@ -103,7 +103,7 @@ describe('ArtifactFile', function () {
       newFileObj.setSubtype(subtype)
       expect(newFileObj.file.subtype).toBe(subtype)
     })
-    it('if Subtype is set to \`cover\` then set it to \`Thumbnail\`', function () {
+    it('if Subtype is set to `cover` then set it to `Thumbnail`', function () {
       const newFileObj = new ArtifactFile()
       const subtype = 'cover'
       const expectedSubtype = 'Thumbnail'
@@ -401,7 +401,7 @@ describe('ArtifactFile', function () {
       newFileObj.fromJSON(inputJSON)
       expect(newFileObj.toJSON()).toEqual(inputJSON)
     })
-    it('should also work with \`cType\` instead of \`ctype\`', function () {
+    it('should also work with `cType` instead of `ctype`', function () {
       const newFileObj = new ArtifactFile()
       const inputJSON = {
         fname: 'myFileName.txt',
@@ -440,7 +440,7 @@ describe('ArtifactFile', function () {
       newFileObj.fromJSON(inputJSON)
       expect(newFileObj.toJSON()).toEqual(expectedJSON)
     })
-    it('should also work with \`fNotes\` instead of \`fnotes\`', function () {
+    it('should also work with `fNotes` instead of `fnotes`', function () {
       const newFileObj = new ArtifactFile()
       const inputJSON = {
         fname: 'myFileName.txt',

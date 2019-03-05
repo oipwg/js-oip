@@ -87,12 +87,12 @@ module.exports = {
   getExtraBytes: function (options) {
     let fData = options.floData || ''
 
-    let string_buffer = Buffer.from(fData, 'utf8')
-    let length_buffer = varIntBuffer(string_buffer.length)
+    let stringBuffer = Buffer.from(fData, 'utf8')
+    let lengthBuffer = varIntBuffer(stringBuffer.length)
 
-    let built_string = length_buffer.toString('hex') + string_buffer.toString('hex')
+    let builtString = lengthBuffer.toString('hex') + stringBuffer.toString('hex')
 
-    return built_string
+    return builtString
   },
   sign,
   network: {

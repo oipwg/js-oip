@@ -1,7 +1,7 @@
 import Artifact from './artifact'
 
 class ResearchTomogram extends Artifact {
-  constructor (artifact) {
+  constructor (artifact) { // eslint-disable-line
     super(artifact)
   }
 
@@ -78,7 +78,7 @@ class ResearchTomogram extends Artifact {
    * Set defocus
    * @param defocus
    */
-  setDefocus () {
+  setDefocus (defocus) {
     this.artifact.details.defocus = defocus
   }
 
@@ -108,7 +108,7 @@ class ResearchTomogram extends Artifact {
    * Set Institution
    * @param institution
    */
-  setDosage (institution) {
+  setInstitution (institution) {
     this.artifact.details.institution = institution
   }
 
@@ -183,7 +183,7 @@ class ResearchTomogram extends Artifact {
    * Set SID
    * @param sid
    */
-  setScopeName (sid) {
+  setSID (sid) {
     this.artifact.details.sid = sid
   }
 
@@ -198,7 +198,7 @@ class ResearchTomogram extends Artifact {
    * Set Species Name
    * @param speciesName
    */
-  setScopeName (speciesName) {
+  setSpeciesName (speciesName) {
     this.artifact.details.speciesName = speciesName
   }
 
@@ -228,7 +228,7 @@ class ResearchTomogram extends Artifact {
    * Set Tilt Constant
    * @param tiltConstant
    */
-  setStrain (tiltConstant) {
+  setTiltConstant (tiltConstant) {
     this.artifact.details.tiltConstant = tiltConstant
   }
 

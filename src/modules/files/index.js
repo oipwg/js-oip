@@ -1,1 +1,5 @@
-export ArtifactFile from './artifactfile'
+import ArtifactFile from './artifactfile'
+
+export {
+  ArtifactFile
+}

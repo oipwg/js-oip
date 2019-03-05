@@ -1,27 +1,13 @@
 import fs from 'fs'
 import JsIpfs from '../../../src/core/ipfs/jsIpfs'
-const IPFS = require('ipfs')
 
-let test_file_A = {
-  path: `hello text`,
-  content: Buffer.from('Hello ryan')
-}
+let godImgPath = '/home/orpheus/Pictures/Wallpapers/4rdYuG.jpg'
+let godImgStream = fs.createReadStream(godImgPath)
 
-let test_file_B = {
-  path: `world text`,
-  content: Buffer.from('Hello world')
-}
-
-let godImg_path = '/home/orpheus/Pictures/Wallpapers/4rdYuG.jpg'
-let godImg_stats = fs.statSync(godImg_path)
-let godImg_size = godImg_stats.size
-let godImg_stream = fs.createReadStream(godImg_path)
-
-let godImg_ipfsFile = {
+let godImgIpfsFile = {
   path: '4rdYuG.jpg',
-  content: godImg_stream
+  content: godImgStream
 }
-// console.log('god img: ', godImg_stats)
 
 // let readStreamA = fs.createReadStream(__dirname + "/testFiles/hello.txt")
 // let writeStreamA = fs.createWriteStream(__dirname + "/testFiles/writeStream.txt")
@@ -34,14 +20,14 @@ async function test () {
   await ipfs.readyCheck()
   let files
   try {
-    files = await ipfs.addFiles(godImg_ipfsFile, { wrapWithDirectory: true, recursive: false })
+    files = await ipfs.addFiles(godImgIpfsFile, { wrapWithDirectory: true, recursive: false })
   } catch (err) {
     console.error(err)
   }
   console.log(files)
   let myfile
   for (let file of files) {
-    if ('wrapper/' + file.path === godImg_ipfsFile.path) {
+    if ('wrapper/' + file.path === godImgIpfsFile.path) {
       myfile = file
     }
   }

@@ -1,4 +1,4 @@
-import { sign, verify } from 'bitcoinjs-message'
+import { verify } from 'bitcoinjs-message'
 
 /**
  * An ES6 Multipart Single Class
@@ -41,7 +41,7 @@ class MPSingle {
       time: undefined,
       txid: undefined,
       block: undefined,
-      block_hash: undefined,
+      block_hash: undefined, // eslint-disable-line
       assembled: undefined,
       tx: undefined
     }
@@ -230,15 +230,15 @@ class MPSingle {
    * @return {string}
    */
   getBlockHash () {
-    return this.meta.block_hash
+    return this.meta.block_hash // eslint-disable-line
   }
 
   /**
    * Set block hash
-   * @param {string} block_hash
+   * @param {string} blockHash
    */
-  setBlockHash (block_hash) {
-    this.meta.block_hash = block_hash
+  setBlockHash (blockHash) {
+    this.meta.block_hash = blockHash // eslint-disable-line
   }
 
   /**

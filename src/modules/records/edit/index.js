@@ -1,1 +1,5 @@
-export EditRecord from './edit'
+import EditRecord from './edit'
+
+export {
+  EditRecord
+}

@@ -20,7 +20,7 @@ describe('DaemonApi', () => {
   it('GET complex search by type and subtype | searchArtifactsByType()', async () => {
     let type = 'research'
     let subtype = 'tomogram'
-    let { success, error, artifacts, count, total } = await index.searchArtifactsByType(type, subtype)
+    let { success, error, artifacts } = await index.searchArtifactsByType(type, subtype)
     expect(success).toBeTruthy()
     expect(error).toBeUndefined()
     expect(artifacts).toBeDefined()

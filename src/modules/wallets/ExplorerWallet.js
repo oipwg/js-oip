@@ -7,12 +7,10 @@ import coinselect from 'coinselect'
 // * fs in ./node_modules/bindings/bindings.js
 import floTx from 'fcoin/lib/primitives/tx'
 import { isValidWIF } from '../../util'
-import { MultipartX } from '../../modules'
-import { OIPRecord } from '../../modules/records'
-import { flo_mainnet, flo_testnet } from '../../config'
+import { floMainnet, floTestnet } from '../../config'
 
 if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
-  if (typeof localStorage === 'undefined') {
+  if (typeof localStorage === 'undefined') { // eslint-disable-line
     // var is needed her for the javascript hoisting effect or else localstorage won't be scoped
     var LocalStorage = require('node-localstorage').LocalStorage
     var localStorage = new LocalStorage('./localStorage')
@@ -20,8 +18,6 @@ if (typeof window === 'undefined' || typeof window.localStorage === 'undefined')
 } else {
   localStorage = window.localStorage
 }
-
-const FLODATA_MAX_LEN = 1040
 
 /**
  * @typedef {Object} utxo
@@ -64,9 +60,9 @@ class ExplorerWallet {
    */
   // ToDo:: Switch to mainnet for prod
   constructor (options) {
-    let network = flo_mainnet
+    let network = floMainnet
 
-    if (options.network === 'testnet') { network = flo_testnet }
+    if (options.network === 'testnet') { network = floTestnet }
 
     if (!isValidWIF(options.wif, network.network)) {
       return { success: false, message: 'Invalid WIF', wif: options.wif, network: network.network }
@@ -88,14 +84,14 @@ class ExplorerWallet {
 
     let compressed = this.ECPair.compressed || true
 
-    let signature_buffer
+    let signatureBuffer
     try {
-      signature_buffer = sign(message, privateKeyBuffer, compressed, this.ECPair.network.messagePrefix)
+      signatureBuffer = sign(message, privateKeyBuffer, compressed, this.ECPair.network.messagePrefix)
     } catch (e) {
       throw new Error(e)
     }
 
-    let signature = signature_buffer.toString('base64')
+    let signature = signatureBuffer.toString('base64')
 
     return signature
   }
@@ -164,7 +160,7 @@ class ExplorerWallet {
 
     this.selected = selected
     // console.log('selected: ', selected)
-    let { inputs, outputs, fee } = selected
+    let { inputs, outputs } = selected
 
     // inputs and outputs will be undefined if no solution was found
     if (!inputs || !outputs) {
@@ -453,7 +449,7 @@ class ExplorerWallet {
    * let oip = new OIP(wif,  "testnet")
    * let output = {
    *     address: "oNAydz5TjkhdP3RPuu3nEirYQf49Jrzm4S",
-   *     value: Math.floor(0.001 * flo_testnet.satPerCoin)
+   *     value: Math.floor(0.001 * floTestnet.satPerCoin)
    * }
    * let txid = await oip.createAndSendFloTx(output, "sending floData to testnet")
    * oip.addSpentTransaction(txid)

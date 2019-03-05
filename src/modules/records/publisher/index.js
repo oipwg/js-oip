@@ -1,1 +1,5 @@
-export Publisher from './publisher'
+import Publisher from './publisher'
+
+export {
+  Publisher
+}

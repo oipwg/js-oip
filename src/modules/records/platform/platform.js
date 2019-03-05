@@ -1,7 +1,7 @@
 import OIPRecord from '../oip-record'
 
 export default class Platform extends OIPRecord {
-  constructor () {
+  constructor () { // eslint-disable-line
     super()
   }
 }

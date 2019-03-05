@@ -1,1 +1,5 @@
-export OIP from "./oip";
+import OIP from './oip'
+
+export {
+  OIP
+}
