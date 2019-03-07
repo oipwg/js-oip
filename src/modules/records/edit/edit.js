@@ -23,28 +23,60 @@ export default class EditRecord extends OIPRecord {
     this.rfc6902Patch = undefined
   }
 
-  setUpdatedRecord (updatedRecord) {
-    this.updatedRecordVersion = updatedRecord
+  setPatchedRecord (patchedRecord) {
+    this.patchedRecord = patchedRecord
   }
 
-  setPreviousRecord (previousRecord) {
-    this.previousRecordVersion = previousRecord
+  setOriginalRecord (originalRecord) {
+    this.originalRecord = originalRecord
   }
 
-  createRFC6902Patch () {
+  setOriginalRecordTXID (originalTXID) {
+    this.edit.txid = originalTXID
+  }
+
+  setTimestamp (timestamp) {
+    this.edit.timestamp = timestamp
+  }
+
+  setPatch (squashedPatch) {
+    this.edit.patch = squashedPatch
+  }
+
+  getPatchedRecord () {
+    return this.updatedRecordVersion
+  }
+
+  getOriginalRecord () {
+    return this.previousRecordVersion
+  }
+
+  getOriginalRecordTXID () {
+    return this.edit.txid
+  }
+
+  getTimestamp () {
+    return this.edit.timestamp
+  }
+
+  getPatch () {
+    return this.edit.patch
+  }
+
+  createRFC6902Patch (originalJSON, modifiedJSON) {
 
   }
 
-  squashRFC6902Patch () {
+  squashRFC6902Patch (RFC6902PatchJSON) {
 
   }
 
-  unsquashRFC6902 () {
+  unsquashRFC6902Patch (squashedPatch) {
 
   }
 
   createPatch () {
-
+    this.rfc6902Patch = this.createRFC6902Patch()
   }
 
   /**
