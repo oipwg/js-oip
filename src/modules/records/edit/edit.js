@@ -1,3 +1,5 @@
+import { createPatch } from 'rfc6902'
+
 import OIPRecord from '../oip-record'
 
 export default class EditRecord extends OIPRecord {
@@ -63,8 +65,14 @@ export default class EditRecord extends OIPRecord {
     return this.edit.patch
   }
 
+  /**
+   * Create an RFC6902 JSON Patch
+   * @param  {Object} originalJSON
+   * @param  {Object} modifiedJSON 
+   * @return {RFC6902PatchJSON} Returns the RFC6902 Patch JSON
+   */
   createRFC6902Patch (originalJSON, modifiedJSON) {
-
+    return createPatch(originalJSON, modifiedJSON)
   }
 
   /**
