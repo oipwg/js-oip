@@ -108,8 +108,47 @@ export default class EditRecord extends OIPRecord {
     return squashedPatch
   }
 
+  /**
+   * Un-Squash a OIPSquashedPatch into a [RFC6902](https://tools.ietf.org/html/rfc6902) JSON patch
+   * @param {OIPSquashedPatch} squashedPatch - A [OIP Squashed Edit Patch](https://oip.wiki/index.php?title=Squash_Edit)
+   * @returns {RFC6902PatchJSON} Returns the RFC6902 Patch JSON
+  */
   unsquashRFC6902Patch (squashedPatch) {
+    // Create an empty array to hold all of the patches
+    let rfc6902Patch = []
 
+    // Operations are stored at the key level, so we use `for in` here to loop through them
+    for (let op in squashedPatch) {
+      // remove operations are stored in an array
+      if (op === 'remove'){
+        for (let path of squashedPatch[op]) {
+          rfc6902Patch.push({ op, path })
+        }
+      }
+
+      // add, replace, and test operations are stored in an Object
+      if (['add', 'replace', 'test'].includes(op)) {
+        for (let path in squashedPatch[op]){
+          let value = squashedPatch[op][path]
+
+          rfc6902Patch.push({ op, path, value })
+        }
+      }
+
+      // move, and copy operations are also stored in an Object
+      if (['move', 'copy'].includes(op)) {
+        // For move and copy operations, "from" is stored as the key
+        for (let fromPath in squashedPatch[op]){
+          // and "path" is stored as the value
+          let path = squashedPatch[op][fromPath]
+
+          rfc6902Patch.push({ op, from: fromPath, path })
+        }
+      }
+    }
+
+    // Return the array with unsquashed patches :)
+    return rfc6902Patch
   }
 
   createPatch () {
