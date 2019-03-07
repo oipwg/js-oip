@@ -33,7 +33,7 @@ describe('Squash RFC6902', () => {
 
     expect(squashedPatch).toEqual({ replace: { '/field': 'after', '/second': 'two' } })
   })
-  test('squash RFC6902 Patch (single fields, multiple ops)', () => {
+  test('squash RFC6902 Patch (single field, multiple ops)', () => {
     let edit = new EditRecord()
 
     let rfc6902Patch = [
@@ -90,7 +90,48 @@ describe('Squash RFC6902', () => {
   })
 })
 describe('Unsquash RFC6902', () => {
-  test('unsquash RFC6902 Patch', () => {
+   test('Unsquash RFC6902 Patch (single field, single op)', () => {
+    let edit = new EditRecord()
+
+    let squashedPatch = { remove: [ '/first' ] }
+
+    let rfc6902Patch = edit.unsquashRFC6902Patch(squashedPatch)
+
+    expect(rfc6902Patch).toEqual([
+      { op: 'remove', path: '/first' }
+    ])
+  })
+
+  test('Unsquash RFC6902 Patch (multiple fields, single op)', () => {
+    let edit = new EditRecord()
+
+    let squashedPatch = { remove: [ '/first', '/second' ] }
+
+    let rfc6902Patch = edit.unsquashRFC6902Patch(squashedPatch)
+
+    expect(rfc6902Patch).toEqual([
+      { op: 'remove', path: '/first' },
+      { op: 'remove', path: '/second' }
+    ])
+  })
+
+  test('Unsquash RFC6902 Patch (single field, multiple ops)', () => {
+    let edit = new EditRecord()
+
+    let squashedPatch = { 
+      remove: [ '/first' ],
+      replace: { '/second': 'two' }
+    }
+
+    let rfc6902Patch = edit.unsquashRFC6902Patch(squashedPatch)
+
+    expect(rfc6902Patch).toEqual([
+      { op: 'remove', path: '/first' },
+      { op: 'replace', path: '/second', value: 'two' }
+    ])
+  })
+
+  test('Unsquash RFC6902 Patch (multiple fields, multiple ops)', () => {
     let edit = new EditRecord()
 
     let squashedPatch = {
