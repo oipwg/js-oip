@@ -90,7 +90,7 @@ describe('Squash RFC6902', () => {
   })
 })
 describe('Unsquash RFC6902', () => {
-   test('Unsquash RFC6902 Patch (single field, single op)', () => {
+  test('Unsquash RFC6902 Patch (single field, single op)', () => {
     let edit = new EditRecord()
 
     let squashedPatch = { remove: [ '/first' ] }
@@ -118,7 +118,7 @@ describe('Unsquash RFC6902', () => {
   test('Unsquash RFC6902 Patch (single field, multiple ops)', () => {
     let edit = new EditRecord()
 
-    let squashedPatch = { 
+    let squashedPatch = {
       remove: [ '/first' ],
       replace: { '/second': 'two' }
     }
@@ -179,10 +179,13 @@ describe('Apply Squashed Patch to Record', () => {
 
     originalRecord.setTXID('testTXID')
     originalRecord.setTitle('original title')
+    originalRecord.setType('Text')
 
-    let squashedPatch = { replace: { '/title': 'my new thing' } }
+    originalRecord.meta.type = 'oip042'
 
-    let edit = new EditRecord(originalRecord)
+    let squashedPatch = { replace: { '/info/title': 'my new thing' } }
+
+    let edit = new EditRecord(undefined, originalRecord)
 
     // setPatch should apply the patch to the Original Record if there is no "patched record" defined
     edit.setPatch(squashedPatch)
@@ -205,19 +208,17 @@ describe('Create Squashed Patch from Records', () => {
 
     modifedRecord.setTitle('my new thing')
 
-    let edit = new EditRecord(originalRecord, modifedRecord)
+    let edit = new EditRecord(undefined, originalRecord, modifedRecord)
 
-    console.log(edit.getPatch())
-
-    expect(edit.getPatch()).toEqual({ replace: { '/title': 'my new thing' } })
+    expect(edit.getPatch()).toEqual({ replace: { '/info/title': 'my new thing' } })
   })
 })
 
-describe("Serialization", () => {
+describe('Serialization', () => {
   test('Create EditRecord from JSON', () => {
     let edit = new EditRecord({
       edit: {
-        txid: "abcd",
+        txid: 'abcd',
         timestamp: 1234
       }
     })
@@ -236,12 +237,23 @@ describe("Serialization", () => {
   test('Serialize EditRecord for Blockchain', () => {
     let edit = new EditRecord({
       edit: {
-        txid: "abcd",
+        txid: 'abcd',
         timestamp: 1234,
-        patch: "test1234"
+        patch: 'test1234'
       }
     })
 
-    expect(edit.serialize()).toBe("")
+    expect(edit.serialize()).toEqual({
+      oip042: {
+        edit: {
+          artifact: {
+            txid: 'abcd',
+            timestamp: 1234,
+            patch: 'test1234'
+          },
+          signature: undefined
+        }
+      }
+    })
   })
 })

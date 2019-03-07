@@ -1,10 +1,13 @@
-import { createPatch } from 'rfc6902'
+import { createPatch, applyPatch } from 'rfc6902'
 
 import OIPRecord from '../oip-record'
+import { decodeArtifact as decodeRecord } from '../../../decoders'
 
 export default class EditRecord extends OIPRecord {
   constructor (editRecordJSON, originalRecord, patchedRecord) {
     super()
+
+    this.oipRecordType = 'artifact'
 
     // Define the edit information
     this.edit = {
@@ -17,18 +20,19 @@ export default class EditRecord extends OIPRecord {
       applied: undefined
     }
 
-    if (originalRecord)
-     this.setOriginalRecord(originalRecord)
+    this.signature = undefined
 
-    if (patchedRecord)
-      this.setPatchedRecord(patchedRecord)
+    if (originalRecord) { this.setOriginalRecord(originalRecord) }
 
-    if (editRecordJSON)
-      this.fromJSON(editRecordJSON)
+    if (patchedRecord) { this.setPatchedRecord(patchedRecord) }
+
+    if (editRecordJSON) { this.fromJSON(editRecordJSON) }
   }
 
   setPatchedRecord (patchedRecord) {
     this.patchedRecord = patchedRecord
+
+    if (this.originalRecord) { this.createPatch() }
   }
 
   setOriginalRecord (originalRecord) {
@@ -45,14 +49,24 @@ export default class EditRecord extends OIPRecord {
 
   setPatch (squashedPatch) {
     this.edit.patch = squashedPatch
+
+    if (this.originalRecord && !this.patchedRecord) {
+      let patchedRecord = this.createPatchedRecord(this.originalRecord, this.edit.patch)
+
+      this.setPatchedRecord(patchedRecord)
+    }
+  }
+
+  setSignature (sig) {
+    this.signature = sig
   }
 
   getPatchedRecord () {
-    return this.updatedRecordVersion
+    return this.patchedRecord
   }
 
   getOriginalRecord () {
-    return this.previousRecordVersion
+    return this.originalRecord
   }
 
   getOriginalRecordTXID () {
@@ -67,10 +81,38 @@ export default class EditRecord extends OIPRecord {
     return this.edit.patch
   }
 
+  getSignature () {
+    return this.signature
+  }
+
+  /**
+   * Apply a squashed patch to an OIP Record
+   * @param  {OIPRecord} originalRecord           - The Original Record
+   * @param  {OIPSquashedPatch} squashedPatchJSON - The squashed RFC6902 Patch JSON
+   * @return {OIPRecord} Returns an OIP Record with the Edit Patch applied
+   */
+  createPatchedRecord (originalRecord, squashedPatchJSON) {
+    let clonedJSON = originalRecord.toJSON()
+
+    let rfc6902Patch = this.unsquashRFC6902Patch(squashedPatchJSON)
+
+    let patchOperations = applyPatch(clonedJSON.artifact, rfc6902Patch)
+
+    for (let op of patchOperations) {
+      if (op !== null) { throw new Error('Patch Application had an Error! ' + JSON.stringify(patchOperations, null, 4)) }
+    }
+
+    let patchedRecord = decodeRecord(clonedJSON)
+
+    this.setPatchedRecord(patchedRecord)
+
+    return patchedRecord
+  }
+
   /**
    * Create an RFC6902 JSON Patch
    * @param  {Object} originalJSON
-   * @param  {Object} modifiedJSON 
+   * @param  {Object} modifiedJSON
    * @return {RFC6902PatchJSON} Returns the RFC6902 Patch JSON
    */
   createRFC6902Patch (originalJSON, modifiedJSON) {
@@ -132,7 +174,7 @@ export default class EditRecord extends OIPRecord {
     // Operations are stored at the key level, so we use `for in` here to loop through them
     for (let op in squashedPatch) {
       // remove operations are stored in an array
-      if (op === 'remove'){
+      if (op === 'remove') {
         for (let path of squashedPatch[op]) {
           rfc6902Patch.push({ op, path })
         }
@@ -140,7 +182,7 @@ export default class EditRecord extends OIPRecord {
 
       // add, replace, and test operations are stored in an Object
       if (['add', 'replace', 'test'].includes(op)) {
-        for (let path in squashedPatch[op]){
+        for (let path in squashedPatch[op]) {
           let value = squashedPatch[op][path]
 
           rfc6902Patch.push({ op, path, value })
@@ -150,7 +192,7 @@ export default class EditRecord extends OIPRecord {
       // move, and copy operations are also stored in an Object
       if (['move', 'copy'].includes(op)) {
         // For move and copy operations, "from" is stored as the key
-        for (let fromPath in squashedPatch[op]){
+        for (let fromPath in squashedPatch[op]) {
           // and "path" is stored as the value
           let path = squashedPatch[op][fromPath]
 
@@ -163,8 +205,20 @@ export default class EditRecord extends OIPRecord {
     return rfc6902Patch
   }
 
+  /**
+   * Create Squashed Patch based on the Original Record and the Patched Record
+   */
   createPatch () {
-    this.rfc6902Patch = this.createRFC6902Patch()
+    // Verify that we have the Records we need
+    if (!this.originalRecord || !this.patchedRecord) { throw new Error('Cannot create Patch without an Original Record and the Patched Record!') }
+
+    // Create the rfc6902 JSON patch from the Record JSON
+    let originalJSON = this.originalRecord.toJSON().artifact
+    let patchedJSON = this.patchedRecord.toJSON().artifact
+    this.rfc6902Patch = this.createRFC6902Patch(originalJSON, patchedJSON)
+
+    // Create and set the Squashed Patch
+    this.setPatch(this.squashRFC6902Patch(this.rfc6902Patch))
   }
 
   /**
@@ -186,12 +240,9 @@ export default class EditRecord extends OIPRecord {
    */
   fromJSON (editRecord) {
     if (editRecord.edit) {
-      if (editRecord.edit.txid)
-        this.setOriginalRecordTXID(editRecord.edit.txid)
-      if (editRecord.edit.timestamp)
-        this.setTimestamp(editRecord.edit.timestamp)
-      if (editRecord.edit.patch)
-        this.setPatch(editRecord.edit.patch)
+      if (editRecord.edit.txid) { this.setOriginalRecordTXID(editRecord.edit.txid) }
+      if (editRecord.edit.timestamp) { this.setTimestamp(editRecord.edit.timestamp) }
+      if (editRecord.edit.patch) { this.setPatch(editRecord.edit.patch) }
     }
     if (editRecord.meta) {
       this.meta = editRecord.meta
@@ -199,6 +250,11 @@ export default class EditRecord extends OIPRecord {
   }
 
   serialize () {
+    let serializedJSON = {}
 
+    serializedJSON[this.oipRecordType] = this.edit
+    serializedJSON.signature = this.getSignature()
+
+    return { oip042: { edit: serializedJSON } }
   }
 }
