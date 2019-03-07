@@ -3,7 +3,7 @@ import { createPatch } from 'rfc6902'
 import OIPRecord from '../oip-record'
 
 export default class EditRecord extends OIPRecord {
-  constructor () {
+  constructor (editRecordJSON, originalRecord, patchedRecord) {
     super()
 
     // Define the edit information
@@ -17,12 +17,14 @@ export default class EditRecord extends OIPRecord {
       applied: undefined
     }
 
-    // Define variables to hold the current latest version record and the updated record
-    this.previousRecordVersion = undefined
-    this.updatedRecordVersion = undefined
+    if (originalRecord)
+     this.setOriginalRecord(originalRecord)
 
-    // Var to hold the internal rfc patch
-    this.rfc6902Patch = undefined
+    if (patchedRecord)
+      this.setPatchedRecord(patchedRecord)
+
+    if (editRecordJSON)
+      this.fromJSON(editRecordJSON)
   }
 
   setPatchedRecord (patchedRecord) {
@@ -72,7 +74,9 @@ export default class EditRecord extends OIPRecord {
    * @return {RFC6902PatchJSON} Returns the RFC6902 Patch JSON
    */
   createRFC6902Patch (originalJSON, modifiedJSON) {
-    return createPatch(originalJSON, modifiedJSON)
+    this.rfc6902Patch = createPatch(originalJSON, modifiedJSON)
+
+    return this.rfc6902Patch
   }
 
   /**
@@ -165,14 +169,33 @@ export default class EditRecord extends OIPRecord {
 
   /**
    * Get the JSON version of the edit
-   * @return {[type]} [description]
+   * @return {Object}
    */
   toJSON () {
+    let cloneJSON = JSON.parse(JSON.stringify({
+      edit: this.edit,
+      meta: this.meta
+    }))
 
+    return cloneJSON
   }
 
-  fromJSON () {
-
+  /**
+   * Load an EditRecord from JSON
+   * @param  {Object} editRecord - The Edit Record JSON
+   */
+  fromJSON (editRecord) {
+    if (editRecord.edit) {
+      if (editRecord.edit.txid)
+        this.setOriginalRecordTXID(editRecord.edit.txid)
+      if (editRecord.edit.timestamp)
+        this.setTimestamp(editRecord.edit.timestamp)
+      if (editRecord.edit.patch)
+        this.setPatch(editRecord.edit.patch)
+    }
+    if (editRecord.meta) {
+      this.meta = editRecord.meta
+    }
   }
 
   serialize () {

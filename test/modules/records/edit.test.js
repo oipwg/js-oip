@@ -212,3 +212,36 @@ describe('Create Squashed Patch from Records', () => {
     expect(edit.getPatch()).toEqual({ replace: { '/title': 'my new thing' } })
   })
 })
+
+describe("Serialization", () => {
+  test('Create EditRecord from JSON', () => {
+    let edit = new EditRecord({
+      edit: {
+        txid: "abcd",
+        timestamp: 1234
+      }
+    })
+
+    expect(edit.getTimestamp()).toBe(1234)
+  })
+  test('Turn EditRecord into JSON', () => {
+    let edit = new EditRecord()
+
+    edit.setTimestamp(1234)
+
+    let jsonEdit = edit.toJSON()
+
+    expect(jsonEdit.edit.timestamp).toBe(1234)
+  })
+  test('Serialize EditRecord for Blockchain', () => {
+    let edit = new EditRecord({
+      edit: {
+        txid: "abcd",
+        timestamp: 1234,
+        patch: "test1234"
+      }
+    })
+
+    expect(edit.serialize()).toBe("")
+  })
+})
