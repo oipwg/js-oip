@@ -308,8 +308,12 @@ class RPCWallet {
    * @return {Boolean} Returns true on Success
    */
   async initialize () {
+    console.log(`[RPC Wallet] Importing the Private Key to the RPC Wallet, this may take a long time...`)
+
     // First, we import the Private Key to make sure it exists when we attempt to send transactions.
     let importPrivKey = await this.rpcRequest('importprivkey', [ this.wif, '', true ])
+
+    console.log(`[RPC Wallet] Private Key Import to the RPC Wallet Complete!`)
 
     // Check for an error importing the private key. If there is no error, the private key import was successful.
     // No error and no result signify that the Private Key was already imported previously to the wallet.
