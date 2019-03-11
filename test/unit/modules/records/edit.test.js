@@ -258,3 +258,34 @@ describe('Serialization', () => {
     })
   })
 })
+
+describe('Signature', () => {
+  test('Signature Preimage', () => {
+    let edit = new EditRecord({
+      edit: {
+        txid: 'abcd',
+        timestamp: 1234,
+        patch: 'test1234'
+      }
+    })
+
+    expect(edit.createPreimage()).toEqual('abcd-1234')
+  })
+  test('Should be able to Sign', async () => {
+    let edit = new EditRecord({
+      edit: {
+        txid: 'abcd',
+        timestamp: 1234,
+        patch: 'test1234'
+      }
+    })
+
+    await edit.signSelf(async (preimage) => {
+      expect(preimage).toBe('abcd-1234')
+
+      return 'mySig-' + preimage
+    })
+
+    expect(edit.getSignature()).toBe('mySig-abcd-1234')
+  })
+})
