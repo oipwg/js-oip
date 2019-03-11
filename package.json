@@ -4,9 +4,10 @@
   "description": "A Javascript Library to fully interact with the Open Index Protocol",
   "main": "lib/index.js",
   "scripts": {
-    "test": "npm run test:unit && standard",
+    "test": "npm run test:unit && npm run test:format",
     "test:unit": "jest test/unit --detectOpenHandles --verbose",
     "test:integration": "jest test/integration --detectOpenHandles --verbose",
+    "test:format": "standard",
     "compile": "./node_modules/.bin/babel -d lib/ src/",
     "prepare": "npm run test && npm run compile",
     "code-format": "standard --fix",
