@@ -1,5 +1,5 @@
 import fs from 'fs'
-import IpfsHttpApi from '../../../src/core/ipfs/ipfsHttpApi'
+import IpfsHttpApi from '../../../../src/core/ipfs/ipfsHttpApi'
 
 let godImgPath = '/home/orpheus/Pictures/Wallpapers/4rdYuG.jpg'
 let godImgStats = fs.statSync(godImgPath)

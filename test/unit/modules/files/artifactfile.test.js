@@ -1,4 +1,4 @@
-import ArtifactFile from '../../../src/modules/files/artifactfile'
+import ArtifactFile from '../../../../src/modules/files/artifactfile'
 
 test('instanceof ArtifactFile', () => {
   let af = new ArtifactFile()

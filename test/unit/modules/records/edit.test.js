@@ -1,5 +1,5 @@
-import { Artifact as Record } from '../../../src/modules/records/artifact'
-import { EditRecord } from '../../../src/modules/records/edit'
+import { Artifact as Record } from '../../../../src/modules/records/artifact'
+import { EditRecord } from '../../../../src/modules/records/edit'
 
 describe('RFC6902 Tests', () => {
   test('create RFC6902 Patch', () => {
@@ -240,7 +240,8 @@ describe('Serialization', () => {
         txid: 'abcd',
         timestamp: 1234,
         patch: 'test1234'
-      }
+      },
+      signature: 'mySig'
     })
 
     expect(edit.serialize()).toEqual({
@@ -251,7 +252,7 @@ describe('Serialization', () => {
             timestamp: 1234,
             patch: 'test1234'
           },
-          signature: undefined
+          signature: 'mySig'
         }
       }
     })

@@ -1,4 +1,4 @@
-import { Artifact, PropertyParty, PropertyTenure, PropertySpatialUnit, ResearchTomogram } from '../../../src/modules/records/artifact/index'
+import { Artifact, PropertyParty, PropertyTenure, PropertySpatialUnit, ResearchTomogram } from '../../../../src/modules/records/artifact/index'
 
 const oip41ArtifactwJSON = '5f399eef8f93c03502efbd51691350cbacbf3c16eba228409bf7453ffff78207' // eslint-disable-line
 

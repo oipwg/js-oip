@@ -1,5 +1,5 @@
 import fs from 'fs'
-import JsIpfs from '../../../src/core/ipfs/jsIpfs'
+import JsIpfs from '../../../../src/core/ipfs/jsIpfs'
 
 let godImgPath = '/home/orpheus/Pictures/Wallpapers/4rdYuG.jpg'
 let godImgStream = fs.createReadStream(godImgPath)

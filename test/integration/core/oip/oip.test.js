@@ -1,6 +1,6 @@
-import { OIP } from '../../../src'
-import { artifactSmall, artifactLarge } from '../../../examples/exampleArtifact'
-import Artifact from '../../../src/modules/records/artifact/artifact'
+import { OIP } from '../../../../src'
+import { artifactSmall, artifactLarge } from '../../../../examples/exampleArtifact'
+import Artifact from '../../../../src/modules/records/artifact/artifact'
 
 // const keypair = bitcoin.ECPair.makeRandom({network})
 // const tmpWif = keypair.toWIF()
@@ -26,12 +26,6 @@ const rpcSettings = {
 }
 
 describe(`OIP`, () => {
-  describe('Initialization', () => {
-    it(`Should construct successfully with valid WIF`, () => {
-      let pub = new OIP(wif, 'testnet')
-      expect(pub.options.publicAddress).toBe('ofbB67gqjgaYi45u8Qk2U3hGoCmyZcgbN4')
-    })
-  })
   describe('Publishing', () => {
     it.skip('publish test artifact ExplorerWallet', async () => {
       let oip = new OIP(wif, 'testnet')
@@ -70,5 +64,6 @@ describe(`OIP`, () => {
       // console.log('final return: ', txids)
       done()
     })
+    it('Filler test', () => { expect(true).toBe(true) })
   })
 })

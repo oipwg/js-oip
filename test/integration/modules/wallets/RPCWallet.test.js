@@ -1,4 +1,4 @@
-import RPCWallet from '../../../src/modules/wallets/RPCWallet'
+import RPCWallet from '../../../../src/modules/wallets/RPCWallet'
 
 let pubAddress = 'pubaddress'
 let wif = 'wif'

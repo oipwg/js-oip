@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { decodeArtifact } from '../../src/decoders'
-import { Artifacts } from '../../src/modules/records'
+import { decodeArtifact } from '../../../src/decoders'
+import { Artifacts } from '../../../src/modules/records'
 
 let daemonUrl = 'http://snowflake.oip.fun:1606' // ToDo: switch to snowflake for travis
 let api = new axios.create({ // eslint-disable-line
@@ -56,11 +56,5 @@ describe('Decoders', () => {
     it('decode property party artifact', async () => {}) // on testnet
     it('decode property spacial unit artifact', async () => {}) // on testnet
     it('decode property tenure artifact', async () => {}) // on testnet
-    it('decode invalid artifact', () => {
-      let json = { name: 'junk', title: 'fake artifact' }
-      let artifact = decodeArtifact(json)
-      expect(artifact).toBeInstanceOf(Artifacts.Artifact)
-      expect(artifact.isValid().success).toBeFalsy()
-    })
   })
 })
