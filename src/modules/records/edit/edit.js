@@ -57,10 +57,6 @@ export default class EditRecord extends OIPRecord {
     }
   }
 
-  setSignature (sig) {
-    this.signature = sig
-  }
-
   getPatchedRecord () {
     return this.patchedRecord
   }
@@ -79,10 +75,6 @@ export default class EditRecord extends OIPRecord {
 
   getPatch () {
     return this.edit.patch
-  }
-
-  getSignature () {
-    return this.signature
   }
 
   /**
@@ -221,6 +213,12 @@ export default class EditRecord extends OIPRecord {
     this.setPatch(this.squashRFC6902Patch(this.rfc6902Patch))
   }
 
+  createPreimage () {
+    this.preimage = `${this.getOriginalRecordTXID()}-${this.getTimestamp()}`
+
+    return this.preimage
+  }
+
   /**
    * Get the JSON version of the edit
    * @return {Object}
@@ -244,6 +242,9 @@ export default class EditRecord extends OIPRecord {
       if (editRecord.edit.timestamp) { this.setTimestamp(editRecord.edit.timestamp) }
       if (editRecord.edit.patch) { this.setPatch(editRecord.edit.patch) }
     }
+    if (editRecord.signature) {
+      this.signature = editRecord.signature
+    }
     if (editRecord.meta) {
       this.meta = editRecord.meta
     }
@@ -256,5 +257,13 @@ export default class EditRecord extends OIPRecord {
     serializedJSON.signature = this.getSignature()
 
     return { oip042: { edit: serializedJSON } }
+  }
+
+  /**
+   * Get the Class Name.
+   * @return {string} Returns "EditRecord"
+   */
+  getClassName () {
+    return 'EditRecord'
   }
 }
