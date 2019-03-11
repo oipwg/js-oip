@@ -16,7 +16,7 @@ Integration Tests:
    - npm run test:integration
   allow_failure: true
 
-Test Code Formatting:
+Code Format:
   stage: test
   script:
    - npm ci
