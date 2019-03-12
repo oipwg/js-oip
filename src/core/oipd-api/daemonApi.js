@@ -321,12 +321,17 @@ class DaemonApi {
     } catch (err) {
       return new Error(`Failed to get artifact: ${txid} -- ${err}`)
     }
-    if (res && res.data) {
-      let [artifact] = res.data.results
-      return { success: true, artifact: decodeArtifact(artifact) } // ToDO: OIPDecoder
-    } else {
-      return { success: false, error: `Missing response data: ${res.data}` }
+    if (!res || !res.data) {
+      return { success: false, error: `Missing response data: ${res.data} for txid ${txid}` }
     }
+
+    if (!res.data.results || !Array.isArray(res.data.results) || res.data.results.length < 1) {
+      return { success: false, error: `No results found for txid ${txid}` }
+    }
+
+    let [artifact] = res.data.results
+
+    return { success: true, artifact: decodeArtifact(artifact) } // ToDO: OIPDecoder
   }
 
   /**
