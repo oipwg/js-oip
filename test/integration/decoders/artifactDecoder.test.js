@@ -2,7 +2,7 @@ import axios from 'axios'
 import { decodeArtifact } from '../../../src/decoders'
 import { Artifacts } from '../../../src/modules/records'
 
-let daemonUrl = 'http://snowflake.oip.fun:1606' // ToDo: switch to snowflake for travis
+let daemonUrl = 'https://snowflake.oip.fun/oip' // ToDo: switch to snowflake for travis
 let api = new axios.create({ // eslint-disable-line
   baseURL: daemonUrl,
   headers: {
@@ -14,7 +14,7 @@ describe('Decoders', () => {
   describe('Artifact Decoder', () => {
     it('decode alexandria-media artifact', async () => {
       let txid = '32dd84b5d756801b8050c7e2757c06cf73f1e5544e7c25afb0ef87e6ddbfba57'
-      let res = (await api.get(`artifact/get/${txid}`)).data
+      let res = (await api.get(`/alexandria/artifact/get/${txid}`)).data
       let [json] = res.results
       expect(json).toHaveProperty('artifact')
       expect(json).toHaveProperty('meta')

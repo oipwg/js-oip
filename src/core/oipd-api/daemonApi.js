@@ -82,7 +82,7 @@ const decodeArray = (artifacts) => {
 
 // ToDo: change to 'https' when ready
 // const defaultOIPdURL = 'http://localhost:1606'
-const defaultOIPdURL = 'http://snowflake.oip.fun:1606'
+const defaultOIPdURL = 'https://snowflake.oip.fun/oip'
 
 /**
  * Class to make HTTP calls to an OIP Daemon
