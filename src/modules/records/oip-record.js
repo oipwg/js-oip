@@ -3,6 +3,8 @@ import { verify } from 'bitcoinjs-message'
 class OIPRecord {
   constructor () {
     this.preimage = undefined
+    this.signature = undefined
+    this.pubAddress = undefined
   }
 
   /**
@@ -91,6 +93,28 @@ class OIPRecord {
    */
   serialize () {
     throw new Error(`Classes that extend OIPRecord must contain a 'serialize' method`)
+  }
+
+  /**
+   * Turn the OIP Record to JSON
+   * @return {Object} Returns the json version of the OIP Record
+   */
+  toJSON () {
+    return {
+      preimage: this.preimage,
+      signature: this.signature,
+      pubAddress: this.pubAddress
+    }
+  }
+
+  /**
+   * Load an OIP Record from JSON
+   * @param {Object} recordJSON - json containing a preimage, signature, and/or pubAddress
+   */
+  fromJSON (recordJSON) {
+    this.preimage = recordJSON.preimage
+    this.signature = recordJSON.signature
+    this.pubAddress = recordJSON.pubAddress
   }
 
   /**
