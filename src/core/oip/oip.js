@@ -122,7 +122,13 @@ class OIP {
    * @return {Promise<string|Array<string>>} txid - a txid or an array of txids (if your edit is too large to fit onto one tx)
    */
   async edit (editedRecord) {
+    // Lookup the currently latest version of the Record
+    // Throw an Error if record does not exist
 
+    // Create an Edit Record from the Original and Edited
+    // Throw an error if there is no edit patch (aka, they are the same)
+
+    // Publish to chain
   }
 
   // async transfer(record) {
