@@ -266,4 +266,21 @@ export default class EditRecord extends OIPRecord {
   getClassName () {
     return 'EditRecord'
   }
+
+  isValid () {
+    if (!this.edit.txid || this.edit.txid === '') {
+      return { success: false, error: 'Original Record TXID is a Required Field!' }
+    }
+    if (!this.edit.timestamp || this.edit.timestamp === '') {
+      return { success: false, error: 'Having a timestamp is Required!' }
+    }
+    if (!this.edit.patch || this.edit.patch === '') {
+      return { success: false, error: 'Having an Edit Patch is Required!' }
+    }
+    if (!this.signature || this.signature === '') {
+      return { success: false, error: 'Having a Signature is Required!' }
+    }
+
+    return { success: true }
+  }
 }
