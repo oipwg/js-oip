@@ -32,11 +32,13 @@ export default class EditRecord extends OIPRecord {
   setPatchedRecord (patchedRecord) {
     this.patchedRecord = patchedRecord
 
-    if (this.originalRecord) { this.createPatch() }
+    if (this.originalRecord) { this.createPatch() } else { this.setOriginalRecordTXID(patchedRecord.getTXID()) }
   }
 
   setOriginalRecord (originalRecord) {
     this.originalRecord = originalRecord
+
+    this.setOriginalRecordTXID(originalRecord.getTXID())
   }
 
   setOriginalRecordTXID (originalTXID) {
@@ -256,7 +258,7 @@ export default class EditRecord extends OIPRecord {
     serializedJSON[this.oipRecordType] = this.edit
     serializedJSON.signature = this.getSignature()
 
-    return { oip042: { edit: serializedJSON } }
+    return `json:${JSON.stringify({ oip042: { edit: serializedJSON } })}`
   }
 
   /**
@@ -276,6 +278,9 @@ export default class EditRecord extends OIPRecord {
     }
     if (!this.edit.patch || this.edit.patch === '') {
       return { success: false, error: 'Having an Edit Patch is Required!' }
+    }
+    if (JSON.stringify(this.edit.patch) === '{}') {
+      return { success: false, error: 'Empty Patch! You must modify the Record in order to edit it!' }
     }
     if (!this.signature || this.signature === '') {
       return { success: false, error: 'Having a Signature is Required!' }

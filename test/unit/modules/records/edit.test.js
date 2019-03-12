@@ -212,6 +212,24 @@ describe('Create Squashed Patch from Records', () => {
 
     expect(edit.getPatch()).toEqual({ replace: { '/info/title': 'my new thing' } })
   })
+  test('Create Patch (reject valid if empty patch)', () => {
+    let originalRecord = new Record()
+
+    originalRecord.setTXID('testTXID')
+    originalRecord.setTitle('original title')
+
+    let modifedRecord = new Record()
+    modifedRecord.fromJSON(originalRecord.toJSON())
+
+    modifedRecord.setTitle('original title')
+
+    let edit = new EditRecord(undefined, originalRecord, modifedRecord)
+    edit.setTimestamp(Date.now())
+    edit.setSignature('mySig')
+
+    expect(edit.getPatch()).toEqual({})
+    expect(edit.isValid()).toEqual({ success: false, error: 'Empty Patch! You must modify the Record in order to edit it!' })
+  })
 })
 
 describe('Serialization', () => {
@@ -244,7 +262,7 @@ describe('Serialization', () => {
       signature: 'mySig'
     })
 
-    expect(edit.serialize()).toEqual({
+    expect(edit.serialize()).toEqual(`json:${JSON.stringify({
       oip042: {
         edit: {
           artifact: {
@@ -255,7 +273,7 @@ describe('Serialization', () => {
           signature: 'mySig'
         }
       }
-    })
+    })}`)
   })
 })
 
