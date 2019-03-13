@@ -54,15 +54,21 @@ class OIP {
     }
   }
 
-  /**
-   * Publish OIP Records
-   * @param {OIPRecord} record - an Artifact, Publisher, Platform, Retailer, or Influencer
-   * @return {Promise<string|Array<string>>} txid - a txid or an array of txids (if your record is too large to fit onto one tx)
-   * let oip = new OIP(wif, "testnet")
-   * let artifact = new Artifact()
-   * let result = await oip.publish(artifact)
-   */
-  async publish (record) {
+  async signRecord (record) {
+    if (!record.getSignature() || record.getSignature() === '') {
+      record.setPubAddress(this.options.publicAddress)
+      let { success, error } = await record.signSelf(this.wallet.signMessage.bind(this.wallet))
+      if (!success) {
+        console.log(error.stack)
+        throw new Error(`Failed to sign record: ${error}`)
+      }
+      if (!record.hasValidSignature()) {
+        throw new Error(`Invalid signature`)
+      }
+    }
+  }
+
+  async broadcastRecord (record, methodType) {
     if (!(record instanceof OIPRecord)) {
       throw new Error(`Record must be an instanceof OIPRecord`)
     }
@@ -73,25 +79,18 @@ class OIP {
       this.walletInitialized = true
     }
 
-    // if not signed, then sign
-    if (!record.getSignature() || record.getSignature() === '') {
-      record.setPubAddress(this.options.publicAddress)
-      let { success, error } = await record.signSelf(this.wallet.signMessage.bind(this.wallet))
-      if (!success) {
-        console.log(error.stack)
-        throw new Error(`Failed to sign record: ${error}`)
-      }
-      if (!record.hasValidSignature()) {
-        throw new Error(`Invalid signatuer`)
-      }
+    try {
+      await this.signRecord(record)
+    } catch (error) {
+      return { success: false, error: `Error while Signing Record: ${error}` }
     }
 
     let { success, error } = record.isValid()
+
     if (!success) {
-      throw new Error(`Invalid record: ${error}`)
+      return { success: false, error: `Invalid record: ${error}` }
     }
 
-    const methodType = 'publish'
     let broadcastString = record.serialize(methodType)
     let txids
 
@@ -99,18 +98,37 @@ class OIP {
       try {
         txids = await this.publishMultiparts(broadcastString)
       } catch (err) {
-        throw new Error(`Failed to publish multiparts: ${err}`)
+        return { success: false, error: `Failed to publish multiparts: ${err}` }
       }
     } else {
       try {
         let txid = await this.wallet.sendDataToChain(broadcastString)
         txids = [txid]
       } catch (err) {
-        throw new Error(`Failed to broadcast message: ${err}`)
+        return { success: false, error: `Failed to broadcast message: ${err}` }
       }
     }
 
-    return txids
+    // Set the txid to the Record
+    record.setTXID(txids[0])
+
+    let response = { success: true, txids, record }
+
+    return response
+  }
+
+  /**
+   * Publish OIP Records
+   * @param {OIPRecord} record - an Artifact, Publisher, Platform, Retailer, or Influencer
+   * @return {Promise<string|Array<string>>} txid - a txid or an array of txids (if your record is too large to fit onto one tx)
+   * let oip = new OIP(wif, "testnet")
+   * let artifact = new Artifact()
+   * let result = await oip.publish(artifact)
+   */
+  async publish (record) {
+    let res = await this.broadcastRecord(record, 'publish')
+
+    return res
   }
 
   // async register(record) {
