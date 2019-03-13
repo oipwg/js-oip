@@ -57,6 +57,7 @@ class OIP {
   async signRecord (record) {
     if (!record.getSignature() || record.getSignature() === '') {
       record.setPubAddress(this.options.publicAddress)
+      if (!record.getTimestamp()) { record.setTimestamp(Date.now()) }
       let { success, error } = await record.signSelf(this.wallet.signMessage.bind(this.wallet))
       if (!success) {
         console.log(error.stack)
