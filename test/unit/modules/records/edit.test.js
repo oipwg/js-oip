@@ -200,34 +200,53 @@ describe('Create Squashed Patch from Records', () => {
   test('Create Patch (simple Record)', () => {
     let originalRecord = new Record()
 
+    originalRecord.meta.type = 'oip042'
     originalRecord.setTXID('testTXID')
     originalRecord.setTitle('original title')
+    originalRecord.setSignature('originalSig')
+    originalRecord.setTimestamp(1234)
 
-    let modifedRecord = new Record()
-    modifedRecord.fromJSON(originalRecord.toJSON())
+    let modifiedRecord = new Record()
+    modifiedRecord.fromJSON(originalRecord.toJSON())
 
-    modifedRecord.setTitle('my new thing')
+    modifiedRecord.setTitle('my new thing')
+    modifiedRecord.setSignature('updatedSig')
+    modifiedRecord.setTimestamp(2345)
 
-    let edit = new EditRecord(undefined, originalRecord, modifedRecord)
+    let edit = new EditRecord(undefined, originalRecord, modifiedRecord)
 
-    expect(edit.getPatch()).toEqual({ replace: { '/info/title': 'my new thing' } })
+    expect(edit.getPatch()).toEqual({
+      replace: {
+        '/info/title': 'my new thing',
+        '/signature': 'updatedSig',
+        '/timestamp': 2345
+      }
+    })
   })
   test('Create Patch (reject valid if empty patch)', () => {
     let originalRecord = new Record()
 
+    originalRecord.meta.type = 'oip042'
     originalRecord.setTXID('testTXID')
     originalRecord.setTitle('original title')
+    originalRecord.setTimestamp(1234)
+    originalRecord.setSignature('mySig')
 
-    let modifedRecord = new Record()
-    modifedRecord.fromJSON(originalRecord.toJSON())
+    let modifiedRecord = new Record()
+    modifiedRecord.fromJSON(originalRecord.toJSON())
+    modifiedRecord.setTimestamp(2345)
+    modifiedRecord.setSignature('updatedSig')
 
-    modifedRecord.setTitle('original title')
-
-    let edit = new EditRecord(undefined, originalRecord, modifedRecord)
+    let edit = new EditRecord(undefined, originalRecord, modifiedRecord)
     edit.setTimestamp(Date.now())
-    edit.setSignature('mySig')
+    edit.setSignature('editSig')
 
-    expect(edit.getPatch()).toEqual({})
+    expect(edit.getPatch()).toEqual({
+      replace: {
+        '/signature': 'updatedSig',
+        '/timestamp': 2345
+      }
+    })
     expect(edit.isValid()).toEqual({ success: false, error: 'Empty Patch! You must modify the Record in order to edit it!' })
   })
 })

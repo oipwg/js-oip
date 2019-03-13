@@ -1,7 +1,9 @@
 import bitcoin from 'bitcoinjs-lib'
 
+import { DaemonApi } from '../oipd-api'
 import { MultipartX } from '../../modules'
 import { OIPRecord } from '../../modules/records'
+import { EditRecord } from '../../modules/records/edit'
 import { ExplorerWallet, RPCWallet } from '../../modules/wallets'
 import { floMainnet, floTestnet } from '../../config'
 
@@ -24,6 +26,7 @@ class OIP {
    * @param {String} [network="mainnet"] - Use "testnet" for mainnet
    * @param {Object} [options] - Options to for the OIP class
    * @param {Object} [options.publicAddress] - Explicitly define a public address for the passed WIF
+   * @param {Object} [options.oipdURL] - The OIP daemon API url to use when looking up the Latest Record in oip.edit()
    * @param {Object} [options.rpc] - By default, OIP uses a connection to a web explorer to publish Records, you can however use a connection to an RPC wallet instead by passing an object into this option
    * @param {Object} [options.rpc.host] - The Hostname for the RPC wallet connection
    * @param {Object} [options.rpc.port] - The Port for the RPC wallet connection
@@ -52,6 +55,8 @@ class OIP {
       this.wallet = new ExplorerWallet(this.options)
       this.walletInitialized = true
     }
+
+    this.oipdAPI = new DaemonApi(this.options.oipdURL)
   }
 
   async signRecord (record) {
@@ -115,6 +120,15 @@ class OIP {
 
     let response = { success: true, txids, record }
 
+    // If we are an edit record, also return the edit record :)
+    if (record instanceof EditRecord) {
+      let patchedRecord = record.getPatchedRecord()
+      patchedRecord.setEditVersion(txids[0])
+
+      response.record = patchedRecord
+      response.editRecord = record
+    }
+
     return response
   }
 
@@ -142,12 +156,37 @@ class OIP {
    */
   async edit (editedRecord) {
     // Lookup the currently latest version of the Record
+    let original
+    try {
+      let { success, artifact, error } = await this.oipdAPI.getArtifact(editedRecord.getTXID())
+      // If OIPd reported an error, then throw the error
+      if (success) {
+        original = artifact
+      } else {
+        return { success: false, error: `Unable to load Original Record from OIP daemon: ${error}` }
+      }
+    } catch (e) {
+      // Throw an error if the API request failed
+      return { success: false, error: `Error while requesting Original Record from OIP daemon: ${e}` }
+    }
     // Throw an Error if record does not exist
+    if (!original) {
+      return { success: false, error: `A Record with the txid ${editedRecord.getTXID()} was not found in OIP daemon! Please make sure you have set 'options.oipdURL' to your OIP daemon server!` }
+    }
+
+    try {
+      await this.signRecord(editedRecord)
+    } catch (e) {
+      return { success: false, error: `Error while Signing Edited Record: ${e}` }
+    }
 
     // Create an Edit Record from the Original and Edited
-    // Throw an error if there is no edit patch (aka, they are the same)
+    let edit = new EditRecord(undefined, original, editedRecord)
 
     // Publish to chain
+    let res = await this.broadcastRecord(edit, 'edit')
+
+    return res
   }
 
   // async transfer(record) {

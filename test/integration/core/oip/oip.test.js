@@ -2,20 +2,6 @@ import { OIP } from '../../../../src'
 import { artifactSmall, artifactLarge } from '../../../../examples/exampleArtifact'
 import Artifact from '../../../../src/modules/records/artifact/artifact'
 
-// const keypair = bitcoin.ECPair.makeRandom({network})
-// const tmpWif = keypair.toWIF()
-// console.log(isValidWIF(tmpWif, network))
-
-if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
-  if (typeof localStorage === 'undefined') { // eslint-disable-line
-    // var is needed her for the javascript hoisting effect or else localstorage won't be scoped
-    var LocalStorage = require('node-localstorage').LocalStorage
-    var localStorage = new LocalStorage('./localStorage')
-  }
-} else {
-  localStorage = window.localStorage
-}
-
 const wif = 'cRVa9rNx5N1YKBw8PhavegJPFCiYCfC4n8cYmdc3X1Y6TyFZGG4B'
 
 const rpcSettings = {
@@ -64,6 +50,33 @@ describe(`OIP`, () => {
       // console.log('final return: ', txids)
       done()
     })
+    it.skip('Publish EditRecord RPCWallet', async (done) => {
+      let oip = new OIP(wif, 'testnet', { rpc: { ...rpcSettings }, oipdURL: 'http://35.188.207.8:1606' })
+
+      // Grab the Record TXID
+      let txid = '2b083d53facd09efd6d9f8a92f2806bf78912885f90e52c9518ac0c163abfefb'
+
+      let editedRecord = new Artifact()
+      editedRecord.setTXID(txid) // Set the txid to be able to perform an Edit!
+      editedRecord.setType('Text')
+      editedRecord.setTitle('js-oip Post-Edit Title')
+
+      let { success, txids, record, editRecord } = await oip.edit(editedRecord)
+      console.log(txids)
+
+      expect(success).toBe(true)
+      expect(record).toBeDefined()
+      expect(record.getEditVersion()).toBe(txids[0])
+      expect(editRecord).toBeDefined()
+      expect(editRecord.getTXID()).toBe(txids[0])
+      expect(editRecord.getTimestamp()).toBeDefined()
+
+      expect(txids).toBeDefined()
+      expect(Array.isArray(txids)).toBeTruthy()
+      expect(txids.length).toEqual(1)
+
+      done()
+    }, 10 * 60 * 1000)
     it('Filler test', () => { expect(true).toBe(true) })
   })
 })
