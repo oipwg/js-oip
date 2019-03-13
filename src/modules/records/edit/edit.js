@@ -32,7 +32,13 @@ export default class EditRecord extends OIPRecord {
   setPatchedRecord (patchedRecord) {
     this.patchedRecord = patchedRecord
 
-    if (this.originalRecord) { this.createPatch() } else { this.setOriginalRecordTXID(patchedRecord.getTXID()) }
+    if (this.originalRecord) {
+      // If the Patched Record has the same Timestamp as the Original Record, update it.
+      if (this.getOriginalRecord().getTimestamp() === this.getPatchedRecord().getTimestamp()) { this.getPatchedRecord().setTimestamp(Date.now()) }
+      if (this.getOriginalRecord().getSignature() === this.getPatchedRecord().getSignature()) { this.getPatchedRecord().setSignature('') }
+
+      this.createPatch()
+    } else { this.setOriginalRecordTXID(patchedRecord.getTXID()) }
   }
 
   setOriginalRecord (originalRecord) {
@@ -59,6 +65,10 @@ export default class EditRecord extends OIPRecord {
     }
   }
 
+  setTXID (txid) {
+    this.meta.txid = txid
+  }
+
   getPatchedRecord () {
     return this.patchedRecord
   }
@@ -77,6 +87,10 @@ export default class EditRecord extends OIPRecord {
 
   getPatch () {
     return this.edit.patch
+  }
+
+  getTXID () {
+    return this.meta.txid
   }
 
   /**
@@ -279,7 +293,21 @@ export default class EditRecord extends OIPRecord {
     if (!this.edit.patch || this.edit.patch === '') {
       return { success: false, error: 'Having an Edit Patch is Required!' }
     }
-    if (JSON.stringify(this.edit.patch) === '{}') {
+
+    // Check if we only have { 'replace': { '/timestamp': 1234 } }
+    let onlyReplace = true
+    let onlyTimestampAndSignature = true
+    for (let op in this.edit.patch) {
+      if (op !== 'replace') { onlyReplace = false }
+
+      if (op === 'replace') {
+        for (let path in this.edit.patch[op]) {
+          if (path !== '/timestamp' && path !== '/signature') { onlyTimestampAndSignature = false }
+        }
+      }
+    }
+
+    if (JSON.stringify(this.edit.patch) === '{}' || (onlyReplace && onlyTimestampAndSignature)) {
       return { success: false, error: 'Empty Patch! You must modify the Record in order to edit it!' }
     }
     if (!this.signature || this.signature === '') {
