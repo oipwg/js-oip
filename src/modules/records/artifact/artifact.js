@@ -905,6 +905,22 @@ class Artifact extends OIPRecord {
   }
 
   /**
+   * Set Record Edit Version
+   * @param editTxid - The txid of the Edit Record
+   */
+  setEditVersion (editTxid) {
+    this.meta.version = editTxid
+  }
+
+  /**
+   * Get Record Edit Version
+   * @returns The txid of the Edit Record
+   */
+  getEditVersion () {
+    return this.meta.version
+  }
+
+  /**
    * Get Artifact Version type
    */
   getVersion () {
