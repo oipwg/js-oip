@@ -59,55 +59,85 @@ class OIP {
     this.oipdAPI = new DaemonApi(this.options.oipdURL)
   }
 
+  /**
+   * Sign an OIP Record (if unsigned), and verify it's signature
+   * @param  {OIPRecord} record - The record you want to make sure is signed
+   */
   async signRecord (record) {
+    // Check if a signature exists
     if (!record.getSignature() || record.getSignature() === '') {
+      // Set the publisher address
       record.setPubAddress(this.options.publicAddress)
+      // Check if a timestamp is set, and if not, set it to the current date (in ms time)
       if (!record.getTimestamp()) { record.setTimestamp(Date.now()) }
+
+      // Attempt the signing of the Record
       let { success, error } = await record.signSelf(this.wallet.signMessage.bind(this.wallet))
       if (!success) {
+        // If there was an error, log the stack, and then return the error.
         console.log(error.stack)
         throw new Error(`Failed to sign record: ${error}`)
       }
-      if (!record.hasValidSignature()) {
-        throw new Error(`Invalid signature`)
-      }
+    }
+
+    // Check if the record has a valid signature
+    if (!record.hasValidSignature()) {
+      throw new Error(`Invalid signature`)
     }
   }
 
+  /**
+   * Broadcast an OIP Record
+   * @param {OIPRecord} record - Any Object whos class extends OIPRecord (Artifact, Publisher, Platform, Retailer, Influencer, EditRecord, etc)
+   * @param {String} methodType - The method you are wanting to perform, i.e. `publish`, `edit`, `deactivate`, `transfer` etc
+   * @return {Promise<Object>} response - An object that contains a var for `success`, the `record` that was published, and the `editRecord` if it is an edit
+   * let oip = new OIP(wif, "testnet")
+   * let artifact = new Artifact()
+   * let result = await oip.broadcastRecord(artifact, 'publish')
+   */
   async broadcastRecord (record, methodType) {
+    // Verify that we are generally an OIPRecord (aka, we have the required signature and serialization functions)
     if (!(record instanceof OIPRecord)) {
       throw new Error(`Record must be an instanceof OIPRecord`)
     }
 
-    // Make sure the wallet has had time to initialize
+    // Make sure the wallet has initialized and is ready for use
     if (!this.walletInitialized) {
       await this.wallet.initialize()
       this.walletInitialized = true
     }
 
+    // Make sure the record is signed, and if not, sign it.
     try {
       await this.signRecord(record)
     } catch (error) {
       return { success: false, error: `Error while Signing Record: ${error}` }
     }
 
+    // Make sure the Record is valid
     let { success, error } = record.isValid()
 
     if (!success) {
       return { success: false, error: `Invalid record: ${error}` }
     }
 
+    // Create the data we are broadcasting to the chain
     let broadcastString = record.serialize(methodType)
-    let txids
 
+    // Array to store txids
+    let txids = []
+
+    // Check if we need to publish it using Multiparts, or if it will fit into a single transaction
     if (broadcastString.length > FLODATA_MAX_LEN) {
       try {
+        // Split the broadcast string up and publish the multiparts for it
         txids = await this.publishMultiparts(broadcastString)
       } catch (err) {
         return { success: false, error: `Failed to publish multiparts: ${err}` }
       }
     } else {
       try {
+        // Broadcast it in a single transaction :)
         let txid = await this.wallet.sendDataToChain(broadcastString)
         txids = [txid]
       } catch (err) {
@@ -118,31 +148,36 @@ class OIP {
     // Set the txid to the Record
     record.setTXID(txids[0])
 
+    // Grab the data we need and bundle it for returning
     let response = { success: true, txids, record }
 
     // If we are an edit record, also return the edit record :)
     if (record instanceof EditRecord) {
+      // Grab the patched record to return
       let patchedRecord = record.getPatchedRecord()
+      // Set the edit version to the EditRecord txid
       patchedRecord.setEditVersion(txids[0])
 
+      // Move EditRecord and set patchedRecord
       response.record = patchedRecord
       response.editRecord = record
     }
 
+    // Return our built response
     return response
   }
 
   /**
    * Publish OIP Records
    * @param {OIPRecord} record - an Artifact, Publisher, Platform, Retailer, or Influencer
-   * @return {Promise<string|Array<string>>} txid - a txid or an array of txids (if your record is too large to fit onto one tx)
+   * @return {Promise<Object>} response - An object that contains a var for `success`, the `record` that was published
    * let oip = new OIP(wif, "testnet")
    * let artifact = new Artifact()
    * let result = await oip.publish(artifact)
    */
   async publish (record) {
+    // Forward the publish directly on to the broadcastRecord method
     let res = await this.broadcastRecord(record, 'publish')
-
     return res
   }
 
@@ -152,7 +187,12 @@ class OIP {
   /**
    * Publish an Edit for a Record
    * @param  {OIPRecord} editedRecord - The new version of the Record
-   * @return {Promise<string|Array<string>>} txid - a txid or an array of txids (if your edit is too large to fit onto one tx)
+   * @return {Promise<Object>} response - An object that contains a var for `success`, the `record` that was published, and the `editRecord`
+   * @Example
+   * let oip = new OIP(wif, "testnet")
+   * let record = new Artifact(previousArtifactJSON)
+   * record.setTitle('new title')
+   * let result = await oip.edit(record)
    */
   async edit (editedRecord) {
     // Lookup the currently latest version of the Record
@@ -174,6 +214,7 @@ class OIP {
       return { success: false, error: `A Record with the txid ${editedRecord.getTXID()} was not found in OIP daemon! Please make sure you have set 'options.oipdURL' to your OIP daemon server!` }
     }
 
+    // Make sure the editedRecord is signed before adding it to the EditRecord
     try {
       await this.signRecord(editedRecord)
     } catch (e) {
