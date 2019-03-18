@@ -17,10 +17,37 @@ describe('DaemonApi', () => {
 			expect(art.isValid().success).toBeTruthy()
 		}
 	})
+	it ('GET test advanced search component query: tomogram ids | searchArtifacts()', async () => {
+		let q = '(artifact.details.NBCItaxID:>250000) OR (artifact.details.NCBItaxID:<250000)'
+		let response = await index.searchArtifacts(q)
+		let {success, error, artifacts} = response
+		expect(success).toBeTruthy()
+		expect(error).toBeUndefined()
+		expect(artifacts).toBeDefined()
+		for (let art of artifacts) {
+			expect(art.isValid().success).toBeTruthy()
+			const isTrue = art.getDetail('NBCItaxID') > 250000 || art.getDetail('NCBItaxID') < 250000
+			expect(isTrue).toBeTruthy()
+		}
+	})
+	it ('GET test advanced search component query: date | searchArtifacts()', async () => {
+		let q = '(artifact.details.date:[1325376000 TO 1388534400])'
+		let response = await index.searchArtifacts(q)
+		let {success, error, artifacts} = response
+		expect(success).toBeTruthy()
+		expect(error).toBeUndefined()
+		expect(artifacts).toBeDefined()
+		for (let art of artifacts) {
+			expect(art.isValid().success).toBeTruthy()
+			const isTrue = art.getDetail('date') > 1325376000 && art.getDetail('date') < 1388534400
+			expect(isTrue).toBeTruthy()
+		}
+	})
 	it('GET complex search by type and subtype | searchArtifactsByType()', async () => {
 		let type = 'research'
 		let subtype = 'tomogram'
 		let {success, error, artifacts, count, total} = await index.searchArtifactsByType(type, subtype)
+		
 		expect(success).toBeTruthy()
 		expect(error).toBeUndefined()
 		expect(artifacts).toBeDefined()
@@ -42,7 +69,6 @@ describe('DaemonApi', () => {
 		expect(qs).toEqual(`(artifact.type:"research" OR artifact.type:"music") AND artifact.info.year:"2017"`)
 
 	})
-
 	it('createQs 2 | createQs()', async () => {
 		let args = [
 			{operator: "wrap", type: 'start'},
@@ -89,7 +115,6 @@ describe('DaemonApi', () => {
 		expect(qs).toEqual(`( artifact.type:"research" AND artifact.info.year:"2017" ) OR ( artifact.info.year:"2016" AND artifact.type:"music" )`)
 
 	})
-
 	it('GET Artifact by TXID | getArtifact()', async () => {
 		let txid = 'cc9a11050acdc4401aec3f40c4cce123d99c0f2c27d4403ae4a2536ee38a4716'
 		let {success, error, artifact} = await index.getArtifact(txid)
