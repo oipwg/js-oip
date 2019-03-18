@@ -29,6 +29,41 @@ export default class EditRecord extends OIPRecord {
     if (editRecordJSON) { this.fromJSON(editRecordJSON) }
   }
 
+  /**
+   * Signs the PatchedRecord and EditRecord
+   * @param  {Function} signMessage - A function (provided by a wallet) that allows a message to be signed with the approapriate private address
+   * @return {Object} Returns `{success: true, signature}` if signing was successful
+   */
+  async signSelf (signMessage) {
+    // If we have a patched record, attempt to sign it
+    if (this.getPatchedRecord()) {
+      try {
+        await this.getPatchedRecord().signSelf(signMessage)
+      } catch (e) {
+        return { success: false, error: `Unable to sign Patched Record: ${e}` }
+      }
+
+      // Make sure the Record is valid
+      let { success, error } = this.getPatchedRecord().isValid()
+
+      if (!success) {
+        return { success: false, error: `Patched Record is not valid: ${error}` }
+      }
+
+      // Now that we know the patched record is valid, create the latest patch version
+      if (this.getOriginalRecord()) { this.createPatch() }
+    }
+
+    let signature
+    try {
+      signature = await OIPRecord.prototype.signSelf.call(this, signMessage)
+    } catch (e) {
+      return { success: false, error: `Unable to create EditRecord signature: ${e}` }
+    }
+
+    return { success: true, signature }
+  }
+
   setPatchedRecord (patchedRecord) {
     this.patchedRecord = patchedRecord
 

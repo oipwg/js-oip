@@ -214,12 +214,10 @@ class OIP {
       return { success: false, error: `A Record with the txid ${editedRecord.getTXID()} was not found in OIP daemon! Please make sure you have set 'options.oipdURL' to your OIP daemon server!` }
     }
 
-    // Make sure the editedRecord is signed before adding it to the EditRecord
-    try {
-      await this.signRecord(editedRecord)
-    } catch (e) {
-      return { success: false, error: `Error while Signing Edited Record: ${e}` }
-    }
+    // Set the Publisher Address before we sign
+    editedRecord.setPubAddress(this.options.publicAddress)
+    // Check if a timestamp is set, and if not, set it to the current date (in ms time)
+    if (!editedRecord.getTimestamp()) { editedRecord.setTimestamp(Date.now()) }
 
     // Create an Edit Record from the Original and Edited
     let edit = new EditRecord(undefined, original, editedRecord)

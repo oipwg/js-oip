@@ -61,8 +61,12 @@ describe(`OIP`, () => {
       editedRecord.setType('Text')
       editedRecord.setTitle('js-oip Post-Edit Title')
 
-      let { success, txids, record, editRecord } = await oip.edit(editedRecord)
+      let { success, txids, record, editRecord, error } = await oip.edit(editedRecord)
+
       console.log(txids)
+      if (!success) {
+        console.error(error)
+      }
 
       expect(success).toBe(true)
       expect(record).toBeDefined()
