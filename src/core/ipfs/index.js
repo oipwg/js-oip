@@ -3,7 +3,7 @@ import JsIpfs from './jsIpfs'
 import IpfsXml from './ipfsXml'
 
 export {
-	IpfsHttpApi,
-	JsIpfs,
-	IpfsXml
+  IpfsHttpApi,
+  JsIpfs,
+  IpfsXml
 }

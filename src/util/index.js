@@ -1,7 +1,6 @@
-import {isValidWIF, varIntBuffer} from './btc'
+import { isValidWIF, varIntBuffer } from './btc'
 
 export {
-	isValidWIF,
-	varIntBuffer,
+  isValidWIF,
+  varIntBuffer
 }
-
