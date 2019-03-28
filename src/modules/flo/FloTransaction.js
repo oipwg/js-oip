@@ -8,7 +8,15 @@ class FloTransaction extends Transaction {
     super()
 
     this.version = 2
-    this.strFloData = ''
+    this.floData = Buffer.from('', 'utf8')
+  }
+
+  setFloData (floData, dataType) {
+    this.floData = Buffer.from(floData, dataType)
+  }
+
+  getFloData () {
+    return this.floData
   }
 
   clone () {
@@ -39,10 +47,9 @@ class FloTransaction extends Transaction {
   __byteLength (__allowWitness) {
     let byteLength = Transaction.prototype.__byteLength.call(this, __allowWitness)
 
-    let floDataBuffer = Buffer.from(this.strFloData, 'utf8')
-    let floDataVarInt = varuint.encode(floDataBuffer.length)
+    let floDataVarInt = varuint.encode(this.floData.length)
 
-    return (byteLength + floDataVarInt.length + floDataBuffer.length)
+    return (byteLength + floDataVarInt.length + this.floData.length)
   }
 
   __toBuffer (buffer, initialOffset, __allowWitness) {
