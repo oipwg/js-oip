@@ -71,3 +71,75 @@ describe('Properly Calculates byteLength', () => {
     expect(byteLength).toBe(192 + 3 + 1040)
   })
 })
+
+describe('Transaction Serialization', () => {
+  test('Empty floData', () => {
+    let floTX = new FloTransaction()
+
+    floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, sampleInput.scriptSig)
+
+    floTX.addOutput(sampleOutput.scriptPubKey, sampleOutput.value)
+
+    let txBuffer = floTX.__toBuffer(false)
+
+    expect(txBuffer.length).toBe(193)
+    expect(txBuffer.toString('hex')).toBe(
+      '020000000186231b8292f3fd690b21f0e831a7180bf1f5bd1b39c2f842a38c7c8d387db224000000006b483045022100cac4c61ac071126fcac5b51726214202f0956c410eead184b22f6883869a1841022065cd8e469abcd8c0e7c0e5d809670698a6a13a6aefd27e79814569882bb2db3f01210335e488d552bb530f7ab29f910806c1a862c09fe2a098cef2a48ed79843b344baffffffff01b6a80954020000001976a9141d418318d54ec91e231cd9295a3b67c40c99c3ca88ac00000000' +
+      '00'
+    )
+  })
+
+  test('Partial floData', () => {
+    let floTX = new FloTransaction()
+
+    floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, sampleInput.scriptSig)
+
+    floTX.addOutput(sampleOutput.scriptPubKey, sampleOutput.value)
+
+    // Generate 100 zeros for the FloData
+    let floData = ''
+    while (Buffer.from(floData).length < 256) {
+      floData += '0'
+    }
+
+    floTX.setFloData(floData)
+
+    let txBuffer = floTX.__toBuffer(false)
+
+    // 192 without floData,
+    // 256 bytes of floData appends a varInt of 3
+    expect(txBuffer.length).toBe(192 + 3 + 256)
+    expect(txBuffer.toString('hex')).toBe(
+      '020000000186231b8292f3fd690b21f0e831a7180bf1f5bd1b39c2f842a38c7c8d387db224000000006b483045022100cac4c61ac071126fcac5b51726214202f0956c410eead184b22f6883869a1841022065cd8e469abcd8c0e7c0e5d809670698a6a13a6aefd27e79814569882bb2db3f01210335e488d552bb530f7ab29f910806c1a862c09fe2a098cef2a48ed79843b344baffffffff01b6a80954020000001976a9141d418318d54ec91e231cd9295a3b67c40c99c3ca88ac00000000' +
+      'fd0001' +
+      Buffer.from(floData).toString('hex')
+    )
+  })
+
+  test('Full floData', () => {
+    let floTX = new FloTransaction()
+
+    floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, sampleInput.scriptSig)
+
+    floTX.addOutput(sampleOutput.scriptPubKey, sampleOutput.value)
+
+    // Generate 100 zeros for the FloData
+    let floData = ''
+    while (Buffer.from(floData).length < 1040) {
+      floData += '0'
+    }
+
+    floTX.setFloData(floData)
+
+    let txBuffer = floTX.__toBuffer(false)
+
+    // 192 without floData,
+    // 1040 bytes of floData appends a varInt of 3
+    expect(txBuffer.length).toBe(192 + 3 + 1040)
+    expect(txBuffer.toString('hex')).toBe(
+      '020000000186231b8292f3fd690b21f0e831a7180bf1f5bd1b39c2f842a38c7c8d387db224000000006b483045022100cac4c61ac071126fcac5b51726214202f0956c410eead184b22f6883869a1841022065cd8e469abcd8c0e7c0e5d809670698a6a13a6aefd27e79814569882bb2db3f01210335e488d552bb530f7ab29f910806c1a862c09fe2a098cef2a48ed79843b344baffffffff01b6a80954020000001976a9141d418318d54ec91e231cd9295a3b67c40c99c3ca88ac00000000' +
+      'fd1004' +
+      Buffer.from(floData).toString('hex')
+    )
+  })
+})
