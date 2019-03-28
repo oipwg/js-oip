@@ -12,6 +12,28 @@ class FloTransaction extends Transaction {
   }
 
   clone () {
+    const newTx = new FloTransaction()
+    newTx.version = this.version
+    newTx.locktime = this.locktime
+
+    newTx.ins = this.ins.map(function (txIn) {
+      return {
+        hash: txIn.hash,
+        index: txIn.index,
+        script: txIn.script,
+        sequence: txIn.sequence,
+        witness: txIn.witness
+      }
+    })
+
+    newTx.outs = this.outs.map(function (txOut) {
+      return {
+        script: txOut.script,
+        value: txOut.value
+      }
+    })
+
+    return newTx
   }
 
   __byteLength (__allowWitness) {
