@@ -38,6 +38,11 @@ class FloTransaction extends Transaction {
 
   __byteLength (__allowWitness) {
     let byteLength = Transaction.prototype.__byteLength.call(this, __allowWitness)
+
+    let floDataBuffer = Buffer.from(this.strFloData, 'utf8')
+    let floDataVarInt = varuint.encode(floDataBuffer.length)
+
+    return (byteLength + floDataVarInt.length + floDataBuffer.length)
   }
 
   __toBuffer (buffer, initialOffset, __allowWitness) {
