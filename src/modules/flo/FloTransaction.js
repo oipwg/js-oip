@@ -41,6 +41,8 @@ class FloTransaction extends Transaction {
       }
     })
 
+    newTx.floData = Buffer.from(this.floData)
+
     return newTx
   }
 
@@ -65,19 +67,21 @@ class FloTransaction extends Transaction {
    * @return {Buffer} Returns the TX as a Buffer
    */
   __toBuffer (buffer, initialOffset, __allowWitness) {
-    let txBuffer = Transaction.prototype.__toBuffer.call(this, buffer, initialOffset, __allowWitness)
+    if (!buffer) { buffer = Buffer.allocUnsafe(this.__byteLength(__allowWitness)) }
+
+    Transaction.prototype.__toBuffer.call(this, buffer, initialOffset, __allowWitness)
 
     // Calculate where we left off
-    let offset = txBuffer.length - (this.floData.length + varuint.encode(this.floData.length).length)
+    let offset = buffer.length - (this.floData.length + varuint.encode(this.floData.length).length)
 
     // Add the varint for the floData length
-    varuint.encode(this.floData.length, txBuffer, offset)
+    varuint.encode(this.floData.length, buffer, offset)
     offset += varuint.encode.bytes
     // Append the floData itself
-    this.floData.copy(txBuffer, offset)
+    this.floData.copy(buffer, offset)
 
     // Return the built transaciton Buffer
-    return txBuffer
+    return buffer
   }
 
   hashForSignature (inIndex, prevOutScript, hashType) {
