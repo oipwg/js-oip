@@ -1,4 +1,16 @@
-import MultipartX from '../../../../src/modules/multipart/multipartx'
+import MultipartX, { CHOP_MAX_LEN, FLODATA_MAX_LEN } from '../../../../src/modules/multipart/multipartx'
+import { ExplorerWallet } from '../../../../src/modules/wallets'
+
+const pair = {
+  public: 'oV5qwoq9CSaXersHk4DQVHhoMTDjRNWRF2',
+  private: 'cUeMZ4m4bNCnnbshaPjefvwJyN95dRJfhZRszTHcsm5hydtJFH5T'
+}
+const createTestWallet = () => {
+  return new ExplorerWallet({
+    network: 'testnet',
+    wif: pair.private
+  })
+}
 
 describe('MultipartX', () => {
   it(`from JSON string`, async () => {
@@ -6,6 +18,31 @@ describe('MultipartX', () => {
     let mpx = new MultipartX(assembled)
     // console.log(mpx)
     expect(mpx.getMultiparts().length).toEqual(3)
+    expect(mpx.toString()).toEqual(assembled)
+  })
+
+  it(`handles parts in group larger than 10`, async () => {
+    const groupSize = 11
+    const arbitraryTxid = '6ffbffd475c7eabe0acc664087ac56c13ac7c2084746619182b360c2f19e430e'
+    const assembled = new Array(CHOP_MAX_LEN * groupSize).join('a')
+    const wallet = createTestWallet()
+
+    let mpx = new MultipartX(assembled)
+    let txid; let i = 0
+    for (var multipart of mpx.multiparts) {
+      if (txid) { multipart.setReference(txid) }
+
+      multipart.setAddress(pair.public)
+      await multipart.signSelf(wallet.signMessage.bind(wallet))
+
+      txid = arbitraryTxid
+
+      const result = multipart.toString()
+      expect(result.length, `exceeded max FLODATA length on part ${i}: '${result}'`).toBeLessThanOrEqual(FLODATA_MAX_LEN)
+      i++
+    }
+
+    expect(mpx.getMultiparts().length).toEqual(groupSize)
     expect(mpx.toString()).toEqual(assembled)
   })
 })
