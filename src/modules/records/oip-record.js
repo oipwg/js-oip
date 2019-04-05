@@ -1,4 +1,4 @@
-import {sign, verify} from "bitcoinjs-message";
+import { verify } from "bitcoinjs-message";
 import bitcoin from "bitcoinjs-lib";
 
 class OIPRecord {
@@ -8,42 +8,25 @@ class OIPRecord {
 
 	/**
 	 * Signs the record for publishing purposes
-	 * @param ECPair - see bitcoinjs-lib/ecpair
-	 * @return {object}
-	 * @example
-	 * let {success, error, signature} = OIPRecord.signSelf()
-	 * if (!success) {
-	 *     throw new Error(`Failed to sign record: ${error}`)
-	 * } else {
-	 *     console.log(signature)
-	 * }
+	 * @param  {Function} signMessage - A function (provided by a wallet) that allows a message to be signed with the approapriate private address
+	 * @return {Object} Returns `{success: true, signature}` if signing was successful
 	 */
-	signSelf(ECPair) {
-		if (!ECPair) {
-			return {success: false, error: 'Must provide ECPair'}
-		}
-
-		const p2pkh = bitcoin.payments.p2pkh({pubkey: ECPair.publicKey, network: ECPair.network}).address
-		this.setPubAddress(p2pkh)
+	async signSelf(signMessage){
+		if (!signMessage)
+			return {success: false, error: 'Must provide a function to sign with!'}
 
 		let preimage = this.create_preimage()
 
-		let privateKeyBuffer = ECPair.privateKey;
-
-		let compressed = ECPair.compressed || true;
-
-		let signature_buffer
+		let signature
 		try {
-			signature_buffer = sign(preimage, privateKeyBuffer, compressed, ECPair.network.messagePrefix)
-		} catch (e) {
+			signature = await signMessage(preimage)
+		} catch (e){
 			return {success: false, error: e}
 		}
 
-		let signature = signature_buffer.toString('base64')
 		this.setSignature(signature)
 
 		return {success: true, signature}
-
 	}
 
 	/**
