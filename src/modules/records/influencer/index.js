@@ -1,1 +1,5 @@
-export Influencer from './influencer'
+import Influencer from './influencer'
+
+export {
+  Influencer
+}
