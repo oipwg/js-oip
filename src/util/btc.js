@@ -8,21 +8,21 @@ import wif from 'wif'
  * @return {Boolean}
  */
 function isValidWIF (key, network) {
-	try {
-		let dec = wif.decode(key);
+  try {
+    let dec = wif.decode(key)
 
-		if (network) {
-			return dec.version === network.wif
-		} else {
-			return true
-		}
-	} catch (e) {
-		console.error(e);
-		return false
-	}
+    if (network) {
+      return dec.version === network.wif
+    } else {
+      return true
+    }
+  } catch (e) {
+    console.error(e)
+    return false
+  }
 }
 
 module.exports = {
-	isValidWIF,
-	varIntBuffer: varuint.encode
+  isValidWIF,
+  varIntBuffer: varuint.encode
 }

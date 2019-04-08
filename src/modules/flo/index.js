@@ -1,1 +1,5 @@
-export FloTx from './flotx'
+import FloTx from './flotx'
+
+export {
+  FloTx
+}

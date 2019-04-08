@@ -1,5 +1,13 @@
-export Artifact from './artifact'
-export PropertyParty from './propertyParty'
-export PropertySpatialUnit from './propertySpatialUnit'
-export PropertyTenure from './propertyTenure'
-export ResearchTomogram from './researchTomogram'
+import Artifact from './artifact'
+import PropertyParty from './propertyParty'
+import PropertySpatialUnit from './propertySpatialUnit'
+import PropertyTenure from './propertyTenure'
+import ResearchTomogram from './researchTomogram'
+
+export {
+  Artifact,
+  PropertyParty,
+  PropertySpatialUnit,
+  PropertyTenure,
+  ResearchTomogram
+}
