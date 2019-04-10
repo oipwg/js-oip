@@ -102,7 +102,7 @@ class ExplorerWallet {
    * @return {Promise<string>} txid - Returns the id of the transaction that contains the published data
    * @example
    * let oip = new OIP(wif, "testnet")
-   * let txid = await oip.sendDataToChain('Hello, world')
+   * let txid = await oip.sendData`ToChain('Hello, world')
    */
   async sendDataToChain (data) {
     if (typeof data !== 'string') {
