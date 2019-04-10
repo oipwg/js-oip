@@ -65,8 +65,8 @@ class ExplorerWallet {
     let network = floMainnet
 
     if (options.network === 'testnet') { network = floTestnet }
-    
-    if (options.explorerUrl) {network.explorer = new Insight(options.explorerUrl)}
+
+    if (options.explorerUrl) { network.explorer = new Insight(options.explorerUrl) }
 
     if (!isValidWIF(options.wif, network.network)) {
       return { success: false, message: 'Invalid WIF', wif: options.wif, network: network.network }
