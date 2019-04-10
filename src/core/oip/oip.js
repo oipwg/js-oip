@@ -26,6 +26,7 @@ class OIP {
    * @param {String} [network="mainnet"] - Use "testnet" for mainnet
    * @param {Object} [options] - Options to for the OIP class
    * @param {Object} [options.publicAddress] - Explicitly define a public address for the passed WIF
+   * @param {string} [options.explorerUrl] - api url to a blockchain explorer
    * @param {Object} [options.oipdURL] - The OIP daemon API url to use when looking up the Latest Record in oip.edit()
    * @param {Object} [options.rpc] - By default, OIP uses a connection to a web explorer to publish Records, you can however use a connection to an RPC wallet instead by passing an object into this option
    * @param {Object} [options.rpc.host] - The Hostname for the RPC wallet connection

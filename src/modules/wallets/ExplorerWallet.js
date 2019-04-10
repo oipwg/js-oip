@@ -1,6 +1,7 @@
 import { sign } from 'bitcoinjs-message'
 import bitcoin from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
+import { Insight } from 'insight-explorer'
 
 // This dependency was not found:
 //
@@ -56,6 +57,7 @@ class ExplorerWallet {
    * let oip = new OIP(wif, "testnet")
    * ```
    * @param {string} options.wif - private key in Wallet Import Format (WIF) see: {@link https://en.bitcoin.it/wiki/Wallet_import_format}
+   * @param {string} [options.explorerUrl] - api url to a blockchain explorer
    * @param {string} [options.network="mainnet"] - Use "testnet" for testnet
    */
   // ToDo:: Switch to mainnet for prod
@@ -63,6 +65,8 @@ class ExplorerWallet {
     let network = floMainnet
 
     if (options.network === 'testnet') { network = floTestnet }
+    
+    if (options.explorerUrl) {network.explorer = new Insight(options.explorerUrl)}
 
     if (!isValidWIF(options.wif, network.network)) {
       return { success: false, message: 'Invalid WIF', wif: options.wif, network: network.network }
