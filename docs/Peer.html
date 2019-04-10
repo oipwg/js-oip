@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      modules/records/artifact/propertySpatialUnit.js - Documentation
+      Peer - Documentation
   </title>
 
   <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
@@ -82,242 +80,922 @@
   <div id="main">
     
       <h1 class="page-title">
-        modules/records/artifact/propertySpatialUnit.js
+        Peer
       </h1>
     
 
     
-      
 
 <section>
+  <header>
+    
+      <h2>
+        
+        Peer
+        
+      </h2>
+
+      
+    
+  </header>
+
   <article>
-    <pre class="prettyprint source linenums"><code>import Artifact from './artifact'
+    <div class="container-overview">
+      
+        
 
-class PropertySpatialUnit extends Artifact {
-	constructor(artifact) {
-		super(artifact)
-		this.artifact.type = "property"
-		this.artifact.subtype = "spatialUnit"
-	}
+<br />
+<br />
+<hr />
 
-	/**
-	 * Returns the Artifact Type (to be used before class initialization)
-	 * @static
-	 * @returns {string}
-	 */
-	static getArtifactType() {
-		return "property"
-	}
 
-	/**
-	 * Return the Artifact Subtype (to be used before class initialization)
-	 * @returns {string}
-	 */
-	static getArtifactSubtype() {
-		return "spatialUnit"
-	}
+  
 
-	/**
-	 * Get Modified Date
-	 * ISO 8601 date string
-	 * @returns {"string"}
-	 */
-	getModifiedDate() {
-		return this.artifact.details.modifiedDate
-	}
+  <span class='name-container'>
+    <a class="link-icon" href="#Peer">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="Peer">
+      <span class="type-signature"></span>new Peer<span class="signature">(settings)</span><span class="type-signature"> &rarr; {<a href="Peer.html">Peer</a>}</span>
+    </h4>
+  </span>
 
-	/**
-	 * Set Modified Date
-	 * ISO 8601 date string
-	 * @param {"string"} modifiedDate
-	 */
-	setModifiedDate(modifiedDate) {
-		if(modifiedDate)
-			this.artifact.details.modifiedDate = modifiedDate
-	}
+  
 
-	/**
-	 * Get Spatial Type
-	 * @returns {string}
-	 */
-	getSpatialType() {
-		return this.artifact.details.spatialType
-	}
 
-	/**
-	 * Set Spatial type
-	 * @param {string} spatialType
-	 */
-	setSpatialType(spatialType) {
-		if(spatialType)
-			this.artifact.details.spatialType = spatialType
-	}
 
-	/**
-	 * Get Spatial Data Type
-	 * @returns {string}
-	 */
-	getSpatialDataType() {
-		return this.artifact.details.spatialDataType
-	}
+  <div class="description">
+    <p>Initialize the Peer</p>
+  </div>
 
-	/**
-	 * Set Spatial Data type
-	 * @param {string} spatialDataType
-	 */
-	setSpatialDataType(spatialDataType) {
-		if(spatialDataType)
-			this.artifact.details.spatialDataType = spatialDataType
-	}
 
-	/**
-	 * Get Spatial Data
-	 * @returns {Object}
-	 */
-	getSpatialData() {
-		return this.artifact.details.spatialData
-	}
 
-	/**
-	 * Set Spatial Data
-	 * @param {Object} spatialData
-	 */
-	setSpatialData(spatialData) {
-		if(spatialData)
-			this.artifact.details.spatialData = spatialData
-	}
 
-	/**
-	 * Get Textual Data
-	 * @returns {string}
-	 */
-	getTextualData() {
-		return this.artifact.details.textualData
-	}
 
-	/**
-	 * Set Textual Data
-	 * @param {string} textualData
-	 */
-	setTextualData(textualData) {
-		if(textualData)
-			this.artifact.details.textualData = textualData
-	}
 
-	/**
-	 * Get Address Data
-	 * @returns {Object}
-	 */
-	getAddressData() {
-		return this.artifact.details.addressData
-	}
 
-	/**
-	 * Set Address Data
-	 * @param {Object} addressData
-	 */
-	setAddressData(addressData) {
-		if(addressData)
-			this.artifact.details.addressData = addressData
-	}
+  <h5>Parameters:</h5>
+  
 
-	/**
-	 * Get Official ID
-	 * @returns {string}
-	 */
-	getOfficialID() {
-		return this.artifact.details.officialID
-	}
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
 
-	/**
-	 * Set Official ID
-	 * @param {string} officialID
-	 */
-	setOfficialID(officialID) {
-		if(officialID)
-			this.artifact.details.officialID = officialID
-	}
+      <th>Type</th>
 
-	/**
-	 * Get Parent ID
-	 * @returns {string}
-	 */
-	getParentID() {
-		return this.artifact.details.parentID
-	}
+      
 
-	/**
-	 * Set Parent ID
-	 * @param {string} parentID
-	 */
-	setParentID(parentID) {
-		if(parentID)
-			this.artifact.details.parentID = parentID
-	}
+      
 
-	/**
-	 * Get Namespace
-	 * @returns {*}
-	 */
-	getNamespace() {
-		return this.artifact.details.ns
-	}
+      <th class="last">Description</th>
+    </tr>
+  </thead>
 
-	/**
-	 * Set Namespace
-	 * @param ns
-	 */
-	setNamespace(ns) {
-		if(ns)
-			this.artifact.details.ns = ns
-	}
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>settings</code></td>
+        
 
-	/**
-	 * Get Spatial Type
-	 * @returns {*}
-	 */
-	getSpatialType() {
-		return this.artifact.details.spatialType
-	}
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
 
-	/**
-	 * Set Spatial Type
-	 * @param spatialType
-	 */
-	setSpatialType(spatialType) {
-		if(spatialType)
-			this.artifact.details.spatialType = spatialType
-	}
+    
 
-	/**
-	 * Return Attributes
-	 * @returns {Object}
-	 */
-	getAttributes() {
-		return this.artifact.details.attrs
-	}
 
-	/**
-	 * Set Attributes
-	 * @param {Object} attrs
-	 */
-	setAttributes(attrs) {
-		if(attrs) {
-			this.artifact.details.attrs = {}
-			for(let attr in attrs) {
-				if(attrs[attr])
-					this.artifact.details.attrs[attr] = attrs[attr]
-			}	
-		}
-	}
-}
+          
+        </td>
 
-export default PropertySpatialUnit
-</code></pre>
+        
+
+        
+
+        <td class="description last">
+          
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+        <th>Default</th>
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>ip</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>The IP address of the Flo Peer to connect to</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>agent</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+              "js-oip fcoin Peer"
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>The &quot;name&quot; to display to nodes you connect to.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_flo_Peer.js.html">modules/flo/Peer.js</a>, <a href="modules_flo_Peer.js.html#line12">line 12</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      <a href="Peer.html">Peer</a>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+      <h3 class="subsection-title">Methods</h3>
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#announceTX">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="announceTX">
+      <span class="type-signature"></span>announceTX<span class="signature">(hex)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Announce the availability of a Transaction to the Peer</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>hex</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      String
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>The hex string of the transaction</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_flo_Peer.js.html">modules/flo/Peer.js</a>, <a href="modules_flo_Peer.js.html#line71">line 71</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#connect">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="connect">
+      <span class="type-signature">(async) </span>connect<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Open a p2p connection to the Peer</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_flo_Peer.js.html">modules/flo/Peer.js</a>, <a href="modules_flo_Peer.js.html#line28">line 28</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+  <div class="param-desc">
+    <p>Returns the connection status</p>
+  </div>
+
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Boolean
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#handleGetData">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="handleGetData">
+      <span class="type-signature"></span>handleGetData<span class="signature">(getDataPacket)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Handle (respond to) a p2p getdata request</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>getDataPacket</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      GetDataPacket
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>The packet to respond to with data</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_flo_Peer.js.html">modules/flo/Peer.js</a>, <a href="modules_flo_Peer.js.html#line109">line 109</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#onPacket">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="onPacket">
+      <span class="type-signature"></span>onPacket<span class="signature">(packet)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Handle incoming p2p packets</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>packet</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Packet
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>The packet that is incoming</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_flo_Peer.js.html">modules/flo/Peer.js</a>, <a href="modules_flo_Peer.js.html#line94">line 94</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    
+
+    
+
+    
   </article>
 </section>
 
-    
+
 
 
   </div>
