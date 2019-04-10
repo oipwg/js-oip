@@ -8,66 +8,66 @@ class PropertyTenure extends Artifact {
   }
 
   /**
-	 * Returns the Artifact Type (to be used before class initialization)
-	 * @static
-	 * @returns {string}
-	 */
+ * Returns the Artifact Type (to be used before class initialization)
+ * @static
+ * @returns {string}
+ */
   static getArtifactType () {
     return 'property'
   }
 
   /**
-	 * Return the Artifact Subtype (to be used before class initialization)
-	 * @returns {string}
-	 */
+ * Return the Artifact Subtype (to be used before class initialization)
+ * @returns {string}
+ */
   static getArtifactSubtype () {
     return 'tenure'
   }
 
   /**
-	 * Set Tenure Type
-	 * @returns {string}
-	 */
+ * Set Tenure Type
+ * @returns {string}
+ */
   getTenureType () {
     return this.artifact.details.tenureType
   }
 
   /**
-	 * Set Tenure type
-	 * @param {string} tenureType
-	 */
+ * Set Tenure type
+ * @param {string} tenureType
+ */
   setTenureType (tenureType) {
     if (tenureType) { this.artifact.details.tenureType = tenureType }
   }
 
   /**
-	 * Get Namespace
-	 * @returns {*}
-	 */
+ * Get Namespace
+ * @returns {*}
+ */
   getNamespace () {
     return this.artifact.details.ns
   }
 
   /**
-	 * Set Namespace
-	 * @param {string} ns
-	 */
+ * Set Namespace
+ * @param {string} ns
+ */
   setNamespace (ns) {
     if (ns) { this.artifact.details.ns = ns }
   }
 
   /**
-	 * Get Spatial Unit
-	 * @returns {Array<String>}
-	 */
+ * Get Spatial Unit
+ * @returns {Array<String>}
+ */
   getSpatialUnits () {
     return this.artifact.details.spatialUnits
   }
 
   /**
-	 * Set Spatial Unit
-	 * @param {Array<string>} spatialUnits
-	 */
+ * Set Spatial Unit
+ * @param {Array<string>} spatialUnits
+ */
   setSpatialUnits (spatialUnits) {
     if (spatialUnits) {
       if (!Array.isArray(spatialUnits)) { throw new Error(`spatialUnits must be an array`) }
@@ -76,71 +76,71 @@ class PropertyTenure extends Artifact {
   }
 
   /**
-	 * Get Modified Date
-	 * ISO 8601 date string
-	 * @returns {"string"}
-	 */
+ * Get Modified Date
+ * ISO 8601 date string
+ * @returns {"string"}
+ */
   getModifiedDate () {
     return this.artifact.details.modifiedDate
   }
 
   /**
-	 * Set Modified Date
-	 * ISO 8601 date string
-	 * @param {"string"} modifiedDate
-	 */
+ * Set Modified Date
+ * ISO 8601 date string
+ * @param {"string"} modifiedDate
+ */
   setModifiedDate (modifiedDate) {
     if (modifiedDate) { this.artifact.details.modifiedDate = modifiedDate }
   }
 
   /**
-	 * Get Effective Date
-	 * ISO 8601 date string
-	 * @returns {"string"}
-	 */
+ * Get Effective Date
+ * ISO 8601 date string
+ * @returns {"string"}
+ */
   getEffectiveDate () {
     return this.artifact.details.effectiveDate
   }
 
   /**
-	 * Set Effective Date
-	 * ISO 8601 date string
-	 * @param {"string"} effectiveDate
-	 */
+ * Set Effective Date
+ * ISO 8601 date string
+ * @param {"string"} effectiveDate
+ */
   setEffectiveDate (effectiveDate) {
     if (effectiveDate) { this.artifact.details.effectiveDate = effectiveDate }
   }
 
   /**
-	 * Get Expiration Date
-	 * ISO 8601 date string
-	 * @returns {"string"}
-	 */
+ * Get Expiration Date
+ * ISO 8601 date string
+ * @returns {"string"}
+ */
   getExpirationDate () {
     return this.artifact.details.expirationDate
   }
 
   /**
-	 * Set Expiration Date
-	 * ISO 8601 date string
-	 * @param {"string"} expirationDate
-	 */
+ * Set Expiration Date
+ * ISO 8601 date string
+ * @param {"string"} expirationDate
+ */
   setExpirationDate (expirationDate) {
     if (expirationDate) { this.artifact.details.expirationDate = expirationDate }
   }
 
   /**
-	 * Get Parties
-	 * @returns {string}
-	 */
+ * Get Parties
+ * @returns {string}
+ */
   getParties () {
     return this.details.parties
   }
 
   /**
-	 * Set parties
-	 * @param {Array} parties
-	 */
+ * Set parties
+ * @param {Array} parties
+ */
   setParties (parties) {
     if (parties) {
       if (!Array.isArray(parties)) { throw new Error(`parties must be an array of objects`) }
@@ -160,17 +160,17 @@ class PropertyTenure extends Artifact {
   }
 
   /**
-	 * Return Attributes
-	 * @returns {Object}
-	 */
+ * Return Attributes
+ * @returns {Object}
+ */
   getAttributes () {
     return this.artifact.details.attrs
   }
 
   /**
-	 * Set Attributes
-	 * @param {Object} attrs
-	 */
+ * Set Attributes
+ * @param {Object} attrs
+ */
   setAttributes (attrs) {
     if (attrs) {
       this.artifact.details.attrs = {}

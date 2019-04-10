@@ -40,10 +40,10 @@
     "@babel/preset-env": "^7.0.0-beta.51",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.4.2",
-    "standard": "*",
     "jest": "^23.6.0",
     "jsdoc": "^3.5.5",
-    "jsdoc-template": "git+https://github.com/oipwg/jsdoc-template.git"
+    "jsdoc-template": "git+https://github.com/oipwg/jsdoc-template.git",
+    "standard": "^12.0.1"
   },
   "dependencies": {
     "axios": "^0.18.0",
