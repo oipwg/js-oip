@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "npm run test:unit && npm run test:format",
+    "test:flo": "jest test/unit/modules/flo",
     "test:unit": "jest test/unit --detectOpenHandles --verbose",
     "test:integration": "jest test/integration --detectOpenHandles --verbose",
     "test:format": "standard",
@@ -47,7 +48,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "bitcoinjs-lib": "git+https://github.com/oipwg/bitcoinjs-lib.git#export-classify",
+    "bitcoinjs-lib": "^5.0.3",
     "bitcoinjs-message": "^2.0.0",
     "coinselect": "^3.1.11",
     "fcoin": "^1.0.0-beta.34",

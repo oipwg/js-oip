@@ -1,4 +1,4 @@
-import bitcoin from 'bitcoinjs-lib'
+import { ECPair, payments } from 'bitcoinjs-lib'
 
 import { DaemonApi } from '../oipd-api'
 import { MultipartX } from '../../modules'
@@ -44,8 +44,8 @@ class OIP {
       let tmpNetwork = floMainnet
       if (network === 'testnet') { tmpNetwork = floTestnet }
 
-      let ECPair = bitcoin.ECPair.fromWIF(this.options.wif, tmpNetwork.network)
-      this.options.publicAddress = bitcoin.payments.p2pkh({ pubkey: ECPair.publicKey, network: tmpNetwork.network }).address
+      let myECPair = ECPair.fromWIF(this.options.wif, tmpNetwork.network)
+      this.options.publicAddress = payments.p2pkh({ pubkey: myECPair.publicKey, network: tmpNetwork.network }).address
     }
 
     if (this.options.rpc) {

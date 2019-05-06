@@ -1,5 +1,5 @@
 import { sign } from 'bitcoinjs-message'
-import bitcoin from 'bitcoinjs-lib'
+import { ECPair, payments, address, TransactionBuilder } from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
 
 // This dependency was not found:
@@ -71,8 +71,8 @@ class ExplorerWallet {
     this.coin = network
     this.network = network.network
     this.explorer = network.explorer
-    this.ECPair = bitcoin.ECPair.fromWIF(options.wif, this.network)
-    this.p2pkh = bitcoin.payments.p2pkh({ pubkey: this.ECPair.publicKey, network: this.network }).address
+    this.ECPair = ECPair.fromWIF(options.wif, this.network)
+    this.p2pkh = payments.p2pkh({ pubkey: this.ECPair.publicKey, network: this.network }).address
     this.spentTransactions = []
     this.history = []
 
@@ -167,7 +167,7 @@ class ExplorerWallet {
       throw new Error('No Inputs or Outputs selected! Fail!')
     }
 
-    let txb = new bitcoin.TransactionBuilder(this.network)
+    let txb = new TransactionBuilder(this.network)
 
     txb.setVersion(this.coin.txVersion) // 1: w/o floData, 2: w/ floData
 
@@ -422,8 +422,8 @@ class ExplorerWallet {
         }
         // convert mainnet addr -> testnet addr
         addr = addr.toBase58()
-        let { hash } = bitcoin.address.fromBase58Check(addr)
-        let testnetAddr = bitcoin.address.toBase58Check(hash, 115)
+        let { hash } = address.fromBase58Check(addr)
+        let testnetAddr = address.toBase58Check(hash, 115)
         if (testnetAddr === this.p2pkh) {
           let tmpObj = {
             address: testnetAddr,
