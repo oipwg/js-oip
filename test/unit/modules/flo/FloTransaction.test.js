@@ -153,17 +153,13 @@ describe('Signature Hash Calculation', () => {
 
       floTX.addOutput(Buffer.from(sampleOutput.scriptPubKey), sampleOutput.value)
 
-      console.log(floTX.__toBuffer(false).toString('hex'))
-
       // Default hashType is SIGHASH_ALL
       let txHash = floTX.hashForSignature(0, Buffer.from(sampleInput.scriptSig), FloTransaction.SIGHASH_ALL)
 
-      console.log(floTX)
-
-      expect(txHash.toString('hex')).toBe('929c142dec219c51f8ea579d14f4b8669adf3b543897e2aef16401731b6bbf95')
+      expect(txHash.toString('hex')).toBe('721521965b362e856f9418054bf8add86c857e698fef1f2c05e7cd52d2ac2278')
     })
 
-    test.only('Partial floData', () => {
+    test('Partial floData', () => {
       let floTX = new FloTransaction()
 
       floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, Buffer.from(sampleInput.scriptSig))
@@ -173,7 +169,7 @@ describe('Signature Hash Calculation', () => {
       // Generate 100 zeros for the FloData
       let floData = ''
       while (Buffer.from(floData).length < 256) {
-        floData += '0'
+        floData += 'a'
       }
 
       floTX.setFloData(floData)
@@ -181,7 +177,7 @@ describe('Signature Hash Calculation', () => {
       // Default hashType is SIGHASH_ALL
       let txHash = floTX.hashForSignature(sampleInput.index, sampleInput.scriptSig, FloTransaction.SIGHASH_ALL)
 
-      expect(txHash.toString('hex')).toBe('9caaaf8bc158bfc2afb4d0750dcf8566dc31b68f427558d1de458575f0ed9ab7')
+      expect(txHash.toString('hex')).toBe('fbcc66451315f80dcf2a6e7f11bb5d9a3e14c069bad7e0ce7a89fc3db05807dc')
     })
 
     test('Full floData', () => {
@@ -194,7 +190,7 @@ describe('Signature Hash Calculation', () => {
       // Generate 100 zeros for the FloData
       let floData = ''
       while (Buffer.from(floData).length < 1040) {
-        floData += '0'
+        floData += 'a'
       }
 
       floTX.setFloData(floData)
@@ -202,7 +198,7 @@ describe('Signature Hash Calculation', () => {
       // Default hashType is SIGHASH_ALL
       let txHash = floTX.hashForSignature(sampleInput.index, sampleInput.scriptSig, FloTransaction.SIGHASH_ALL)
 
-      expect(txHash.toString('hex')).toBe('24d90b943bb1b2ea6f14311e2423b43ea3e3caab8931e9047b20c14ab28b4377')
+      expect(txHash.toString('hex')).toBe('b6e9b29b6d0ca401802b64f3d8541b68b5f8b60b1439f7ffdefd61473cdf65c5')
     })
   })
   describe('Segwit SignatureHash', () => {

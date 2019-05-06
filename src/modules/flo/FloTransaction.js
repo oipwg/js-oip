@@ -1,14 +1,17 @@
-import { Transaction } from 'bitcoinjs-lib'
+import { Transaction, script as bscript, crypto as bcrypto } from 'bitcoinjs-lib'
 import varuint from 'varuint-bitcoin'
 
 export const MAX_FLO_DATA_SIZE = 1040
 
-class FloTransaction extends Transaction {
+const EMPTY_SCRIPT = Buffer.alloc(0)
+const ONE = Buffer.from('0000000000000000000000000000000000000000000000000000000000000001', 'hex')
+
+class FLOTransaction extends Transaction {
   constructor () {
     super()
 
     this.version = 2
-    this.floData = Buffer.from('', 'utf8')
+    this.floData = Buffer.from([])
   }
 
   setFloData (floData, dataType) {
@@ -20,7 +23,7 @@ class FloTransaction extends Transaction {
   }
 
   clone () {
-    const newTx = new FloTransaction()
+    let newTx = new FLOTransaction()
     newTx.version = this.version
     newTx.locktime = this.locktime
 
@@ -85,9 +88,34 @@ class FloTransaction extends Transaction {
   }
 
   hashForSignature (inIndex, prevOutScript, hashType) {
-    let sigHashBuffer = Transaction.prototype.hashForSignature.call(this, inIndex, prevOutScript, hashType)
+    // https://github.com/bitcoin/bitcoin/blob/master/src/test/sighash_tests.cpp#L29
+    if (inIndex >= this.ins.length) { return ONE }
 
-    return sigHashBuffer
+    let ourScript = bscript.compile(bscript.decompile(prevOutScript).filter(x => {
+      return x !== bscript.OPS.OP_CODESEPARATOR
+    }))
+
+    let txTmp = this.clone()
+
+    // Currently only SIGHASH_ALL is supported
+    if ((hashType & 0x1f) === FLOTransaction.SIGHASH_ALL) {
+      // SIGHASH_ALL: Every input private key must sign all of the outputs
+      // First, we blank out every input and replace it with empty zeros
+      txTmp.ins.forEach(input => {
+        input.script = EMPTY_SCRIPT
+      })
+      // Then we put in our own script that we want to sign (we run hashForSignature for every input)
+      txTmp.ins[inIndex].script = ourScript
+    } else {
+      throw new Error(`Passed hashType is not supported. Currently only SIGHASH_ALL is supported.`)
+    }
+
+    // serialize and hash
+    let buffer = Buffer.alloc(txTmp.__byteLength(false) + 4)
+    buffer.writeInt32LE(hashType, buffer.length - 4)
+    txTmp.__toBuffer(buffer, 0, false)
+
+    return bcrypto.hash256(buffer)
   }
 
   hashForWitnessV0 (inIndex, prevOutScript, value, hashType) {
@@ -97,4 +125,4 @@ class FloTransaction extends Transaction {
   }
 }
 
-export default FloTransaction
+export default FLOTransaction
