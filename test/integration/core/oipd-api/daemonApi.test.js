@@ -256,4 +256,32 @@ describe('DaemonApi', () => {
     expect(success).toBeTruthy()
     expect(payload).toBeDefined()
   })
+  it.skip('GET multiple oip5 records', async () => {
+    let d = new DaemonApi(localhost)
+    const txids = [
+      '66d635a9858dec440fb0ed2e249d1566479c4a09265b712c8da3563fe8c6326b',
+      '403bdc7c76a7564da04621036fe36e856d7f1336220ef7e24f12e0b68caa457f'
+    ]
+    const response = await d.getOip5Records(txids)
+    expect(Array.isArray(response)).toBeTruthy()
+    for (let result of response) {
+      expect(result.success).toBeTruthy()
+      expect(result.payload.total).toEqual(1)
+      expect(Array.isArray(result.payload.results)).toBeTruthy()
+    }
+  })
+  it.skip('GET multiple oip5 templates', async () => {
+    let d = new DaemonApi(localhost)
+    const txids = [
+      'dc6ca90cfd3f92b421509db714d039e556386b3ec2b16bec49de743534ccc320',
+      'd5725a4b0b17f17117dd3e587af1d87a9211afe253c967dd37cf67e7acba333e'
+    ]
+    const response = await d.getOip5Templates(txids)
+    expect(Array.isArray(response)).toBeTruthy()
+    for (let result of response) {
+      expect(result.success).toBeTruthy()
+      expect(result.payload.total).toEqual(1)
+      expect(Array.isArray(result.payload.results)).toBeTruthy()
+    }
+  })
 })

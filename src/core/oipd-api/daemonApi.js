@@ -833,6 +833,29 @@ class DaemonApi {
   }
 
   /**
+   * Get oip5 records
+   * @param {string} [txids] - transaction id of record
+   * @return {Promise<Array.<Object>>}
+   */
+  async getOip5Records (txids) {
+    if (typeof txids === 'string') {
+      return this.getOip5Record(txids)
+    }
+    if (!Array.isArray(txids)) {
+      throw new Error(`The param "txids" must be an array of txids or a single txid string`)
+    }
+    let promiseArray = []
+    for (let txid of txids) {
+      promiseArray.push(this.getOip5Record(txid))
+    }
+    let responseArray = []
+    for (let promise of promiseArray) {
+      responseArray.push(await promise)
+    }
+    return responseArray
+  }
+
+  /**
    * Get oip5 template
    * @param {string} [txid] - transaction id of record
    * @return {Promise<Object>}
@@ -848,6 +871,29 @@ class DaemonApi {
       res = { success: true, payload: res.data }
       return res
     }
+  }
+
+  /**
+   * Get oip5 templates
+   * @param {string|Array.<string>} txids - transaction ids of record
+   * @return {Promise<Array.<Object>>}
+   */
+  async getOip5Templates (txids) {
+    if (typeof txids === 'string') {
+      return this.getOip5Template(txids)
+    }
+    if (!Array.isArray(txids)) {
+      throw new Error(`The param "txids" must be an array of txids or a single txid string`)
+    }
+    let promiseArray = []
+    for (let txid of txids) {
+      promiseArray.push(this.getOip5Template(txid))
+    }
+    let responseArray = []
+    for (let promise of promiseArray) {
+      responseArray.push(await promise)
+    }
+    return responseArray
   }
 
   /**
