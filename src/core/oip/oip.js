@@ -5,10 +5,8 @@ import { MultipartX } from '../../modules'
 import { OIPRecord } from '../../modules/records'
 import { EditRecord } from '../../modules/records/edit'
 import { ExplorerWallet, RPCWallet } from '../../modules/wallets'
+import { FLODATA_MAX_LEN } from '../../modules/flo/FLOTransaction'
 import { floMainnet, floTestnet } from '../../config'
-
-// The maximum floData that fits in one transaction
-export const FLODATA_MAX_LEN = 1040
 
 /**
  * Class to publish, register, edit, transfer, and deactivate OIP Records

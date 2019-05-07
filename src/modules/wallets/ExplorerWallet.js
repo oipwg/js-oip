@@ -1,5 +1,5 @@
 import { sign } from 'bitcoinjs-message'
-import { ECPair, payments, address, TransactionBuilder } from 'bitcoinjs-lib'
+import { ECPair, payments, address } from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
 
 // This dependency was not found:
@@ -8,6 +8,7 @@ import coinselect from 'coinselect'
 import floTx from 'fcoin/lib/primitives/tx'
 import { isValidWIF } from '../../util'
 import { floMainnet, floTestnet } from '../../config'
+import FLOTransactionBuilder from '../flo/FLOTransactionBuilder'
 
 if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
   if (typeof localStorage === 'undefined') { // eslint-disable-line
@@ -167,9 +168,7 @@ class ExplorerWallet {
       throw new Error('No Inputs or Outputs selected! Fail!')
     }
 
-    let txb = new TransactionBuilder(this.network)
-
-    txb.setVersion(this.coin.txVersion) // 1: w/o floData, 2: w/ floData
+    let txb = new FLOTransactionBuilder(this.network)
 
     inputs.forEach(input => txb.addInput(input.txId, input.vout))
 
@@ -199,11 +198,11 @@ class ExplorerWallet {
       txb.addOutput(output.address, output.value)
     })
 
-    let extraBytes = this.coin.getExtraBytes({ floData })
+    txb.setFloData(floData)
 
     for (let i in inputs) {
       if (this.p2pkh !== inputs[i].address) throw new Error(`Invalid inputs. Addresses don't match: ${inputs} & ${this.p2pkh}`)
-      this.coin.sign(txb, extraBytes, parseInt(i), this.ECPair)
+      txb.sign(parseInt(i), this.ECPair)
     }
 
     let builtHex
@@ -213,8 +212,6 @@ class ExplorerWallet {
     } catch (err) {
       throw new Error(`Unable to build Transaction Hex!: ${err}`)
     }
-
-    builtHex += extraBytes
 
     return builtHex
   }
