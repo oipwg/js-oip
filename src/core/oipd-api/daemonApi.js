@@ -212,7 +212,7 @@ class DaemonApi {
       case 'text':
         typeArr.push('Text-Basic')
         break
-        // 42s
+      // 42s
       case 'research':
         typeArr.push('research')
         break
@@ -223,8 +223,10 @@ class DaemonApi {
         throw new Error(`invalid type: ${type}`)
     }
 
-    let typeQuery = ``; let subtypeQuery = ``
-    const OR = 'OR'; const AND = 'AND'
+    let typeQuery = ``
+    let subtypeQuery = ``
+    const OR = 'OR'
+    const AND = 'AND'
     for (let i = 0; i < typeArr.length; i++) {
       typeQuery += `${typeQs}${typeArr[i]}`
       if (i !== typeArr.length - 1) {
@@ -273,7 +275,9 @@ class DaemonApi {
    */
   createQs (args) {
     let query = ``
-    const AND = 'AND'; const OR = 'OR'; const NOT = 'NOT'
+    const AND = 'AND'
+    const OR = 'OR'
+    const NOT = 'NOT'
     for (let i = 0; i < args.length; i++) {
       if (i !== 0) {
         query += ' '
@@ -755,7 +759,7 @@ class DaemonApi {
   async getVersion () {
     let res
     try {
-      res = await this.index.get('/daemon/version')
+      res = await this.index.get('daemon/version')
     } catch (err) {
       throw new Error(`Failed to get daemon version: ${err}`)
     }
@@ -774,6 +778,98 @@ class DaemonApi {
       throw new Error(`Failed to get sync status: ${err}`)
     }
     return res.data
+  }
+
+  /**
+   * Get latest oip5 records
+   * @return {Promise<Object>}
+   */
+  async getLatestOip5Records () {
+    let res
+    try {
+      res = await this.index.get('o5/record/get/latest')
+    } catch (err) {
+      return { success: false, error: err }
+    }
+    if (res && res.data) {
+      res = { success: true, payload: res.data }
+      return res
+    }
+  }
+
+  /**
+   * Get latest oip5 templates
+   * @return {Promise<Object>}
+   */
+  async getLatestOip5Templates () {
+    let res
+    try {
+      res = await this.index.get('o5/template/get/latest')
+    } catch (err) {
+      return { success: false, error: err }
+    }
+    if (res && res.data) {
+      res = { success: true, payload: res.data }
+      return res
+    }
+  }
+
+  /**
+   * Get oip5 record
+   * @param {string} [txid] - transaction id of record
+   * @return {Promise<Object>}
+   */
+  async getOip5Record (txid) {
+    let res
+    try {
+      res = await this.index.get(`o5/record/get/${txid}`)
+    } catch (err) {
+      return { success: false, error: err }
+    }
+    if (res && res.data) {
+      res = { success: true, payload: res.data }
+      return res
+    }
+  }
+
+  /**
+   * Get oip5 template
+   * @param {string} [txid] - transaction id of record
+   * @return {Promise<Object>}
+   */
+  async getOip5Template (txid) {
+    let res
+    try {
+      res = await this.index.get(`o5/template/get/${txid}`)
+    } catch (err) {
+      return { success: false, error: err }
+    }
+    if (res && res.data) {
+      res = { success: true, payload: res.data }
+      return res
+    }
+  }
+
+  /**
+   * Get oip5 template
+   * @param {string|Array<string>} [tmplIdentifiers] - 'template identifiers' transaction IDs'
+   * @return {Promise<Object>}
+   */
+  async getOip5Mapping (tmplIdentifiers) {
+    if (typeof tmplIdentifiers === 'string') {
+      tmplIdentifiers = [tmplIdentifiers]
+    }
+    let res
+    try {
+      res = await this.index.get(`o5/record/mapping/${tmplIdentifiers}`)
+    } catch (err) {
+      return { success: false, error: err }
+    }
+
+    if (res && res.data) {
+      res = { success: true, payload: res.data }
+      return res
+    }
   }
 }
 

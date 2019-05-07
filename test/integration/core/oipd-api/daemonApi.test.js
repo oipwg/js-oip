@@ -4,6 +4,8 @@ import { Artifact } from '../../../../src/modules/records/artifact'
 
 let index = new DaemonApi()
 
+const localhost = 'http://127.0.0.1:1606/oip'
+
 describe('DaemonApi', () => {
   it('GET search index by query | searchArtifacts()', async () => {
     let q = 'ryan'
@@ -147,7 +149,8 @@ describe('DaemonApi', () => {
     expect(error).toBeUndefined()
   })
   it('GET search floData by query WITH LIMIT | searchFloData()', async () => {
-    let q = 'ryan'; let limit = 5
+    let q = 'ryan'
+    let limit = 5
     let { txs, success, error } = await index.searchFloData(q, limit)
     expect(txs.length).toEqual(5)
     expect(success).toBeTruthy()
@@ -214,5 +217,43 @@ describe('DaemonApi', () => {
     let v = await d.getSyncStatus()
     // console.log(v)
     expect(v).toBeDefined()
+  })
+  it.skip('GET latest o5 records', async () => {
+    let d = new DaemonApi(localhost)
+    const response = await d.getLatestOip5Records()
+    const { success, payload, error } = response
+    expect(error).toBeUndefined()
+    expect(success).toBeTruthy()
+    expect(payload.results).toBeDefined()
+  })
+  it.skip('GET latest o5 templates', async () => {
+    let d = new DaemonApi(localhost)
+    const response = await d.getLatestOip5Templates()
+    const { success, payload, error } = response
+    expect(error).toBeUndefined()
+    expect(success).toBeTruthy()
+    expect(payload.results).toBeDefined()
+  })
+  it.skip('GET o5 template', async () => {
+    let d = new DaemonApi(localhost)
+    const txid = 'dc6ca90cfd3f92b421509db714d039e556386b3ec2b16bec49de743534ccc320'
+    const response = await d.getOip5Template(txid)
+    const { success, payload, error } = response
+    expect(error).toBeUndefined()
+    expect(success).toBeTruthy()
+    expect(payload.results).toBeDefined()
+  })
+  it.skip('GET o5 mapping', async () => {
+    let d = new DaemonApi(localhost)
+    const tmplIdents = [
+      'tmpl_000000000000F113',
+      'tmpl_00000000000BA51C',
+      'tmpl_8D66C6AFF9BDD8EE'
+    ]
+    const response = await d.getOip5Mapping(tmplIdents)
+    const { success, payload, error } = response
+    expect(error).toBeUndefined()
+    expect(success).toBeTruthy()
+    expect(payload).toBeDefined()
   })
 })
