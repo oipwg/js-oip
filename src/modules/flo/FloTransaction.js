@@ -1,10 +1,17 @@
 import { Transaction, script as bscript, crypto as bcrypto } from 'bitcoinjs-lib'
 import varuint from 'varuint-bitcoin'
 
-export const MAX_FLO_DATA_SIZE = 1040
+// The maximum floData that fits in one transaction
+export const FLODATA_MAX_LEN = 1040
 
 const EMPTY_SCRIPT = Buffer.alloc(0)
+const ZERO = Buffer.from('0000000000000000000000000000000000000000000000000000000000000000', 'hex')
 const ONE = Buffer.from('0000000000000000000000000000000000000000000000000000000000000001', 'hex')
+const VALUE_UINT64_MAX = Buffer.from('ffffffffffffffff', 'hex')
+const BLANK_OUTPUT = {
+  script: EMPTY_SCRIPT,
+  valueBuffer: VALUE_UINT64_MAX
+}
 
 class FLOTransaction extends Transaction {
   constructor () {
@@ -15,7 +22,12 @@ class FLOTransaction extends Transaction {
   }
 
   setFloData (floData, dataType) {
-    this.floData = Buffer.from(floData, dataType)
+    let tmpFloData = Buffer.from(floData, dataType)
+
+    // Check if the floData is too long :)
+    if (tmpFloData.length > FLODATA_MAX_LEN) { throw new Error(`Attempted to set too much floData! Maximum is ${FLODATA_MAX_LEN}, you tried ${tmpFloData.length}!`) }
+
+    this.floData = tmpFloData
   }
 
   getFloData () {
@@ -97,17 +109,41 @@ class FLOTransaction extends Transaction {
 
     let txTmp = this.clone()
 
-    // Currently only SIGHASH_ALL is supported
-    if ((hashType & 0x1f) === FLOTransaction.SIGHASH_ALL) {
-      // SIGHASH_ALL: Every input private key must sign all of the outputs
-      // First, we blank out every input and replace it with empty zeros
+    // SIGHASH_NONE: ignore all outputs? (wildcard payee)
+    if ((hashType & 0x1f) === Transaction.SIGHASH_NONE) {
+      txTmp.outs = []
+      // ignore sequence numbers (except at inIndex)
+      txTmp.ins.forEach((input, i) => {
+        if (i === inIndex) { return }
+        input.sequence = 0
+      })
+      // SIGHASH_SINGLE: ignore all outputs, except at the same index?
+    } else if ((hashType & 0x1f) === Transaction.SIGHASH_SINGLE) {
+      // https://github.com/bitcoin/bitcoin/blob/master/src/test/sighash_tests.cpp#L60
+      if (inIndex >= this.outs.length) { return ONE }
+      // truncate outputs after
+      txTmp.outs.length = inIndex + 1
+      // "blank" outputs before
+      for (let i = 0; i < inIndex; i++) {
+        txTmp.outs[i] = BLANK_OUTPUT
+      }
+      // ignore sequence numbers (except at inIndex)
+      txTmp.ins.forEach((input, y) => {
+        if (y === inIndex) { return }
+        input.sequence = 0
+      })
+    }
+    // SIGHASH_ANYONECANPAY: ignore inputs entirely?
+    if (hashType & Transaction.SIGHASH_ANYONECANPAY) {
+      txTmp.ins = [txTmp.ins[inIndex]]
+      txTmp.ins[0].script = ourScript
+      // SIGHASH_ALL: only ignore input scripts
+    } else {
+      // "blank" others input scripts
       txTmp.ins.forEach(input => {
         input.script = EMPTY_SCRIPT
       })
-      // Then we put in our own script that we want to sign (we run hashForSignature for every input)
       txTmp.ins[inIndex].script = ourScript
-    } else {
-      throw new Error(`Passed hashType is not supported. Currently only SIGHASH_ALL is supported.`)
     }
 
     // serialize and hash
@@ -119,9 +155,99 @@ class FLOTransaction extends Transaction {
   }
 
   hashForWitnessV0 (inIndex, prevOutScript, value, hashType) {
-    let sigHashBuffer = Transaction.prototype.hashForWitnessV0.call(this, inIndex, prevOutScript, value, hashType)
+    function writeUInt64LE (buffer, value, offset) {
+      buffer.writeInt32LE(value & -1, offset)
+      buffer.writeUInt32LE(Math.floor(value / 0x100000000), offset + 4)
+      return offset + 8
+    }
+    let tbuffer = Buffer.from([])
+    let toffset = 0
+    function writeSlice (slice) {
+      toffset += slice.copy(tbuffer, toffset)
+    }
+    function writeUInt32 (i) {
+      toffset = tbuffer.writeUInt32LE(i, toffset)
+    }
+    function writeUInt64 (i) {
+      toffset = writeUInt64LE(tbuffer, i, toffset)
+    }
+    function writeVarInt (i) {
+      varuint.encode(i, tbuffer, toffset)
+      toffset += varuint.encode.bytes
+    }
+    function writeVarSlice (slice) {
+      writeVarInt(slice.length)
+      writeSlice(slice)
+    }
+    function varSliceSize (someScript) {
+      const length = someScript.length
+      return varuint.encodingLength(length) + length
+    }
 
-    return sigHashBuffer
+    let hashOutputs = ZERO
+    let hashPrevouts = ZERO
+    let hashSequence = ZERO
+
+    if (!(hashType & Transaction.SIGHASH_ANYONECANPAY)) {
+      tbuffer = Buffer.allocUnsafe(36 * this.ins.length)
+      toffset = 0
+      this.ins.forEach(txIn => {
+        writeSlice(txIn.hash)
+        writeUInt32(txIn.index)
+      })
+      hashPrevouts = bcrypto.hash256(tbuffer)
+    }
+
+    if (!(hashType & Transaction.SIGHASH_ANYONECANPAY) &&
+    (hashType & 0x1f) !== Transaction.SIGHASH_SINGLE &&
+    (hashType & 0x1f) !== Transaction.SIGHASH_NONE) {
+      tbuffer = Buffer.allocUnsafe(4 * this.ins.length)
+      toffset = 0
+      this.ins.forEach(txIn => {
+        writeUInt32(txIn.sequence)
+      })
+      hashSequence = bcrypto.hash256(tbuffer)
+    }
+
+    if ((hashType & 0x1f) !== Transaction.SIGHASH_SINGLE &&
+    (hashType & 0x1f) !== Transaction.SIGHASH_NONE) {
+      const txOutsSize = this.outs.reduce((sum, output) => {
+        return sum + 8 + varSliceSize(output.script)
+      }, 0)
+      tbuffer = Buffer.allocUnsafe(txOutsSize)
+      toffset = 0
+      this.outs.forEach(out => {
+        writeUInt64(out.value)
+        writeVarSlice(out.script)
+      })
+      hashOutputs = bcrypto.hash256(tbuffer)
+    } else if ((hashType & 0x1f) === Transaction.SIGHASH_SINGLE &&
+    inIndex < this.outs.length) {
+      const output = this.outs[inIndex]
+      tbuffer = Buffer.allocUnsafe(8 + varSliceSize(output.script))
+      toffset = 0
+      writeUInt64(output.value)
+      writeVarSlice(output.script)
+      hashOutputs = bcrypto.hash256(tbuffer)
+    }
+
+    tbuffer = Buffer.allocUnsafe(156 + varSliceSize(prevOutScript) + varSliceSize(this.floData))
+    toffset = 0
+    const input = this.ins[inIndex]
+    writeUInt32(this.version)
+    writeSlice(hashPrevouts)
+    writeSlice(hashSequence)
+    writeSlice(input.hash)
+    writeUInt32(input.index)
+    writeVarSlice(prevOutScript)
+    writeUInt64(value)
+    writeUInt32(input.sequence)
+    writeSlice(hashOutputs)
+    writeUInt32(this.locktime)
+    writeVarSlice(this.floData)
+    writeUInt32(hashType)
+
+    return bcrypto.hash256(tbuffer)
   }
 }
 

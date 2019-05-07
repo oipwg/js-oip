@@ -1,4 +1,4 @@
-import FloTransaction from '../../../../src/modules/flo/FloTransaction'
+import FLOTransaction, { FLODATA_MAX_LEN } from '../../../../src/modules/flo/FLOTransaction'
 
 let sampleInput = {
   hash: Buffer.from('86231b8292f3fd690b21f0e831a7180bf1f5bd1b39c2f842a38c7c8d387db224', 'hex'),
@@ -12,9 +12,30 @@ let sampleOutput = {
   value: 99.99853750 * 100000000
 }
 
+test('Fails on too much floData', () => {
+  let floTX = new FLOTransaction()
+
+  floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, sampleInput.scriptSig)
+
+  floTX.addOutput(sampleOutput.scriptPubKey, sampleOutput.value)
+
+  // Generate 100 zeros for the FloData
+  let floData = ''
+  while (Buffer.from(floData).length < (FLODATA_MAX_LEN + 1)) {
+    floData += '0'
+  }
+
+  try {
+    floTX.setFloData(floData)
+    throw new Error('Error not thrown by setting floData! Test failed!')
+  } catch (e) {
+    expect(e.message).toBe('Attempted to set too much floData! Maximum is 1040, you tried 1041!')
+  }
+})
+
 describe('Properly Calculates byteLength', () => {
   test('Empty floData', () => {
-    let floTX = new FloTransaction()
+    let floTX = new FLOTransaction()
 
     floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, sampleInput.scriptSig)
 
@@ -28,7 +49,7 @@ describe('Properly Calculates byteLength', () => {
   })
 
   test('Partial floData', () => {
-    let floTX = new FloTransaction()
+    let floTX = new FLOTransaction()
 
     floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, sampleInput.scriptSig)
 
@@ -50,7 +71,7 @@ describe('Properly Calculates byteLength', () => {
   })
 
   test('Full floData', () => {
-    let floTX = new FloTransaction()
+    let floTX = new FLOTransaction()
 
     floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, sampleInput.scriptSig)
 
@@ -74,7 +95,7 @@ describe('Properly Calculates byteLength', () => {
 
 describe('Transaction Serialization', () => {
   test('Empty floData', () => {
-    let floTX = new FloTransaction()
+    let floTX = new FLOTransaction()
 
     floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, sampleInput.scriptSig)
 
@@ -90,7 +111,7 @@ describe('Transaction Serialization', () => {
   })
 
   test('Partial floData', () => {
-    let floTX = new FloTransaction()
+    let floTX = new FLOTransaction()
 
     floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, sampleInput.scriptSig)
 
@@ -117,7 +138,7 @@ describe('Transaction Serialization', () => {
   })
 
   test('Full floData', () => {
-    let floTX = new FloTransaction()
+    let floTX = new FLOTransaction()
 
     floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, sampleInput.scriptSig)
 
@@ -147,20 +168,20 @@ describe('Transaction Serialization', () => {
 describe('Signature Hash Calculation', () => {
   describe('Standard SignatureHash', () => {
     test('Empty floData', () => {
-      let floTX = new FloTransaction()
+      let floTX = new FLOTransaction()
 
       floTX.addInput(Buffer.from(sampleInput.hash), sampleInput.index, sampleInput.sequence, Buffer.from(sampleInput.scriptSig))
 
       floTX.addOutput(Buffer.from(sampleOutput.scriptPubKey), sampleOutput.value)
 
       // Default hashType is SIGHASH_ALL
-      let txHash = floTX.hashForSignature(0, Buffer.from(sampleInput.scriptSig), FloTransaction.SIGHASH_ALL)
+      let txHash = floTX.hashForSignature(0, Buffer.from(sampleInput.scriptSig), FLOTransaction.SIGHASH_ALL)
 
       expect(txHash.toString('hex')).toBe('721521965b362e856f9418054bf8add86c857e698fef1f2c05e7cd52d2ac2278')
     })
 
     test('Partial floData', () => {
-      let floTX = new FloTransaction()
+      let floTX = new FLOTransaction()
 
       floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, Buffer.from(sampleInput.scriptSig))
 
@@ -175,13 +196,13 @@ describe('Signature Hash Calculation', () => {
       floTX.setFloData(floData)
 
       // Default hashType is SIGHASH_ALL
-      let txHash = floTX.hashForSignature(sampleInput.index, sampleInput.scriptSig, FloTransaction.SIGHASH_ALL)
+      let txHash = floTX.hashForSignature(sampleInput.index, sampleInput.scriptSig, FLOTransaction.SIGHASH_ALL)
 
       expect(txHash.toString('hex')).toBe('fbcc66451315f80dcf2a6e7f11bb5d9a3e14c069bad7e0ce7a89fc3db05807dc')
     })
 
     test('Full floData', () => {
-      let floTX = new FloTransaction()
+      let floTX = new FLOTransaction()
 
       floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, Buffer.from(sampleInput.scriptSig))
 
@@ -196,12 +217,65 @@ describe('Signature Hash Calculation', () => {
       floTX.setFloData(floData)
 
       // Default hashType is SIGHASH_ALL
-      let txHash = floTX.hashForSignature(sampleInput.index, sampleInput.scriptSig, FloTransaction.SIGHASH_ALL)
+      let txHash = floTX.hashForSignature(sampleInput.index, sampleInput.scriptSig, FLOTransaction.SIGHASH_ALL)
 
       expect(txHash.toString('hex')).toBe('b6e9b29b6d0ca401802b64f3d8541b68b5f8b60b1439f7ffdefd61473cdf65c5')
     })
   })
   describe('Segwit SignatureHash', () => {
+    test('Empty floData', () => {
+      let floTX = new FLOTransaction()
 
+      floTX.addInput(Buffer.from(sampleInput.hash), sampleInput.index, sampleInput.sequence, Buffer.from(sampleInput.scriptSig))
+
+      floTX.addOutput(Buffer.from(sampleOutput.scriptPubKey), sampleOutput.value)
+
+      // Default hashType is SIGHASH_ALL
+      let txHash = floTX.hashForWitnessV0(0, Buffer.from(sampleInput.scriptSig), FLOTransaction.SIGHASH_ALL)
+
+      expect(txHash.toString('hex')).toBe('de3559a24316aa4323b5e505e1aa400205f7b65201394a417eb284f629c742d7')
+    })
+
+    test('Partial floData', () => {
+      let floTX = new FLOTransaction()
+
+      floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, Buffer.from(sampleInput.scriptSig))
+
+      floTX.addOutput(sampleOutput.scriptPubKey, sampleOutput.value)
+
+      // Generate 100 zeros for the FloData
+      let floData = ''
+      while (Buffer.from(floData).length < 256) {
+        floData += 'a'
+      }
+
+      floTX.setFloData(floData)
+
+      // Default hashType is SIGHASH_ALL
+      let txHash = floTX.hashForWitnessV0(sampleInput.index, sampleInput.scriptSig, FLOTransaction.SIGHASH_ALL)
+
+      expect(txHash.toString('hex')).toBe('714fbd949cda3121d437267417a2db6c95171b8d2ba89daa1fdb6b0a40252baa')
+    })
+
+    test('Full floData', () => {
+      let floTX = new FLOTransaction()
+
+      floTX.addInput(sampleInput.hash, sampleInput.index, sampleInput.sequence, Buffer.from(sampleInput.scriptSig))
+
+      floTX.addOutput(sampleOutput.scriptPubKey, sampleOutput.value)
+
+      // Generate 100 zeros for the FloData
+      let floData = ''
+      while (Buffer.from(floData).length < 1040) {
+        floData += 'a'
+      }
+
+      floTX.setFloData(floData)
+
+      // Default hashType is SIGHASH_ALL
+      let txHash = floTX.hashForWitnessV0(sampleInput.index, sampleInput.scriptSig, FLOTransaction.SIGHASH_ALL)
+
+      expect(txHash.toString('hex')).toBe('1e81da53703a9cb8d98a7bf07edcebeeeeed3a6ca6d5e1a5e7cd76d797dead48')
+    })
   })
 })
