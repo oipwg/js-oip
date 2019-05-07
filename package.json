@@ -9,7 +9,7 @@
     "test:integration": "jest test/integration --detectOpenHandles --verbose",
     "test:format": "standard",
     "compile": "./node_modules/.bin/babel -d lib/ src/",
-    "prepare": "npm run test && npm run compile",
+    "prepublishOnly": "npm run test && npm run compile",
     "code-format": "standard --fix",
     "generate-docs": "node_modules/.bin/jsdoc --readme ./README.md -c jsdoc.json"
   },
