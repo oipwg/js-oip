@@ -81,7 +81,7 @@ const decodeArray = (artifacts) => {
 }
 
 // ToDo: change to 'https' when ready
-// const defaultOIPdURL = 'http://localhost:1606'
+const localhost = 'http://localhost:1606/oip'
 const defaultOIPdURL = 'https://api.oip.io/oip'
 
 /**
@@ -97,11 +97,15 @@ class DaemonApi {
    * let oipd = new DaemonApi("localhost:1606") //leave blank for default API URL
    * let latestArtifacts = await oipd.getLatestArtifacts()
    * ```
-   * @param  {Object} [daemonUrl="https://api.oip.io/oip"] - The URL of an OIP Daemon
+   * @param  {string} [daemonUrl="https://api.oip.io/oip"] - The URL of an OIP Daemon
    */
   constructor (daemonUrl) {
     if (daemonUrl) {
-      this.setUrl(daemonUrl)
+      if (daemonUrl === 'localhost') {
+        this.setUrl(localhost)
+      } else {
+        this.setUrl(daemonUrl)
+      }
     } else {
       this.setUrl(defaultOIPdURL) // ToDo: default for prod
     }
