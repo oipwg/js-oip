@@ -786,34 +786,52 @@ class DaemonApi {
 
   /**
    * Get latest oip5 records
+   * @param {Object} [options]
+   * @param {number} [options.limit=10] - max num of results
+   * @param {string} [options.after] - the string ID returned on response to get the next set of data
+   * @param {number} [options.pages] - page number
+   * @param {string} [options.sort] - sort field ascending or descending. Format must match: ([0-9a-zA-Z._-]+:[ad]$?)+
    * @return {Promise<Object>}
    */
-  async getLatestOip5Records () {
+  async getLatestOip5Records (options) {
     let res
     try {
-      res = await this.index.get('o5/record/get/latest')
+      res = await this.index.get('o5/record/get/latest', {
+        params: {
+          ...options
+        }
+      })
     } catch (err) {
       return { success: false, error: err }
     }
     if (res && res.data) {
-      res = { success: true, payload: res.data }
+      res = { success: true, payload: decodeResponseData(res.data) }
       return res
     }
   }
 
   /**
    * Get latest oip5 templates
+   * @param {Object} [options]
+   * @param {number} [options.limit=10] - max num of results
+   * @param {string} [options.after] - the string ID returned on response to get the next set of data
+   * @param {number} [options.pages] - page number
+   * @param {string} [options.sort] - sort field ascending or descending. Format must match: ([0-9a-zA-Z._-]+:[ad]$?)+
    * @return {Promise<Object>}
    */
-  async getLatestOip5Templates () {
+  async getLatestOip5Templates (options) {
     let res
     try {
-      res = await this.index.get('o5/template/get/latest')
+      res = await this.index.get('o5/template/get/latest', {
+        params: {
+          ...options
+        }
+      })
     } catch (err) {
       return { success: false, error: err }
     }
     if (res && res.data) {
-      res = { success: true, payload: res.data }
+      res = { success: true, payload: decodeResponseData(res.data) }
       return res
     }
   }
@@ -831,22 +849,19 @@ class DaemonApi {
       return { success: false, error: err }
     }
     if (res && res.data) {
-      res = { success: true, payload: res.data }
+      res = { success: true, payload: decodeResponseData(res.data) }
       return res
     }
   }
 
   /**
    * Get oip5 records
-   * @param {string} [txids] - transaction id of record
+   * @param {Array.<string>|string} txids - transaction id of record
    * @return {Promise<Array.<Object>>}
    */
   async getOip5Records (txids) {
     if (typeof txids === 'string') {
       return this.getOip5Record(txids)
-    }
-    if (!Array.isArray(txids)) {
-      throw new Error(`The param "txids" must be an array of txids or a single txid string`)
     }
     let promiseArray = []
     for (let txid of txids) {
@@ -872,7 +887,7 @@ class DaemonApi {
       return { success: false, error: err }
     }
     if (res && res.data) {
-      res = { success: true, payload: res.data }
+      res = { success: true, payload: decodeResponseData(res.data) }
       return res
     }
   }
@@ -922,12 +937,22 @@ class DaemonApi {
     }
   }
 
-  async searchOip5Records (query) {
+  /**
+   * Search oip5 templates
+   * @param {Object} options
+   * @param {string} options.q - query string query
+   * @param {number} [options.limit=10] - max num of results (limited to 10 on backend)
+   * @param {string} [options.after] - the string ID returned on response to get the next set of data
+   * @param {number} [options.pages] - page number
+   * @param {string} [options.sort] - sort field ascending or descending. Format must match: ([0-9a-zA-Z._-]+:[ad]$?)+
+   * @return {Promise<Object>}
+   */
+  async searchOip5Records (options) {
     let res
     try {
       res = await this.index.get(`o5/record/search`, {
         params: {
-          q: query
+          ...options
         }
       })
     } catch (err) {
@@ -935,17 +960,27 @@ class DaemonApi {
     }
 
     if (res && res.data) {
-      res = { success: true, payload: res.data }
+      res = { success: true, payload: decodeResponseData(res.data) }
       return res
     }
   }
 
-  async searchOip5Templates (query) {
+  /**
+   * Search oip5 templates
+   * @param {Object} options
+   * @param {string} options.q - query string query
+   * @param {number} [options.limit=10] - max num of results (limited to 10 on backend)
+   * @param {string} [options.after] - the string ID returned on response to get the next set of data
+   * @param {number} [options.pages] - page number
+   * @param {string} [options.sort] - sort field ascending or descending. Format must match: ([0-9a-zA-Z._-]+:[ad]$?)+
+   * @return {Promise<Object>}
+   */
+  async searchOip5Templates (options) {
     let res
     try {
       res = await this.index.get(`o5/template/search`, {
         params: {
-          q: query
+          ...options
         }
       })
     } catch (err) {
@@ -953,9 +988,17 @@ class DaemonApi {
     }
 
     if (res && res.data) {
-      res = { success: true, payload: res.data }
+      res = { success: true, payload: decodeResponseData(res.data) }
       return res
     }
+  }
+}
+
+function decodeResponseData (payload) {
+  const { next, ...rest } = payload
+  return {
+    next: decodeURI(next),
+    ...rest
   }
 }
 
