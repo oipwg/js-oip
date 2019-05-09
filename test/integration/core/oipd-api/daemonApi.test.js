@@ -220,7 +220,19 @@ describe('DaemonApi', () => {
   })
   it.skip('GET latest o5 records', async () => {
     let d = new DaemonApi(localhost)
-    const response = await d.getLatestOip5Records()
+    const options = {
+      limit: 1
+    }
+    const response = await d.getLatestOip5Records(options)
+    const { success, payload, error } = response
+    expect(error).toBeUndefined()
+    expect(success).toBeTruthy()
+    expect(payload.results).toBeDefined()
+  })
+  it.skip('GET o5 record', async () => {
+    let d = new DaemonApi(localhost)
+    const txid = '66d635a9858dec440fb0ed2e249d1566479c4a09265b712c8da3563fe8c6326b'
+    const response = await d.getOip5Record(txid)
     const { success, payload, error } = response
     expect(error).toBeUndefined()
     expect(success).toBeTruthy()
@@ -228,7 +240,10 @@ describe('DaemonApi', () => {
   })
   it.skip('GET latest o5 templates', async () => {
     let d = new DaemonApi(localhost)
-    const response = await d.getLatestOip5Templates()
+    const options = {
+      limit: 3
+    }
+    const response = await d.getLatestOip5Templates(options)
     const { success, payload, error } = response
     expect(error).toBeUndefined()
     expect(success).toBeTruthy()
@@ -270,7 +285,7 @@ describe('DaemonApi', () => {
       expect(Array.isArray(result.payload.results)).toBeTruthy()
     }
   })
-  it.skip('GET multiple oip5 templates', async () => {
+  it('GET multiple oip5 templates', async () => {
     let d = new DaemonApi(localhost)
     const txids = [
       'dc6ca90cfd3f92b421509db714d039e556386b3ec2b16bec49de743534ccc320',
@@ -286,14 +301,22 @@ describe('DaemonApi', () => {
   })
   it.skip('GET search oip5 records', async () => {
     let d = new DaemonApi(localhost)
-    const query = 'hero'
-    const response = await d.searchOip5Records(query)
-    console.log(response)
+    const q = 'hero'
+    const response = await d.searchOip5Records({ q })
+    expect(response.success).toBeTruthy()
+    expect(response.payload.results.length).toBeGreaterThan(0)
+    expect(response.payload.count).toBeGreaterThan(0)
+    expect(response.payload.total).toBeGreaterThan(0)
+    expect(response.payload.next).toBeDefined()
   })
   it.skip('GET search oip5 templates', async () => {
     let d = new DaemonApi(localhost)
-    const query = 'Music'
-    const response = await d.searchOip5Templates(query)
-    console.log(response)
+    const q = 'Music'
+    const response = await d.searchOip5Templates({ q })
+    expect(response.success).toBeTruthy()
+    expect(response.payload.results.length).toBeGreaterThan(0)
+    expect(response.payload.count).toBeGreaterThan(0)
+    expect(response.payload.total).toBeGreaterThan(0)
+    expect(response.payload.next).toBeDefined()
   })
 })
