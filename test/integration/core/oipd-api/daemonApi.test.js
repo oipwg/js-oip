@@ -284,4 +284,16 @@ describe('DaemonApi', () => {
       expect(Array.isArray(result.payload.results)).toBeTruthy()
     }
   })
+  it.skip('GET search oip5 records', async () => {
+    let d = new DaemonApi(localhost)
+    const query = 'hero'
+    const response = await d.searchOip5Records(query)
+    console.log(response)
+  })
+  it.skip('GET search oip5 templates', async () => {
+    let d = new DaemonApi(localhost)
+    const query = 'Music'
+    const response = await d.searchOip5Templates(query)
+    console.log(response)
+  })
 })

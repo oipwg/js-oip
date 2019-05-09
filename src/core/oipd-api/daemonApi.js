@@ -921,6 +921,42 @@ class DaemonApi {
       return res
     }
   }
+
+  async searchOip5Records (query) {
+    let res
+    try {
+      res = await this.index.get(`o5/record/search`, {
+        params: {
+          q: query
+        }
+      })
+    } catch (err) {
+      return { success: false, error: err }
+    }
+
+    if (res && res.data) {
+      res = { success: true, payload: res.data }
+      return res
+    }
+  }
+
+  async searchOip5Templates (query) {
+    let res
+    try {
+      res = await this.index.get(`o5/template/search`, {
+        params: {
+          q: query
+        }
+      })
+    } catch (err) {
+      return { success: false, error: err }
+    }
+
+    if (res && res.data) {
+      res = { success: true, payload: res.data }
+      return res
+    }
+  }
 }
 
 export default DaemonApi
