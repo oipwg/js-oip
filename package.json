@@ -1,6 +1,6 @@
 {
   "name": "js-oip",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "A Javascript Library to fully interact with the Open Index Protocol",
   "main": "lib/index.js",
   "scripts": {
@@ -11,6 +11,7 @@
     "compile": "./node_modules/.bin/babel -d lib/ src/",
     "prepublishOnly": "npm run test && npm run compile",
     "code-format": "standard --fix",
+    "prepush": "npm run compile && npm run generate-docs",
     "generate-docs": "node_modules/.bin/jsdoc --readme ./README.md -c jsdoc.json"
   },
   "repository": {
