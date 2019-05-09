@@ -386,7 +386,24 @@ class RPCWallet {
     // For each of those peers, open up a connection
     for (let peerInfo of getPeerInfo.result) {
       // Create an fcoin peer
-      let peer = new Peer({ ip: peerInfo.addr })
+
+      let peerHost = peerInfo.addr
+
+      // Always rewrite the port.
+      if (peerHost.includes(':')) {
+        peerHost = peerHost.substring(0, peerHost.indexOf(':'))
+      }
+
+      // Set to test or mainnet ourselves.
+      if (this.options.network && this.options.network === 'mainnet') {
+        peerHost = peerHost + ':7312'
+      } else {
+        peerHost = peerHost + ':17312'
+      }
+
+      console.log(`peer host ${peerHost}`)
+
+      let peer = new Peer({ ip: peerHost })
       // Start the connection attempt
       peer.connect()
       // Add it to our peerrs array

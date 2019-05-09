@@ -1,7 +1,7 @@
 import MPSingle from './mpsingle'
 
 import { FLODATA_MAX_LEN } from '../flo/FLOTransaction'
-export const CHOP_MAX_LEN = 839
+export const CHOP_MAX_LEN = 837
 /**
  * An OIP Multipart Converter (X); converts large data into OIP Multiparts and vice versa
  * @param {string|Array.<MPSingle>} input - String data or OIP Multiparts (MPSingle)s (hint: can pass in an JSON object)
