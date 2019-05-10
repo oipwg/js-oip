@@ -74,6 +74,92 @@ class FLOTransaction extends Transaction {
     return (byteLength + floDataVarInt.length + this.floData.length)
   }
 
+  static fromBuffer (buffer, _NO_STRICT) {
+    let offset = 0
+    function readUInt64LE (buffer, offset) {
+      const a = buffer.readUInt32LE(offset)
+      let b = buffer.readUInt32LE(offset + 4)
+      b *= 0x100000000
+      return b + a
+    }
+    function readSlice (n) {
+      offset += n
+      return buffer.slice(offset - n, offset)
+    }
+    function readUInt32 () {
+      const i = buffer.readUInt32LE(offset)
+      offset += 4
+      return i
+    }
+    function readInt32 () {
+      const i = buffer.readInt32LE(offset)
+      offset += 4
+      return i
+    }
+    function readUInt64 () {
+      const i = readUInt64LE(buffer, offset)
+      offset += 8
+      return i
+    }
+    function readVarInt () {
+      const vi = varuint.decode(buffer, offset)
+      offset += varuint.decode.bytes
+      return vi
+    }
+    function readVarSlice () {
+      return readSlice(readVarInt())
+    }
+    function readVector () {
+      const count = readVarInt()
+      const vector = []
+      for (let i = 0; i < count; i++) { vector.push(readVarSlice()) }
+      return vector
+    }
+    const tx = new FLOTransaction()
+    tx.version = readInt32()
+    const marker = buffer.readUInt8(offset)
+    const flag = buffer.readUInt8(offset + 1)
+    let hasWitnesses = false
+    if (marker === Transaction.ADVANCED_TRANSACTION_MARKER &&
+      flag === Transaction.ADVANCED_TRANSACTION_FLAG) {
+      offset += 2
+      hasWitnesses = true
+    }
+    const vinLen = readVarInt()
+    for (let i = 0; i < vinLen; ++i) {
+      tx.ins.push({
+        hash: readSlice(32),
+        index: readUInt32(),
+        script: readVarSlice(),
+        sequence: readUInt32(),
+        witness: EMPTY_WITNESS
+      })
+    }
+    const voutLen = readVarInt()
+    for (let i = 0; i < voutLen; ++i) {
+      tx.outs.push({
+        value: readUInt64(),
+        script: readVarSlice()
+      })
+    }
+    if (hasWitnesses) {
+      for (let i = 0; i < vinLen; ++i) {
+        tx.ins[i].witness = readVector()
+      }
+      // was this pointless?
+      if (!tx.hasWitnesses()) { throw new Error('Transaction has superfluous witness data') }
+    }
+    tx.locktime = readUInt32()
+    tx.floData = readVarSlice()
+    if (_NO_STRICT) { return tx }
+    if (offset !== buffer.length) { throw new Error('Transaction has unexpected data') }
+    return tx
+  }
+
+  static fromHex (hex) {
+    return FLOTransaction.fromBuffer(Buffer.from(hex, 'hex'))
+  }
+
   /**
    * Serialize the Transaction to a Buffer
    * @param  {Buffer} buffer         - The Buffer to use while building
