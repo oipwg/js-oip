@@ -12,6 +12,7 @@ const BLANK_OUTPUT = {
   script: EMPTY_SCRIPT,
   valueBuffer: VALUE_UINT64_MAX
 }
+const EMPTY_WITNESS = []
 
 class FLOTransaction extends Transaction {
   constructor () {
@@ -66,8 +67,10 @@ class FLOTransaction extends Transaction {
    * @param  {Boolean} __allowWitness - Should Witness be used in the generation
    * @return {Integer} Returns the length of the Transaction
    */
-  __byteLength (__allowWitness) {
+  __byteLength (__allowWitness, options) {
     let byteLength = Transaction.prototype.__byteLength.call(this, __allowWitness)
+
+    if (options && options.excludeFloData) { return byteLength }
 
     let floDataVarInt = varuint.encode(this.floData.length)
 
@@ -167,10 +170,15 @@ class FLOTransaction extends Transaction {
    * @param  {Boolean} __allowWitness -Should Witness be used in the serialization
    * @return {Buffer} Returns the TX as a Buffer
    */
-  __toBuffer (buffer, initialOffset, __allowWitness) {
-    if (!buffer) { buffer = Buffer.allocUnsafe(this.__byteLength(__allowWitness)) }
+  __toBuffer (buffer, initialOffset, __allowWitness, options) {
+    if (!buffer) {
+      buffer = Buffer.allocUnsafe(this.__byteLength(__allowWitness, options))
+    }
 
     Transaction.prototype.__toBuffer.call(this, buffer, initialOffset, __allowWitness)
+
+    // Included for testing transaction signatures, and legacy signature hashing
+    if (options && options.excludeFloData) { return buffer }
 
     // Calculate where we left off
     let offset = this.__byteLength(__allowWitness, options) - (this.floData.length + varuint.encode(this.floData.length).length)
@@ -185,7 +193,7 @@ class FLOTransaction extends Transaction {
     return buffer
   }
 
-  hashForSignature (inIndex, prevOutScript, hashType) {
+  hashForSignature (inIndex, prevOutScript, hashType, options) {
     // https://github.com/bitcoin/bitcoin/blob/master/src/test/sighash_tests.cpp#L29
     if (inIndex >= this.ins.length) { return ONE }
 
@@ -233,14 +241,14 @@ class FLOTransaction extends Transaction {
     }
 
     // serialize and hash
-    let buffer = Buffer.alloc(txTmp.__byteLength(false) + 4)
+    let buffer = Buffer.alloc(txTmp.__byteLength(false, options) + 4)
     buffer.writeInt32LE(hashType, buffer.length - 4)
-    txTmp.__toBuffer(buffer, 0, false)
+    txTmp.__toBuffer(buffer, 0, false, options)
 
     return bcrypto.hash256(buffer)
   }
 
-  hashForWitnessV0 (inIndex, prevOutScript, value, hashType) {
+  hashForWitnessV0 (inIndex, prevOutScript, value, hashType, options) {
     function writeUInt64LE (buffer, value, offset) {
       buffer.writeInt32LE(value & -1, offset)
       buffer.writeUInt32LE(Math.floor(value / 0x100000000), offset + 4)
@@ -317,7 +325,10 @@ class FLOTransaction extends Transaction {
       hashOutputs = bcrypto.hash256(tbuffer)
     }
 
-    tbuffer = Buffer.allocUnsafe(156 + varSliceSize(prevOutScript) + varSliceSize(this.floData))
+    tbuffer = Buffer.alloc(156 + varSliceSize(prevOutScript) + varSliceSize(this.floData))
+
+    if (options && options.excludeFloData) { tbuffer = Buffer.alloc(156 + varSliceSize(prevOutScript)) }
+
     toffset = 0
     const input = this.ins[inIndex]
     writeUInt32(this.version)
@@ -330,7 +341,7 @@ class FLOTransaction extends Transaction {
     writeUInt32(input.sequence)
     writeSlice(hashOutputs)
     writeUInt32(this.locktime)
-    writeVarSlice(this.floData)
+    if (!options || !options.excludeFloData) { writeVarSlice(this.floData) }
     writeUInt32(hashType)
 
     return bcrypto.hash256(tbuffer)
