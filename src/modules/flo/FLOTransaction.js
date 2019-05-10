@@ -87,7 +87,7 @@ class FLOTransaction extends Transaction {
     Transaction.prototype.__toBuffer.call(this, buffer, initialOffset, __allowWitness)
 
     // Calculate where we left off
-    let offset = buffer.length - (this.floData.length + varuint.encode(this.floData.length).length)
+    let offset = this.__byteLength(__allowWitness, options) - (this.floData.length + varuint.encode(this.floData.length).length)
 
     // Add the varint for the floData length
     varuint.encode(this.floData.length, buffer, offset)

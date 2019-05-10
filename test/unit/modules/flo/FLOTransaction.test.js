@@ -198,7 +198,7 @@ describe('Signature Hash Calculation', () => {
       // Default hashType is SIGHASH_ALL
       let txHash = floTX.hashForSignature(sampleInput.index, sampleInput.scriptSig, FLOTransaction.SIGHASH_ALL)
 
-      expect(txHash.toString('hex')).toBe('fbcc66451315f80dcf2a6e7f11bb5d9a3e14c069bad7e0ce7a89fc3db05807dc')
+      expect(txHash.toString('hex')).toBe('be4a2101c50f202757a72d9ff71917cf671fda1186a522bfc0a56c177ec0cfaa')
     })
 
     test('Full floData', () => {
@@ -219,7 +219,7 @@ describe('Signature Hash Calculation', () => {
       // Default hashType is SIGHASH_ALL
       let txHash = floTX.hashForSignature(sampleInput.index, sampleInput.scriptSig, FLOTransaction.SIGHASH_ALL)
 
-      expect(txHash.toString('hex')).toBe('b6e9b29b6d0ca401802b64f3d8541b68b5f8b60b1439f7ffdefd61473cdf65c5')
+      expect(txHash.toString('hex')).toBe('3dc473ca795438484ecc2875a61c8fdbef09162d049c00d99e279c2b89b7d263')
     })
   })
   describe('Segwit SignatureHash', () => {
