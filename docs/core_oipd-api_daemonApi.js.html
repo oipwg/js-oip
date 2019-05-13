@@ -1049,7 +1049,7 @@ class DaemonApi {
       res = { success: true, payload: res.data }
       return res
     } else {
-      return { success: false, error: `Failed to get data back from axios request trying to get oip5 mappings: ${err}` }
+      return { success: false, error: `Failed to get data back from axios request trying to get oip5 mappings` }
     }
   }
 
