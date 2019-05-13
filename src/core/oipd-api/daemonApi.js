@@ -802,11 +802,13 @@ class DaemonApi {
         }
       })
     } catch (err) {
-      return { success: false, error: err }
+      throw new Error(`Failed to get latest oip5 records: ${err}`)
     }
     if (res && res.data) {
       res = { success: true, payload: decodeResponseData(res.data) }
       return res
+    } else {
+      return { success: false, error: `No data returned from axios response on getLatestOip5Records` }
     }
   }
 
@@ -828,11 +830,13 @@ class DaemonApi {
         }
       })
     } catch (err) {
-      return { success: false, error: err }
+      throw new Error(`failed to get latest oip5 templates: ${err}`)
     }
     if (res && res.data) {
       res = { success: true, payload: decodeResponseData(res.data) }
       return res
+    } else {
+      return { success: false, error: `Failed to get data back from axios response` }
     }
   }
 
@@ -851,6 +855,8 @@ class DaemonApi {
     if (res && res.data) {
       res = { success: true, payload: decodeResponseData(res.data) }
       return res
+    } else {
+      return { success: false, error: `no data returned from axios response getOip5Record: ${txid}` }
     }
   }
 
@@ -869,7 +875,13 @@ class DaemonApi {
     }
     let responseArray = []
     for (let promise of promiseArray) {
-      responseArray.push(await promise)
+      let resolvedPromise
+      try {
+        resolvedPromise = await promise
+      } catch (err) {
+        throw new Error(`Failed to get oip5 records: ${err}`)
+      }
+      responseArray.push(resolvedPromise)
     }
     return responseArray
   }
@@ -884,11 +896,13 @@ class DaemonApi {
     try {
       res = await this.index.get(`o5/template/get/${txid}`)
     } catch (err) {
-      return { success: false, error: err }
+      throw new Error(`Failed to get oip5 template: ${err}`)
     }
     if (res && res.data) {
       res = { success: true, payload: decodeResponseData(res.data) }
       return res
+    } else {
+      return { success: false, error: `No data returned from axios request getOip5Template: ${txid}` }
     }
   }
 
@@ -910,7 +924,14 @@ class DaemonApi {
     }
     let responseArray = []
     for (let promise of promiseArray) {
-      responseArray.push(await promise)
+      let resolvedPromise
+      try {
+        resolvedPromise = await promise
+      } catch (err) {
+        throw new Error(`Could not get oip5 templates: ${err}`)
+      }
+
+      responseArray.push(resolvedPromise)
     }
     return responseArray
   }
@@ -928,12 +949,14 @@ class DaemonApi {
     try {
       res = await this.index.get(`o5/record/mapping/${tmplIdentifiers}`)
     } catch (err) {
-      return { success: false, error: err }
+      throw new Error(`Failed to get oip5 mappings: ${err}`)
     }
 
     if (res && res.data) {
       res = { success: true, payload: res.data }
       return res
+    } else {
+      return { success: false, error: `Failed to get data back from axios request trying to get oip5 mappings: ${err}` }
     }
   }
 
@@ -956,12 +979,14 @@ class DaemonApi {
         }
       })
     } catch (err) {
-      return { success: false, error: err }
+      throw new Error(`Failed to search oip5 records: ${err}`)
     }
 
     if (res && res.data) {
       res = { success: true, payload: decodeResponseData(res.data) }
       return res
+    } else {
+      return { success: false, error: 'Did not receive data back from axios request trying to search oip5 records' }
     }
   }
 
@@ -984,12 +1009,14 @@ class DaemonApi {
         }
       })
     } catch (err) {
-      return { success: false, error: err }
+      throw new Error(`Failed to search oip5 templates: ${err}`)
     }
 
     if (res && res.data) {
       res = { success: true, payload: decodeResponseData(res.data) }
       return res
+    } else {
+      return { success: false, error: 'Did not receive data back from axios request trying to search oip5 templates' }
     }
   }
 }
