@@ -2,7 +2,7 @@ import { Insight } from 'insight-explorer'
 import { varIntBuffer } from '../../../util/btc'
 import sign from './flosigner'
 
-const floFeePerKb = 10000
+const floFeePerKb = 100000
 
 /**
  * An object that contains information about a coins Name, Network, and access to an explorer
