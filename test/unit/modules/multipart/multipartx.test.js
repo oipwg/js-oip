@@ -1,5 +1,6 @@
-import MultipartX, { CHOP_MAX_LEN, FLODATA_MAX_LEN } from '../../../../src/modules/multipart/multipartx'
+import MultipartX, { CHOP_MAX_LEN } from '../../../../src/modules/multipart/multipartx'
 import { ExplorerWallet } from '../../../../src/modules/wallets'
+import { FLODATA_MAX_LEN } from '../../../../src/modules/flo/FLOTransaction'
 
 const pair = {
   public: 'oV5qwoq9CSaXersHk4DQVHhoMTDjRNWRF2',

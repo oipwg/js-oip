@@ -1,6 +1,5 @@
 import { Insight } from 'insight-explorer'
 import { varIntBuffer } from '../../../util/btc'
-import sign from './flosigner'
 
 const floFeePerKb = 10000
 
@@ -26,7 +25,6 @@ module.exports = {
 
     return builtString
   },
-  sign,
   network: {
     bip32: {
       public: 0x013440e2,

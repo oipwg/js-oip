@@ -1,14 +1,12 @@
-import bitcoin from 'bitcoinjs-lib'
+import { ECPair, payments } from 'bitcoinjs-lib'
 
 import { DaemonApi } from '../oipd-api'
 import { MultipartX } from '../../modules'
 import { OIPRecord } from '../../modules/records'
 import { EditRecord } from '../../modules/records/edit'
 import { ExplorerWallet, RPCWallet } from '../../modules/wallets'
+import { FLODATA_MAX_LEN } from '../../modules/flo/FLOTransaction'
 import { floMainnet, floTestnet } from '../../config'
-
-// The maximum floData that fits in one transaction
-export const FLODATA_MAX_LEN = 1040
 
 /**
  * Class to publish, register, edit, transfer, and deactivate OIP Records
@@ -44,8 +42,8 @@ class OIP {
       let tmpNetwork = floMainnet
       if (network === 'testnet') { tmpNetwork = floTestnet }
 
-      let ECPair = bitcoin.ECPair.fromWIF(this.options.wif, tmpNetwork.network)
-      this.options.publicAddress = bitcoin.payments.p2pkh({ pubkey: ECPair.publicKey, network: tmpNetwork.network }).address
+      let myECPair = ECPair.fromWIF(this.options.wif, tmpNetwork.network)
+      this.options.publicAddress = payments.p2pkh({ pubkey: myECPair.publicKey, network: tmpNetwork.network }).address
     }
 
     if (this.options.rpc) {

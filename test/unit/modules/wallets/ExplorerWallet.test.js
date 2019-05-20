@@ -1,4 +1,4 @@
-import bitcoin from 'bitcoinjs-lib'
+import { ECPair } from 'bitcoinjs-lib'
 import { floTestnet } from '../../../../src/config'
 import { isValidWIF } from '../../../../src/util/btc'
 import { ExplorerWallet } from '../../../../src/modules/wallets'
@@ -16,7 +16,7 @@ if (typeof window === 'undefined' || typeof window.localStorage === 'undefined')
 }
 
 const wif = 'cRVa9rNx5N1YKBw8PhavegJPFCiYCfC4n8cYmdc3X1Y6TyFZGG4B'
-const ECPair = bitcoin.ECPair.fromWIF(wif, network)
+const myECPair = ECPair.fromWIF(wif, network)
 
 describe(`ExplorerWallet`, () => {
   describe('Initialization', () => {
@@ -32,9 +32,9 @@ describe(`ExplorerWallet`, () => {
   describe('ECPair', () => {
     it('ECPair from WIF', () => {
       expect(isValidWIF(wif, network)).toBeTruthy()
-      expect(ECPair.publicKey).toBeDefined()
-      expect(ECPair.privateKey).toBeDefined()
-      // console.log(typeof ECPair, ECPair.network)
+      expect(myECPair.publicKey).toBeDefined()
+      expect(myECPair.privateKey).toBeDefined()
+      // console.log(typeof myECPair, myECPair.network)
     })
   })
   describe('Transaction Builder', () => {
