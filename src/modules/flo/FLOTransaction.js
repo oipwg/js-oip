@@ -70,7 +70,7 @@ class FLOTransaction extends Transaction {
   __byteLength (__allowWitness, options) {
     let byteLength = Transaction.prototype.__byteLength.call(this, __allowWitness)
 
-    if (options && options.excludeFloData) { return byteLength }
+    if ((options && options.excludeFloData) || this.version < 2) { return byteLength }
 
     let floDataVarInt = varuint.encode(this.floData.length)
 
@@ -153,7 +153,9 @@ class FLOTransaction extends Transaction {
       if (!tx.hasWitnesses()) { throw new Error('Transaction has superfluous witness data') }
     }
     tx.locktime = readUInt32()
-    tx.floData = readVarSlice()
+
+    if (tx.version >= 2) { tx.floData = readVarSlice() }
+
     if (_NO_STRICT) { return tx }
     if (offset !== buffer.length) { throw new Error('Transaction has unexpected data') }
     return tx
@@ -178,7 +180,7 @@ class FLOTransaction extends Transaction {
     Transaction.prototype.__toBuffer.call(this, buffer, initialOffset, __allowWitness)
 
     // Included for testing transaction signatures, and legacy signature hashing
-    if (options && options.excludeFloData) { return buffer }
+    if ((options && options.excludeFloData) || this.version < 2) { return buffer }
 
     // Calculate where we left off
     let offset = this.__byteLength(__allowWitness, options) - (this.floData.length + varuint.encode(this.floData.length).length)
@@ -327,7 +329,7 @@ class FLOTransaction extends Transaction {
 
     tbuffer = Buffer.alloc(156 + varSliceSize(prevOutScript) + varSliceSize(this.floData))
 
-    if (options && options.excludeFloData) { tbuffer = Buffer.alloc(156 + varSliceSize(prevOutScript)) }
+    if ((options && options.excludeFloData) || this.version < 2) { tbuffer = Buffer.alloc(156 + varSliceSize(prevOutScript)) }
 
     toffset = 0
     const input = this.ins[inIndex]
@@ -341,7 +343,7 @@ class FLOTransaction extends Transaction {
     writeUInt32(input.sequence)
     writeSlice(hashOutputs)
     writeUInt32(this.locktime)
-    if (!options || !options.excludeFloData) { writeVarSlice(this.floData) }
+    if (!(options && options.excludeFloData) && this.version >= 2) { writeVarSlice(this.floData) }
     writeUInt32(hashType)
 
     return bcrypto.hash256(tbuffer)

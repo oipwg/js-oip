@@ -9,7 +9,6 @@ let tx = FLOTransaction.fromHex(txHex)
 
 let inputNumber = 0
 for (let input of tx.ins) {
-  inputNumber++
   console.log('Input #' + inputNumber)
 
   // Grab pubkey from input script
@@ -34,4 +33,6 @@ for (let input of tx.ins) {
   console.log('Signature Hash without floData: ' + hashNoFloData.toString('hex') + ' (match=' + keyPair.verify(hashNoFloData, ss.signature) + ')')
   console.log('Witness Signature Hash with floData: ' + witnessHash.toString('hex') + ' (match=' + keyPair.verify(witnessHash, ss.signature) + ')')
   console.log('Witness Signature Hash without floData: ' + witnessHashNoFloData.toString('hex') + ' (match=' + keyPair.verify(witnessHashNoFloData, ss.signature) + ')')
+
+  inputNumber++
 }
