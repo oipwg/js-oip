@@ -196,10 +196,10 @@ class OIP {
     // Lookup the currently latest version of the Record
     let original
     try {
-      let { success, artifact, error } = await this.oipdAPI.getArtifact(editedRecord.getTXID())
+      let { success, record, error } = await this.oipdAPI.getRecord(editedRecord.getTXID())
       // If OIPd reported an error, then throw the error
       if (success) {
-        original = artifact
+        original = record
       } else {
         return { success: false, error: `Unable to load Original Record from OIP daemon: ${error}` }
       }
