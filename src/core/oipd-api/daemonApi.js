@@ -335,6 +335,34 @@ class DaemonApi {
   }
 
   /**
+   * Get a Record from the Index by TXID
+   * @param {TXID} txid  - transaction id of the artifact you wish to retrieve
+   * @return {Promise<Object>}
+   * @example
+   * let txid = 'cc9a11050acdc4401aec3f40c4cce123d99c0f2c27d4403ae4a2536ee38a4716'
+   * let {success, record, error} = await DaemonApi.getRecord(txid)
+   */
+  async getRecord (txid) {
+    let res
+    try {
+      res = await this.index.get(`/oip042/record/get/${txid}`)
+    } catch (err) {
+      return new Error(`Failed to get Record: ${txid} -- ${err}`)
+    }
+    if (!res || !res.data) {
+      return { success: false, error: `Missing response data: ${res.data} for txid ${txid}` }
+    }
+
+    if (!res.data.results || !Array.isArray(res.data.results) || res.data.results.length < 1) {
+      return { success: false, error: `No results found for txid ${txid}` }
+    }
+
+    let [record] = res.data.results
+
+    return { success: true, record: decodeArtifact(record) } // ToDO: OIPDecoder
+  }
+
+  /**
    * Get multiple artifacts by TXID
    * @param {Array.<TXID>} txids - an array of transaction IDs
    * @return {Promise<Object>}
