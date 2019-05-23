@@ -70,7 +70,7 @@ class RPCWallet {
     // Store the Private Key and the Public Key
     this.wif = this.options.wif
     this.publicAddress = this.options.publicAddress
-    this.importPrivateKey = false // this.options.importPrivateKey || true
+    this.importPrivateKey = this.options.importPrivateKey || true
 
     // Store the "coin" network we should use
     if (this.options.network === 'livenet' || this.options.network === 'mainnet') {
