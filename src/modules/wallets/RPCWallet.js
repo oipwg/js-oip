@@ -522,7 +522,7 @@ class RPCWallet {
     let input = utxos[0]
 
     // Calculate the minimum Transaction fee for our transaction by counting the size of the inputs, outputs, and floData
-    let myTxFee = TX_FEE_PER_BYTE * (TX_AVG_BYTE_SIZE + varIntBuffer(floData.length).toString('hex').length + Buffer.from(floData).length)
+    let myTxFee = (this.options.txFeePerByte || TX_FEE_PER_BYTE) * (TX_AVG_BYTE_SIZE + varIntBuffer(floData.length).toString('hex').length + Buffer.from(floData).length)
 
     // Create an output to send the funds to
     let output = {}
