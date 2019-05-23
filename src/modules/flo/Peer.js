@@ -30,7 +30,7 @@ class Peer {
     // Create the Fcoin Peer
     this.peer = peer.fromOptions({
       logger: log,
-      network: 'testnet', // TODO: Can RPCWallet options.network define this value?
+      network: this.settings.network,
       agent: this.settings.agent,
       hasWitness: () => {
         return false
