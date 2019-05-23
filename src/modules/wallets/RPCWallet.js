@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { sign } from 'bitcoinjs-message'
-import bitcoin from 'bitcoinjs-lib'
+import { ECPair } from 'bitcoinjs-lib'
 
 import { floMainnet, floTestnet } from '../../config'
 import FLOTransactionBuilder from '../flo/FLOTransactionBuilder'
@@ -126,7 +126,7 @@ class RPCWallet {
    * @return {Boolean} Returns true if the update was successful
    */
   async updateAncestorStatus () {
-    console.log('[RPC Wallet] Starting Ancestor Status Update')
+    console.log('[RPC Wallet] Updating Ancestor Status...')
     // We next check to see if there are any transactions currently in the mempool that we need to be aware of.
     // To check the mempool, we start by grabbing the UTXO's to get the txid of the most recent transaction that was sent
     let utxos = await this.getUTXOs()
@@ -279,7 +279,7 @@ class RPCWallet {
    */
   async rebroadcastTransactions () {
     // Announce that we are starting
-    console.log(`[RPC Wallet] Announcing ${this.unconfirmedTransactions.length} transactions to ${this.peers.length} Peers...`)
+    console.log(`[RPC Wallet] Announcing ${this.unconfirmedTransactions.length} transactions to Peers...`)
 
     // Connect to Peers to use for the rebroadcast
     await this.connectToPeers()
@@ -443,16 +443,16 @@ class RPCWallet {
    */
   async signMessage (message) {
     // Create the ECPair to sign with (this is the Private Key basically)
-    let ECPair = bitcoin.ECPair.fromWIF(this.wif, this.coin.network)
-    let privateKeyBuffer = ECPair.privateKey
+    let myECPair = ECPair.fromWIF(this.wif, this.coin.network)
+    let privateKeyBuffer = myECPair.privateKey
 
     // Check if we are a compress privKey
-    let compressed = ECPair.compressed || true
+    let compressed = myECPair.compressed || true
 
     // Create the actual signature
     let signatureBuffer
     try {
-      signatureBuffer = sign(message, privateKeyBuffer, compressed, ECPair.network.messagePrefix)
+      signatureBuffer = sign(message, privateKeyBuffer, compressed, myECPair.network.messagePrefix)
     } catch (e) {
       throw new Error(e)
     }
@@ -554,7 +554,7 @@ class RPCWallet {
     txb.setFloData(floData)
 
     // Sign our transaction using the local `flosigner` at `src/config/networks/flo/flosigner.js`
-    txb.sign(0, bitcoin.ECPair.fromWIF(this.wif, this.coin.network))
+    txb.sign(0, ECPair.fromWIF(this.wif, this.coin.network))
 
     // Build the hex
     let builtHex
