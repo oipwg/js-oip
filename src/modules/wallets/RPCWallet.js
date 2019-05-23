@@ -395,7 +395,7 @@ class RPCWallet {
       }
 
       // Set to test or mainnet ourselves.
-      if (this.options.network && this.options.network === 'mainnet') {
+      if (this.options.network && (this.options.network === 'mainnet' || this.options.network === 'livenet')) {
         peerHost = peerHost + ':7312'
       } else {
         peerHost = peerHost + ':17312'
