@@ -403,7 +403,7 @@ class RPCWallet {
 
       console.log(`peer host ${peerHost}`)
 
-      let peer = new Peer({ ip: peerHost })
+      let peer = new Peer({ ip: peerHost, network: this.options.network })
       // Start the connection attempt
       peer.connect()
       // Add it to our peerrs array

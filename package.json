@@ -1,6 +1,6 @@
 {
   "name": "@mlg/js-oip",
-  "version": "2.2.0-mlg-2",
+  "version": "2.2.0-mlg-3",
   "description": "A Javascript Library to fully interact with the Open Index Protocol",
   "main": "lib/index.js",
   "scripts": {
