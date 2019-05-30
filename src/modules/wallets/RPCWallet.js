@@ -41,6 +41,9 @@ class RPCWallet {
     // Store options for later
     this.options = options || {}
 
+    // Set default network to livenet if unset
+    if (!this.options.network) { this.options.network = 'livenet' }
+
     // Make sure we have connection to an RPC wallet
     if (!this.options.rpc) { throw new Error("RPC options ('options.rpc') are required with an RPC wallet!") }
 
@@ -73,7 +76,7 @@ class RPCWallet {
     this.importPrivateKey = this.options.importPrivateKey || true
 
     // Store the "coin" network we should use
-    if (this.options.network === 'livenet' || this.options.network === 'mainnet') {
+    if (this.options.network === 'livenet' || this.options.network === 'mainnet' || this.options.network === 'main') {
       this.coin = floMainnet
     } else if (this.options.network === 'testnet') {
       this.coin = floTestnet
