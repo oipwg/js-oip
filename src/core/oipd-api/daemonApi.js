@@ -81,7 +81,7 @@ const decodeArray = (artifacts) => {
 }
 
 // ToDo: change to 'https' when ready
-// const defaultOIPdURL = 'http://localhost:1606'
+const localhost = 'http://localhost:1606/oip'
 const defaultOIPdURL = 'https://api.oip.io/oip'
 
 /**
@@ -97,11 +97,15 @@ class DaemonApi {
    * let oipd = new DaemonApi("localhost:1606") //leave blank for default API URL
    * let latestArtifacts = await oipd.getLatestArtifacts()
    * ```
-   * @param  {Object} [daemonUrl="https://api.oip.io/oip"] - The URL of an OIP Daemon
+   * @param  {string} [daemonUrl="https://api.oip.io/oip"] - The URL of an OIP Daemon
    */
   constructor (daemonUrl) {
     if (daemonUrl) {
-      this.setUrl(daemonUrl)
+      if (daemonUrl === 'localhost') {
+        this.setUrl(localhost)
+      } else {
+        this.setUrl(daemonUrl)
+      }
     } else {
       this.setUrl(defaultOIPdURL) // ToDo: default for prod
     }
@@ -212,7 +216,7 @@ class DaemonApi {
       case 'text':
         typeArr.push('Text-Basic')
         break
-        // 42s
+      // 42s
       case 'research':
         typeArr.push('research')
         break
@@ -223,8 +227,10 @@ class DaemonApi {
         throw new Error(`invalid type: ${type}`)
     }
 
-    let typeQuery = ``; let subtypeQuery = ``
-    const OR = 'OR'; const AND = 'AND'
+    let typeQuery = ``
+    let subtypeQuery = ``
+    const OR = 'OR'
+    const AND = 'AND'
     for (let i = 0; i < typeArr.length; i++) {
       typeQuery += `${typeQs}${typeArr[i]}`
       if (i !== typeArr.length - 1) {
@@ -273,7 +279,9 @@ class DaemonApi {
    */
   createQs (args) {
     let query = ``
-    const AND = 'AND'; const OR = 'OR'; const NOT = 'NOT'
+    const AND = 'AND'
+    const OR = 'OR'
+    const NOT = 'NOT'
     for (let i = 0; i < args.length; i++) {
       if (i !== 0) {
         query += ' '
@@ -755,7 +763,7 @@ class DaemonApi {
   async getVersion () {
     let res
     try {
-      res = await this.index.get('/daemon/version')
+      res = await this.index.get('daemon/version')
     } catch (err) {
       throw new Error(`Failed to get daemon version: ${err}`)
     }
@@ -774,6 +782,250 @@ class DaemonApi {
       throw new Error(`Failed to get sync status: ${err}`)
     }
     return res.data
+  }
+
+  /**
+   * Get latest oip5 records
+   * @param {Object} [options]
+   * @param {number} [options.limit=10] - max num of results
+   * @param {string} [options.after] - the string ID returned on response to get the next set of data
+   * @param {number} [options.pages] - page number
+   * @param {string} [options.sort] - sort field ascending or descending. Format must match: ([0-9a-zA-Z._-]+:[ad]$?)+
+   * @return {Promise<Object>}
+   */
+  async getLatestOip5Records (options) {
+    let res
+    try {
+      res = await this.index.get('o5/record/get/latest', {
+        params: {
+          ...options
+        }
+      })
+    } catch (err) {
+      throw new Error(`Failed to get latest oip5 records: ${err}`)
+    }
+    if (res && res.data) {
+      res = { success: true, payload: decodeResponseData(res.data) }
+      return res
+    } else {
+      return { success: false, error: `No data returned from axios response on getLatestOip5Records` }
+    }
+  }
+
+  /**
+   * Get latest oip5 templates
+   * @param {Object} [options]
+   * @param {number} [options.limit=10] - max num of results
+   * @param {string} [options.after] - the string ID returned on response to get the next set of data
+   * @param {number} [options.pages] - page number
+   * @param {string} [options.sort] - sort field ascending or descending. Format must match: ([0-9a-zA-Z._-]+:[ad]$?)+
+   * @return {Promise<Object>}
+   */
+  async getLatestOip5Templates (options) {
+    let res
+    try {
+      res = await this.index.get('o5/template/get/latest', {
+        params: {
+          ...options
+        }
+      })
+    } catch (err) {
+      throw new Error(`failed to get latest oip5 templates: ${err}`)
+    }
+    if (res && res.data) {
+      res = { success: true, payload: decodeResponseData(res.data) }
+      return res
+    } else {
+      return { success: false, error: `Failed to get data back from axios response` }
+    }
+  }
+
+  /**
+   * Get oip5 record
+   * @param {string} [txid] - transaction id of record
+   * @return {Promise<Object>}
+   */
+  async getOip5Record (txid) {
+    let res
+    try {
+      res = await this.index.get(`o5/record/get/${txid}`)
+    } catch (err) {
+      return { success: false, error: err }
+    }
+    if (res && res.data) {
+      res = { success: true, payload: decodeResponseData(res.data) }
+      return res
+    } else {
+      return { success: false, error: `no data returned from axios response getOip5Record: ${txid}` }
+    }
+  }
+
+  /**
+   * Get oip5 records
+   * @param {Array.<string>|string} txids - transaction id of record
+   * @return {Promise<Array.<Object>>}
+   */
+  async getOip5Records (txids) {
+    if (typeof txids === 'string') {
+      return this.getOip5Record(txids)
+    }
+    let promiseArray = []
+    for (let txid of txids) {
+      promiseArray.push(this.getOip5Record(txid))
+    }
+    let responseArray = []
+    for (let promise of promiseArray) {
+      let resolvedPromise
+      try {
+        resolvedPromise = await promise
+      } catch (err) {
+        throw new Error(`Failed to get oip5 records: ${err}`)
+      }
+      responseArray.push(resolvedPromise)
+    }
+    return responseArray
+  }
+
+  /**
+   * Get oip5 template
+   * @param {string} [txid] - transaction id of record
+   * @return {Promise<Object>}
+   */
+  async getOip5Template (txid) {
+    let res
+    try {
+      res = await this.index.get(`o5/template/get/${txid}`)
+    } catch (err) {
+      throw new Error(`Failed to get oip5 template: ${err}`)
+    }
+    if (res && res.data) {
+      res = { success: true, payload: decodeResponseData(res.data) }
+      return res
+    } else {
+      return { success: false, error: `No data returned from axios request getOip5Template: ${txid}` }
+    }
+  }
+
+  /**
+   * Get oip5 templates
+   * @param {string|Array.<string>} txids - transaction ids of record
+   * @return {Promise<Array.<Object>>}
+   */
+  async getOip5Templates (txids) {
+    if (typeof txids === 'string') {
+      return this.getOip5Template(txids)
+    }
+    if (!Array.isArray(txids)) {
+      throw new Error(`The param "txids" must be an array of txids or a single txid string`)
+    }
+    let promiseArray = []
+    for (let txid of txids) {
+      promiseArray.push(this.getOip5Template(txid))
+    }
+    let responseArray = []
+    for (let promise of promiseArray) {
+      let resolvedPromise
+      try {
+        resolvedPromise = await promise
+      } catch (err) {
+        throw new Error(`Could not get oip5 templates: ${err}`)
+      }
+
+      responseArray.push(resolvedPromise)
+    }
+    return responseArray
+  }
+
+  /**
+   * Get oip5 template
+   * @param {string|Array<string>} [tmplIdentifiers] - 'template identifiers' transaction IDs'
+   * @return {Promise<Object>}
+   */
+  async getOip5Mapping (tmplIdentifiers) {
+    if (typeof tmplIdentifiers === 'string') {
+      tmplIdentifiers = [tmplIdentifiers]
+    }
+    let res
+    try {
+      res = await this.index.get(`o5/record/mapping/${tmplIdentifiers}`)
+    } catch (err) {
+      throw new Error(`Failed to get oip5 mappings: ${err}`)
+    }
+
+    if (res && res.data) {
+      res = { success: true, payload: res.data }
+      return res
+    } else {
+      return { success: false, error: `Failed to get data back from axios request trying to get oip5 mappings` }
+    }
+  }
+
+  /**
+   * Search oip5 templates
+   * @param {Object} options
+   * @param {string} options.q - query string query
+   * @param {number} [options.limit=10] - max num of results (limited to 10 on backend)
+   * @param {string} [options.after] - the string ID returned on response to get the next set of data
+   * @param {number} [options.pages] - page number
+   * @param {string} [options.sort] - sort field ascending or descending. Format must match: ([0-9a-zA-Z._-]+:[ad]$?)+
+   * @return {Promise<Object>}
+   */
+  async searchOip5Records (options) {
+    let res
+    try {
+      res = await this.index.get(`o5/record/search`, {
+        params: {
+          ...options
+        }
+      })
+    } catch (err) {
+      throw new Error(`Failed to search oip5 records: ${err}`)
+    }
+
+    if (res && res.data) {
+      res = { success: true, payload: decodeResponseData(res.data) }
+      return res
+    } else {
+      return { success: false, error: 'Did not receive data back from axios request trying to search oip5 records' }
+    }
+  }
+
+  /**
+   * Search oip5 templates
+   * @param {Object} options
+   * @param {string} options.q - query string query
+   * @param {number} [options.limit=10] - max num of results (limited to 10 on backend)
+   * @param {string} [options.after] - the string ID returned on response to get the next set of data
+   * @param {number} [options.pages] - page number
+   * @param {string} [options.sort] - sort field ascending or descending. Format must match: ([0-9a-zA-Z._-]+:[ad]$?)+
+   * @return {Promise<Object>}
+   */
+  async searchOip5Templates (options) {
+    let res
+    try {
+      res = await this.index.get(`o5/template/search`, {
+        params: {
+          ...options
+        }
+      })
+    } catch (err) {
+      throw new Error(`Failed to search oip5 templates: ${err}`)
+    }
+
+    if (res && res.data) {
+      res = { success: true, payload: decodeResponseData(res.data) }
+      return res
+    } else {
+      return { success: false, error: 'Did not receive data back from axios request trying to search oip5 templates' }
+    }
+  }
+}
+
+function decodeResponseData (payload) {
+  const { next, ...rest } = payload
+  return {
+    next: decodeURI(next),
+    ...rest
   }
 }
 
