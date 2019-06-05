@@ -1043,7 +1043,7 @@ class DaemonApi {
       }
       return res.data
     } else {
-      return { success: false, error: `Did not receive data back from axios request trying to search oip5 verified publisher: ${txid}` }
+      return { success: false, error: `Did not receive data back from axios request trying to search oip5 verified publisher: ${pubAddr}` }
     }
   }
 }
