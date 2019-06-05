@@ -1022,7 +1022,7 @@ class DaemonApi {
     }
   }
   async isVerifiedPublisher (pubAddr) {
-    const q = `_exists_:record.details.${VERIFIED_PUBLISHER_TEMPLATE} && meta.signed_by:${pubAddr}`
+    const q = `_exists_:record.details.${VERIFIED_PUBLISHER_TEMPLATE} AND meta.signed_by:${pubAddr}`
     let results
     try {
       results = await this.searchOip5Records({ q })
@@ -1032,6 +1032,9 @@ class DaemonApi {
     const { success, payload } = results
     if (success) {
       const { results } = payload
+      if (results.length === 0) {
+        return { success: false, error: `No verified publisher found` }
+      }
       const { meta } = results[0]
       const { txid } = meta
 
@@ -1041,7 +1044,7 @@ class DaemonApi {
       } catch (err) {
         throw Error(`Failed to hit verify api endpoint url: ${verifyApiEndpoint} \n ${err}`)
       }
-      return res.data
+      return { success: true, payload: res.data }
     } else {
       return { success: false, error: `Did not receive data back from axios request trying to search oip5 verified publisher: ${pubAddr}` }
     }

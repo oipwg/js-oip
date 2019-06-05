@@ -323,7 +323,16 @@ describe('DaemonApi', () => {
     let d = new DaemonApi(localhost)
     const signedByAddress = 'FEve6MXM44auHKbqeijfQdXtGgnYRkNG1S'
     let res = await d.isVerifiedPublisher(signedByAddress)
-    let keys = Object.keys(res)
-    expect(keys).toEqual(['twitter', 'gab'])
+    const { success, payload } = res
+    expect(success).toBeTruthy()
+    expect(Object.keys(payload)).toEqual(['twitter', 'gab'])
+  })
+  it.skip('is not a VerifiedPublisher', async () => {
+    let d = new DaemonApi(localhost)
+    const signedByAddress = 'FTdQJJCtEP7ZJypXn2RGydebzcFLVgDKXR'
+    let res = await d.isVerifiedPublisher(signedByAddress)
+    const { success, error } = res
+    expect(success).toBeFalsy()
+    expect(error).toEqual('No verified publisher found')
   })
 })
