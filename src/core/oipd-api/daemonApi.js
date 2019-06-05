@@ -83,6 +83,8 @@ const decodeArray = (artifacts) => {
 // ToDo: change to 'https' when ready
 const localhost = 'http://localhost:1606/oip'
 const defaultOIPdURL = 'https://api.oip.io/oip'
+const VERIFIED_PUBLISHER_TEMPLATE = 'tmpl_F471DFF9'
+const verifyApiEndpoint = 'https://snowflake.oip.fun/verified/publisher/check/'
 
 /**
  * Class to make HTTP calls to an OIP Daemon
@@ -1017,6 +1019,31 @@ class DaemonApi {
       return res
     } else {
       return { success: false, error: 'Did not receive data back from axios request trying to search oip5 templates' }
+    }
+  }
+  async isVerifiedPublisher (pubAddr) {
+    const q = `_exists_:record.details.${VERIFIED_PUBLISHER_TEMPLATE} && meta.signed_by:${pubAddr}`
+    let results
+    try {
+      results = await this.searchOip5Records({ q })
+    } catch (err) {
+      throw Error(`Failed to search oip5 record for verified publisher: \n ${err}`)
+    }
+    const { success, payload } = results
+    if (success) {
+      const { results } = payload
+      const { meta } = results[0]
+      const { txid } = meta
+
+      let res
+      try {
+        res = await axios.get(`${verifyApiEndpoint}${txid}`)
+      } catch (err) {
+        throw Error(`Failed to hit verify api endpoint url: ${verifyApiEndpoint} \n ${err}`)
+      }
+      return res.data
+    } else {
+      return { success: false, error: `Did not receive data back from axios request trying to search oip5 verified publisher: ${txid}` }
     }
   }
 }

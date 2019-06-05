@@ -285,7 +285,7 @@ describe('DaemonApi', () => {
       expect(Array.isArray(result.payload.results)).toBeTruthy()
     }
   })
-  it('GET multiple oip5 templates', async () => {
+  it.skip('GET multiple oip5 templates', async () => {
     let d = new DaemonApi(localhost)
     const txids = [
       'dc6ca90cfd3f92b421509db714d039e556386b3ec2b16bec49de743534ccc320',
@@ -301,7 +301,7 @@ describe('DaemonApi', () => {
   })
   it.skip('GET search oip5 records', async () => {
     let d = new DaemonApi(localhost)
-    const q = 'hero'
+    const q = 'music'
     const response = await d.searchOip5Records({ q })
     expect(response.success).toBeTruthy()
     expect(response.payload.results.length).toBeGreaterThan(0)
@@ -318,5 +318,12 @@ describe('DaemonApi', () => {
     expect(response.payload.count).toBeGreaterThan(0)
     expect(response.payload.total).toBeGreaterThan(0)
     expect(response.payload.next).toBeDefined()
+  })
+  it.skip('isVerifiedPublisher', async () => {
+    let d = new DaemonApi(localhost)
+    const signedByAddress = 'FEve6MXM44auHKbqeijfQdXtGgnYRkNG1S'
+    let res = await d.isVerifiedPublisher(signedByAddress)
+    let keys = Object.keys(res)
+    expect(keys).toEqual(['twitter', 'gab'])
   })
 })
