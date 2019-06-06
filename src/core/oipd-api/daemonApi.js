@@ -83,8 +83,6 @@ const decodeArray = (artifacts) => {
 // ToDo: change to 'https' when ready
 const localhost = 'http://localhost:1606/oip'
 const defaultOIPdURL = 'https://api.oip.io/oip'
-const VERIFIED_PUBLISHER_TEMPLATE = 'tmpl_F471DFF9'
-const verifyApiEndpoint = 'https://snowflake.oip.fun/verified/publisher/check/'
 
 /**
  * Class to make HTTP calls to an OIP Daemon
@@ -1021,8 +1019,15 @@ class DaemonApi {
       return { success: false, error: 'Did not receive data back from axios request trying to search oip5 templates' }
     }
   }
-  async isVerifiedPublisher (pubAddr, templateName) {
+  async isVerifiedPublisher ({ pubAddr, templateName, apiUrl, localhost = false }) {
+    const VERIFIED_PUBLISHER_TEMPLATE = 'tmpl_F471DFF9'
+    const verifyApiEndpoint = 'https://snowflake.oip.fun/verified/publisher/check/' // toDo: change for prod
+    const localhostVerifyEndpoint = 'http://localhost:1607/verified/publisher/check/'
+
     let tmplName = templateName || VERIFIED_PUBLISHER_TEMPLATE
+    let verifyEndpoint = apiUrl || verifyApiEndpoint
+    if (localhost) verifyEndpoint = localhostVerifyEndpoint
+
     const q = `_exists_:record.details.${tmplName} AND meta.signed_by:${pubAddr}`
     let results
     try {
@@ -1030,6 +1035,7 @@ class DaemonApi {
     } catch (err) {
       throw Error(`Failed to search oip5 record for verified publisher: \n ${err}`)
     }
+
     const { success, payload } = results
     if (success) {
       const { results } = payload
@@ -1041,9 +1047,9 @@ class DaemonApi {
 
       let res
       try {
-        res = await axios.get(`${verifyApiEndpoint}${txid}`)
+        res = await axios.get(`${verifyEndpoint}${txid}`)
       } catch (err) {
-        throw Error(`Failed to hit verify api endpoint url: ${verifyApiEndpoint} \n ${err}`)
+        throw Error(`Failed to hit verify api endpoint url: ${verifyEndpoint} \n ${err}`)
       }
       return { success: true, payload: res.data }
     } else {
