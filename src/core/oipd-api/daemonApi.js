@@ -1042,8 +1042,12 @@ class DaemonApi {
       if (results.length === 0) {
         return { success: false, error: `No verified publisher found` }
       }
-      const { meta } = results[0]
+      const { meta, record } = results[0]
       const { txid } = meta
+
+      const { details } = record
+      const twitterId = details[tmplName].twitterId
+      const gabId = details[tmplName].gabId
 
       let res
       try {
@@ -1051,7 +1055,13 @@ class DaemonApi {
       } catch (err) {
         throw Error(`Failed to hit verify api endpoint url: ${verifyEndpoint} \n ${err}`)
       }
-      return { success: true, payload: res.data }
+      return { success: true,
+        payload: {
+          ...res.data,
+          twitterId,
+          gabId
+
+        } }
     } else {
       return { success: false, error: `Did not receive data back from axios request trying to search oip5 verified publisher: ${pubAddr}` }
     }
