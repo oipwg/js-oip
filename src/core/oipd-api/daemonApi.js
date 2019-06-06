@@ -1021,8 +1021,9 @@ class DaemonApi {
       return { success: false, error: 'Did not receive data back from axios request trying to search oip5 templates' }
     }
   }
-  async isVerifiedPublisher (pubAddr) {
-    const q = `_exists_:record.details.${VERIFIED_PUBLISHER_TEMPLATE} AND meta.signed_by:${pubAddr}`
+  async isVerifiedPublisher (pubAddr, templateName) {
+    let tmplName = templateName || VERIFIED_PUBLISHER_TEMPLATE
+    const q = `_exists_:record.details.${tmplName} AND meta.signed_by:${pubAddr}`
     let results
     try {
       results = await this.searchOip5Records({ q })
