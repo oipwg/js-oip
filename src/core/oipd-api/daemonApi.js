@@ -1049,6 +1049,30 @@ class DaemonApi {
       const twitterId = details[tmplName].twitterId
       const gabId = details[tmplName].gabId
 
+      let registeredPublisherTxid = details[tmplName].registeredPublisher
+      if (registeredPublisherTxid.raw) {
+        let buf = Buffer.from(registeredPublisherTxid.raw, 'base64')
+        registeredPublisherTxid = buf.toString('hex')
+      }
+      let regPub
+      try {
+        regPub = await this.getOip5Record(registeredPublisherTxid)
+      } catch (err) {
+        throw Error(`Failed to search oip5 record for verified publisher: \n ${err}`)
+      }
+
+      // todo: support testnet templates ?
+      let name
+      if (regPub.success) {
+        let res = regPub.payload.results[0]
+        if (res) {
+          let tmpl = res.record.details['tmpl_433C2783']
+          if (tmpl) {
+            name = res.record.details['tmpl_433C2783'].name
+          }
+        }
+      }
+
       let res
       try {
         res = await axios.get(`${verifyEndpoint}${txid}`)
@@ -1059,8 +1083,8 @@ class DaemonApi {
         payload: {
           ...res.data,
           twitterId,
-          gabId
-
+          gabId,
+          name
         } }
     } else {
       return { success: false, error: `Did not receive data back from axios request trying to search oip5 verified publisher: ${pubAddr}` }
