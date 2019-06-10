@@ -143,13 +143,13 @@ class ExplorerWallet {
   /**
    * Build a valid FLO Raw TX Hex containing floData
    * @param {String} [floData=""] - String data to send with tx. Defaults to an empty string
-   * @param {Object} [output] - custom output object
+   * @param {Object|Array.<object>} [output] - custom output object
    * @return {Promise<string>} hex - Returns raw transaction hex
    * @example
    * //if no output is designed, it will send 0.0001 * 1e8 FLO to yourself
    * let output = {
    *     address: "ofbB67gqjgaYi45u8Qk2U3hGoCmyZcgbN4",
-   *     value: 1e8 //satoshis
+   *     value: 1e8 // satoshis
    * }
    * let op = new OIP(wif, "testnet")
    * let hex = await op.buildTXHex("floData", output)
@@ -198,7 +198,7 @@ class ExplorerWallet {
 
     outputs.forEach(output => {
       if (!output.address) {
-        throw new Error(`Missing output address: ${outputs}`)
+        output.address = this.p2pkh
       }
       txb.addOutput(output.address, output.value)
     })
@@ -226,7 +226,7 @@ class ExplorerWallet {
   /**
    * Builds the inputs and outputs to form a valid transaction hex for the FLO Chain
    * @param {string} [floData=""] - defaults to an empty string
-   * @param {Object} [output] - custom output object
+   * @param {Object|Array.<Object>} [outputs] - custom output object
    * @return {Promise<Object>} Returns the selected inputs, outputs, and fee to use for the transaction hex
    * @example
    * //basic
@@ -237,11 +237,11 @@ class ExplorerWallet {
    * let oip = new OIP(wif, "testnet")
    * let output = {
    *     address: "ofbB67gqjgaYi45u8Qk2U3hGoCmyZcgbN4",
-   *     value: 1e8 //in satoshis
+   *     value: 1e8 // in satoshis
    * }
    * let {inputs, outputs, fee} = await oip.buildInputsAndOutputs("floData", output)
    */
-  async buildInputsAndOutputs (floData = '', output) {
+  async buildInputsAndOutputs (floData = '', outputs) {
     let utxo
     try {
       utxo = await this.getUTXO()
@@ -289,12 +289,16 @@ class ExplorerWallet {
 
     // console.log('formatted utxos', formattedUtxos)
 
-    output = output || {
+    outputs = outputs || {
       address: this.p2pkh,
       value: Math.floor(0.0001 * this.coin.satPerCoin)
     }
 
-    let targets = [output]
+    if (!Array.isArray(outputs)) {
+      outputs = [outputs]
+    }
+    // console.log(outputs)
+    let targets = outputs
 
     let extraBytes = this.coin.getExtraBytes({ floData })
     let extraBytesLength = extraBytes.length
@@ -525,18 +529,18 @@ class ExplorerWallet {
 
   /**
    * Create and send a FLO tx with a custom output
-   * @param {object} output
+   * @param {object|Array.<object>} outputs
    * @param {string} floData
    * @return {Promise<TXID>}
    * @example
    * let oip = new OIP(wif, "testnet")
    * let output = {
    *     address: "oNAydz5TjkhdP3RPuu3nEirYQf49Jrzm4S",
-   *     value: 100000000
+   *     value: 100000000 // satoshis
    * }
    * let txid = await oip.createAndSendFloTx(output, "to testnet")
    */
-  async sendTx (output, floData = '') {
+  async sendTx (outputs, floData = '') {
     if (floData && typeof floData !== 'string') {
       throw new Error(`Data must be of type string. Got: ${typeof floData}`)
     }
@@ -545,7 +549,7 @@ class ExplorerWallet {
     }
     let hex
     try {
-      hex = await this.buildTXHex(floData, output)
+      hex = await this.buildTXHex(floData, outputs)
     } catch (err) {
       throw new Error(`Error building TX Hex: ${err}`)
     }
