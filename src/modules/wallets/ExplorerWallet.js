@@ -1,6 +1,7 @@
 import { sign } from 'bitcoinjs-message'
 import { ECPair, payments, address } from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
+import Insight from 'insight-explorer'
 
 // This dependency was not found:
 //
@@ -64,6 +65,8 @@ class ExplorerWallet {
     let network = floMainnet
 
     if (options.network === 'testnet') { network = floTestnet }
+
+    if (options.explorerUrl) { network.explorer = new Insight(options.explorerUrl) }
 
     if (!isValidWIF(options.wif, network.network)) {
       return { success: false, message: 'Invalid WIF', wif: options.wif, network: network.network }
@@ -234,7 +237,7 @@ class ExplorerWallet {
    * }
    * let {inputs, outputs, fee} = await oip.buildInputsAndOutputs("floData", output)
    */
-  async buildInputsAndOutputs (floData = '', output) {
+  async buildInputsAndOutputs (floData = '', outputs) {
     let utxo
     try {
       utxo = await this.getUTXO()
@@ -282,12 +285,15 @@ class ExplorerWallet {
 
     // console.log('formatted utxos', formattedUtxos)
 
-    output = output || {
+    outputs = outputs || {
       address: this.p2pkh,
       value: Math.floor(0.0001 * this.coin.satPerCoin)
     }
 
-    let targets = [output]
+    if (!Array.isArray(outputs)) {
+      outputs = [outputs]
+    }
+    let targets = outputs
 
     let extraBytes = this.coin.getExtraBytes({ floData })
     let extraBytesLength = extraBytes.length

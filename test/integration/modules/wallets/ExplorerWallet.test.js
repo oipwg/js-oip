@@ -2,8 +2,7 @@ import { floTestnet } from '../../../../src/config'
 import { ExplorerWallet } from '../../../../src/modules/wallets'
 import floTx from 'fcoin/lib/primitives/tx'
 
-// oPKby4nt1iLLhcWvhCUXZovJCY81nNMSUG
-const wif = 'cUZETkAjX81MDXMFA2ZVWpfCg7nhYtux85UJxATuaapAvPYi753k'
+const wif = 'cRVa9rNx5N1YKBw8PhavegJPFCiYCfC4n8cYmdc3X1Y6TyFZGG4B'
 
 describe(`ExplorerWallet`, () => {
   describe('Transaction Builder', () => {
@@ -66,7 +65,7 @@ describe(`ExplorerWallet`, () => {
     it.skip('flotx w custom output | sendTx', async () => {
       let wallet = new ExplorerWallet(wif, 'testnet')
       let output = {
-        address: 'oPKby4nt1iLLhcWvhCUXZovJCY81nNMSUG',
+        address: 'oNAydz5TjkhdP3RPuu3nEirYQf49Jrzm4S',
         value: Math.floor(0.0001 * floTestnet.satPerCoin)
       }
       let txid = await wallet.sendTx(output, 'to testnet')

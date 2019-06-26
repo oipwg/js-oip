@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      OIP - Documentation
+      ExplorerWallet - Documentation
   </title>
 
   <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
@@ -80,7 +80,7 @@
   <div id="main">
     
       <h1 class="page-title">
-        OIP
+        ExplorerWallet
       </h1>
     
 
@@ -91,13 +91,13 @@
     
       <h2>
         
-        OIP
+        ExplorerWallet
         
       </h2>
 
       
         <div class="class-description">
-          <p>Class to publish, register, edit, transfer, and deactivate OIP Records</p>
+          <p>Class to use a web explorer wallet</p>
         </div>
       
     
@@ -118,13 +118,13 @@
   
 
   <span class='name-container'>
-    <a class="link-icon" href="#OIP">
+    <a class="link-icon" href="#ExplorerWallet">
       <svg height="20" width="20" style="fill: black;">
         <use xlink:href="#linkIcon"></use>
       </svg>
     </a>
-    <h4 class="name" id="OIP">
-      <span class="type-signature"></span>new OIP<span class="signature">(wif, network<span class="signature-attributes">opt</span>, options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+    <h4 class="name" id="ExplorerWallet">
+      <span class="type-signature"></span>new ExplorerWallet<span class="signature">()</span><span class="type-signature"></span>
     </h4>
   </span>
 
@@ -175,14 +175,14 @@ let oip = new OIP(wif, &quot;testnet&quot;)
     
       <tr>
         
-          <td class="name"><code>wif</code></td>
+          <td class="name"><code>options.wif</code></td>
         
 
         <td class="type">
           
             
     <span class="param-type">
-      String
+      string
     </span>
 
     
@@ -216,14 +216,57 @@ let oip = new OIP(wif, &quot;testnet&quot;)
     
       <tr>
         
-          <td class="name"><code>network</code></td>
+          <td class="name"><code>options.explorerUrl</code></td>
         
 
         <td class="type">
           
             
     <span class="param-type">
-      String
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>api url to a blockchain explorer</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>options.network</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
     </span>
 
     
@@ -253,418 +296,7 @@ let oip = new OIP(wif, &quot;testnet&quot;)
         
 
         <td class="description last">
-          <p>Use &quot;testnet&quot; for mainnet</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>options</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      Object
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-              &lt;optional><br>
-            
-
-            
-
-            
-          </td>
-        
-
-        
-          <td class="default">
-            
-          </td>
-        
-
-        <td class="description last">
-          <p>Options to for the OIP class</p>
-          
-            <h6>Properties</h6>
-            
-
-<table class="params">
-  <thead>
-    <tr>
-      
-        <th>Name</th>
-      
-
-      <th>Type</th>
-
-      
-        <th>Attributes</th>
-      
-
-      
-
-      <th class="last">Description</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    
-      <tr>
-        
-          <td class="name"><code>publicAddress</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      Object
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-              &lt;optional><br>
-            
-
-            
-
-            
-          </td>
-        
-
-        
-
-        <td class="description last">
-          <p>Explicitly define a public address for the passed WIF</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>explorerUrl</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-              &lt;optional><br>
-            
-
-            
-
-            
-          </td>
-        
-
-        
-
-        <td class="description last">
-          <p>api url to a blockchain explorer</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>oipdURL</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      Object
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-              &lt;optional><br>
-            
-
-            
-
-            
-          </td>
-        
-
-        
-
-        <td class="description last">
-          <p>The OIP daemon API url to use when looking up the Latest Record in oip.edit()</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>rpc</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      Object
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-              &lt;optional><br>
-            
-
-            
-
-            
-          </td>
-        
-
-        
-
-        <td class="description last">
-          <p>By default, OIP uses a connection to a web explorer to publish Records, you can however use a connection to an RPC wallet instead by passing an object into this option</p>
-          
-            <h6>Properties</h6>
-            
-
-<table class="params">
-  <thead>
-    <tr>
-      
-        <th>Name</th>
-      
-
-      <th>Type</th>
-
-      
-        <th>Attributes</th>
-      
-
-      
-
-      <th class="last">Description</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    
-      <tr>
-        
-          <td class="name"><code>host</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      Object
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-              &lt;optional><br>
-            
-
-            
-
-            
-          </td>
-        
-
-        
-
-        <td class="description last">
-          <p>The Hostname for the RPC wallet connection</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>port</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      Object
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-              &lt;optional><br>
-            
-
-            
-
-            
-          </td>
-        
-
-        
-
-        <td class="description last">
-          <p>The Port for the RPC wallet connection</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>username</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      Object
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-              &lt;optional><br>
-            
-
-            
-
-            
-          </td>
-        
-
-        
-
-        <td class="description last">
-          <p>The Username for the RPC wallet connection</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>password</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      Object
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-              &lt;optional><br>
-            
-
-            
-
-            
-          </td>
-        
-
-        
-
-        <td class="description last">
-          <p>The Password for the RPC wallet connection</p>
-          
-        </td>
-      </tr>
-
-    
-  </tbody>
-</table>
-
-          
-        </td>
-      </tr>
-
-    
-  </tbody>
-</table>
-
+          <p>Use &quot;testnet&quot; for testnet</p>
           
         </td>
       </tr>
@@ -708,7 +340,7 @@ let oip = new OIP(wif, &quot;testnet&quot;)
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="core_oip_oip.js.html">core/oip/oip.js</a>, <a href="core_oip_oip.js.html#line37">line 37</a>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line64">line 64</a>
         </li>
       </ul>
     </dd>
@@ -765,13 +397,13 @@ let oip = new OIP(wif, &quot;testnet&quot;)
   
 
   <span class='name-container'>
-    <a class="link-icon" href="#broadcastRecord">
+    <a class="link-icon" href="#addSpentTransaction">
       <svg height="20" width="20" style="fill: black;">
         <use xlink:href="#linkIcon"></use>
       </svg>
     </a>
-    <h4 class="name" id="broadcastRecord">
-      <span class="type-signature">(async) </span>broadcastRecord<span class="signature">(record, methodType)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    <h4 class="name" id="addSpentTransaction">
+      <span class="type-signature"></span>addSpentTransaction<span class="signature">(txid)</span><span class="type-signature"> &rarr; {void}</span>
     </h4>
   </span>
 
@@ -780,7 +412,7 @@ let oip = new OIP(wif, &quot;testnet&quot;)
 
 
   <div class="description">
-    <p>Broadcast an OIP Record</p>
+    <p>Add a spent transaction to local memory</p>
   </div>
 
 
@@ -813,14 +445,14 @@ let oip = new OIP(wif, &quot;testnet&quot;)
     
       <tr>
         
-          <td class="name"><code>record</code></td>
+          <td class="name"><code>txid</code></td>
         
 
         <td class="type">
           
             
     <span class="param-type">
-      <a href="OIPRecord.html">OIPRecord</a>
+      <a href="global.html#TXID">TXID</a>
     </span>
 
     
@@ -834,36 +466,7 @@ let oip = new OIP(wif, &quot;testnet&quot;)
         
 
         <td class="description last">
-          <p>Any Object whos class extends OIPRecord (Artifact, Publisher, Platform, Retailer, Influencer, EditRecord, etc)</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>methodType</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      String
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-
-        
-
-        <td class="description last">
-          <p>The method you are wanting to perform, i.e. <code>publish</code>, <code>edit</code>, <code>deactivate</code>, <code>transfer</code> etc</p>
+          <p>transaction id</p>
           
         </td>
       </tr>
@@ -907,187 +510,7 @@ let oip = new OIP(wif, &quot;testnet&quot;)
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="core_oip_oip.js.html">core/oip/oip.js</a>, <a href="core_oip_oip.js.html#line99">line 99</a>
-        </li>
-      </ul>
-    </dd>
-  
-
-  
-
-  
-
-  
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-  <div class="param-desc">
-    <p>response - An object that contains a var for <code>success</code>, the <code>record</code> that was published, and the <code>editRecord</code> if it is an edit
-let oip = new OIP(wif, &quot;testnet&quot;)
-let artifact = new Artifact()
-let result = await oip.broadcastRecord(artifact, 'publish')</p>
-  </div>
-
-
-
-  <dl class="param-type">
-    <dt>Type: </dt>
-    <dd>
-      
-    <span class="param-type">
-      Promise.&lt;Object>
-    </span>
-
-    
-
-
-    </dd>
-  </dl>
-
-
-    
-
-      
-        
-
-<br />
-<br />
-<hr />
-
-
-  
-
-  <span class='name-container'>
-    <a class="link-icon" href="#edit">
-      <svg height="20" width="20" style="fill: black;">
-        <use xlink:href="#linkIcon"></use>
-      </svg>
-    </a>
-    <h4 class="name" id="edit">
-      <span class="type-signature">(async) </span>edit<span class="signature">(editedRecord)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
-    </h4>
-  </span>
-
-  
-
-
-
-  <div class="description">
-    <p>Publish an Edit for a Record</p>
-  </div>
-
-
-
-
-
-
-
-  <h5>Parameters:</h5>
-  
-
-<table class="params">
-  <thead>
-    <tr>
-      
-        <th>Name</th>
-      
-
-      <th>Type</th>
-
-      
-
-      
-
-      <th class="last">Description</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    
-      <tr>
-        
-          <td class="name"><code>editedRecord</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      <a href="OIPRecord.html">OIPRecord</a>
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-
-        
-
-        <td class="description last">
-          <p>The new version of the Record</p>
-          
-        </td>
-      </tr>
-
-    
-  </tbody>
-</table>
-
-
-
-
-
-<dl class="details">
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source">
-      <ul class="dummy">
-        <li>
-          <a href="core_oip_oip.js.html">core/oip/oip.js</a>, <a href="core_oip_oip.js.html#line198">line 198</a>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line463">line 463</a>
         </li>
       </ul>
     </dd>
@@ -1113,18 +536,23 @@ let result = await oip.broadcastRecord(artifact, 'publish')</p>
 
 
   <div class="example-container">
-    <a class="link-icon" href="#edit-examples">
+    <a class="link-icon" href="#addSpentTransaction-examples">
       <svg height="20" width="20" style="fill: black;">
         <use xlink:href="#linkIcon"></use>
       </svg>
     </a>
-    <h5 id="edit-examples">Example</h5>
+    <h5 id="addSpentTransaction-examples">Example</h5>
     
 
-  <pre class="prettyprint"><code>let oip = new OIP(wif, "testnet")
-let record = new Artifact(previousArtifactJSON)
-record.setTitle('new title')
-let result = await oip.edit(record)</code></pre>
+  <pre class="prettyprint"><code>let oip = new OIP(wif,  "testnet")
+let output = {
+    address: "oNAydz5TjkhdP3RPuu3nEirYQf49Jrzm4S",
+    value: Math.floor(0.001 * floTestnet.satPerCoin)
+}
+let txid = await oip.createAndSendFloTx(output, "sending floData to testnet")
+oip.addSpentTransaction(txid)
+let spentTxs = oip.getSpentTransactions()
+spentTxs === [txid] //true</code></pre>
 
 
   </div>
@@ -1134,10 +562,6 @@ let result = await oip.edit(record)</code></pre>
 <h5>Returns:</h5>
 
         
-  <div class="param-desc">
-    <p>response - An object that contains a var for <code>success</code>, the <code>record</code> that was published, and the <code>editRecord</code></p>
-  </div>
-
 
 
   <dl class="param-type">
@@ -1145,7 +569,7 @@ let result = await oip.edit(record)</code></pre>
     <dd>
       
     <span class="param-type">
-      Promise.&lt;Object>
+      void
     </span>
 
     
@@ -1168,13 +592,13 @@ let result = await oip.edit(record)</code></pre>
   
 
   <span class='name-container'>
-    <a class="link-icon" href="#publish">
+    <a class="link-icon" href="#broadcastRawHex">
       <svg height="20" width="20" style="fill: black;">
         <use xlink:href="#linkIcon"></use>
       </svg>
     </a>
-    <h4 class="name" id="publish">
-      <span class="type-signature">(async) </span>publish<span class="signature">(record)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    <h4 class="name" id="broadcastRawHex">
+      <span class="type-signature">(async) </span>broadcastRawHex<span class="signature">(hex)</span><span class="type-signature"> &rarr; {Promise.&lt;string>}</span>
     </h4>
   </span>
 
@@ -1183,7 +607,7 @@ let result = await oip.edit(record)</code></pre>
 
 
   <div class="description">
-    <p>Publish OIP Records</p>
+    <p>Broadcast raw transaction hex to the FLO chain</p>
   </div>
 
 
@@ -1216,19 +640,10 @@ let result = await oip.edit(record)</code></pre>
     
       <tr>
         
-          <td class="name"><code>record</code></td>
+          <td class="name"><code>hex</code></td>
         
 
         <td class="type">
-          
-            
-    <span class="param-type">
-      <a href="OIPRecord.html">OIPRecord</a>
-    </span>
-
-    
-
-
           
         </td>
 
@@ -1237,7 +652,7 @@ let result = await oip.edit(record)</code></pre>
         
 
         <td class="description last">
-          <p>an Artifact, Publisher, Platform, Retailer, or Influencer</p>
+          
           
         </td>
       </tr>
@@ -1281,7 +696,7 @@ let result = await oip.edit(record)</code></pre>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="core_oip_oip.js.html">core/oip/oip.js</a>, <a href="core_oip_oip.js.html#line179">line 179</a>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line485">line 485</a>
         </li>
       </ul>
     </dd>
@@ -1312,10 +727,272 @@ let result = await oip.edit(record)</code></pre>
 
         
   <div class="param-desc">
-    <p>response - An object that contains a var for <code>success</code>, the <code>record</code> that was published
-let oip = new OIP(wif, &quot;testnet&quot;)
-let artifact = new Artifact()
-let result = await oip.publish(artifact)</p>
+    <p>txid - Returns a transaction id</p>
+  </div>
+
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;string>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#buildInputsAndOutputs">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="buildInputsAndOutputs">
+      <span class="type-signature">(async) </span>buildInputsAndOutputs<span class="signature">(floData<span class="signature-attributes">opt</span>, output<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Builds the inputs and outputs to form a valid transaction hex for the FLO Chain</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+        <th>Default</th>
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>floData</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+              ""
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>defaults to an empty string</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>output</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>custom output object</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line244">line 244</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#buildInputsAndOutputs-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="buildInputsAndOutputs-examples">Examples</h5>
+    
+
+  <pre class="prettyprint"><code>//basic
+let oip = new OIP(wif, "testnet")
+let selected = await oip.buildInputsAndOutputs("floData") //returns selected inputs, outputs, and fee</code></pre>
+
+
+  <pre class="prettyprint"><code>//with custom output and object destructuring
+let oip = new OIP(wif, "testnet")
+let output = {
+    address: "ofbB67gqjgaYi45u8Qk2U3hGoCmyZcgbN4",
+    value: 1e8 //in satoshis
+}
+let {inputs, outputs, fee} = await oip.buildInputsAndOutputs("floData", output)</code></pre>
+
+
+  </div>
+
+
+
+<h5>Returns:</h5>
+
+        
+  <div class="param-desc">
+    <p>Returns the selected inputs, outputs, and fee to use for the transaction hex</p>
   </div>
 
 
@@ -1348,13 +1025,13 @@ let result = await oip.publish(artifact)</p>
   
 
   <span class='name-container'>
-    <a class="link-icon" href="#publishMultiparts">
+    <a class="link-icon" href="#buildTXHex">
       <svg height="20" width="20" style="fill: black;">
         <use xlink:href="#linkIcon"></use>
       </svg>
     </a>
-    <h4 class="name" id="publishMultiparts">
-      <span class="type-signature">(async) </span>publishMultiparts<span class="signature">(data)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;String>>}</span>
+    <h4 class="name" id="buildTXHex">
+      <span class="type-signature">(async) </span>buildTXHex<span class="signature">(floData<span class="signature-attributes">opt</span>, output<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;string>}</span>
     </h4>
   </span>
 
@@ -1363,7 +1040,1892 @@ let result = await oip.publish(artifact)</p>
 
 
   <div class="description">
-    <p>Publish data that exceeds the maximum floData length in multiple parts</p>
+    <p>Build a valid FLO Raw TX Hex containing floData</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+        <th>Default</th>
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>floData</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      String
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+              ""
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>String data to send with tx. Defaults to an empty string</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>output</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>custom output object</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line157">line 157</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#buildTXHex-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="buildTXHex-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>//if no output is designed, it will send 0.0001 * 1e8 FLO to yourself
+let output = {
+    address: "ofbB67gqjgaYi45u8Qk2U3hGoCmyZcgbN4",
+    value: 1e8 //satoshis
+}
+let op = new OIP(wif, "testnet")
+let hex = await op.buildTXHex("floData", output)</code></pre>
+
+
+  </div>
+
+
+
+<h5>Returns:</h5>
+
+        
+  <div class="param-desc">
+    <p>hex - Returns raw transaction hex</p>
+  </div>
+
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;string>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#createManualUtxos">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="createManualUtxos">
+      <span class="type-signature"></span>createManualUtxos<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;<a href="global.html#utxo">utxo</a>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Manually create Unspent Transaction Outputs from previous known transactions.
+Loops through spent transaction IDs in localStorage and created txs to find outputs to use.</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line390">line 390</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Array.&lt;<a href="global.html#utxo">utxo</a>>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#deleteHistory">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="deleteHistory">
+      <span class="type-signature"></span>deleteHistory<span class="signature">()</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>WARNING!!! Deleting history may cause publishing to temporary fail as it might attempt to use spent transactions. Deletes the publisher history from localStorage</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line646">line 646</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#deleteHistory-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="deleteHistory-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>let oip = new OIP(wif)
+oip.deleteHistory()</code></pre>
+
+
+  </div>
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#deserialize">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="deserialize">
+      <span class="type-signature"></span>deserialize<span class="signature">()</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Imports publisher history from localStorage</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line608">line 608</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#deserialize-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="deserialize-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>let oip = new OIP(wif)
+oip.deserialize() //sets this.spentTransactions and this.history from localStorage memory variables</code></pre>
+
+
+  </div>
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getCoinInfo">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getCoinInfo">
+      <span class="type-signature"></span>getCoinInfo<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="global.html#CoinInfo">CoinInfo</a>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Returns information about the current coin (either FLO or FLO_Testnet)</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line672">line 672</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      <a href="global.html#CoinInfo">CoinInfo</a>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getECPair">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getECPair">
+      <span class="type-signature"></span>getECPair<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Returns the ECPair (private/public key pair) generated from the given wif</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line664">line 664</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      object
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getNetwork">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getNetwork">
+      <span class="type-signature"></span>getNetwork<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="global.html#CoinNetwork">CoinNetwork</a>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Returns coin network information needed for address generation</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line680">line 680</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      <a href="global.html#CoinNetwork">CoinNetwork</a>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getPubAddress">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getPubAddress">
+      <span class="type-signature"></span>getPubAddress<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Returns the pay-to-pubkey-hash address generated from the given wif</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line656">line 656</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getSpentTransactions">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getSpentTransactions">
+      <span class="type-signature"></span>getSpentTransactions<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;<a href="global.html#TXID">TXID</a>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Returns an array of spent transaction ids</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line476">line 476</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#getSpentTransactions-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="getSpentTransactions-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>let oip = new OIP(wif, "testnet")
+oip.addSpentTransaction(txid)
+let txids = oip.getSpentTransactions()
+txids = [txid] //true</code></pre>
+
+
+  </div>
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Array.&lt;<a href="global.html#TXID">TXID</a>>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getTxHistory">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getTxHistory">
+      <span class="type-signature"></span>getTxHistory<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Returns tx history variables</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line633">line 633</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#getTxHistory-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="getTxHistory-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>let oip = new OIP(wif)
+oip.getTxHistory()
+//returns
+// {
+//   history: this.history,
+//   spentTransactions: this.spentTransactions
+// }</code></pre>
+
+
+  </div>
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getUTXO">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getUTXO">
+      <span class="type-signature">(async) </span>getUTXO<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;<a href="global.html#utxo">utxo</a>>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get Unspent Transaction Outputs for the given keypair</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line338">line 338</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#getUTXO-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="getUTXO-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>const wif = 'cRVa9rNx5N1YKBw8PhavegJPFCiYCfC4n8cYmdc3X1Y6TyFZGG4B'
+let oip = new OIP(wif, "testnet")
+let utxos = await oip.getUTXO()
+for (let tx of utxos) {
+    console.log(tx)
+    // [ { address: 'ofbB67gqjgaYi45u8Qk2U3hGoCmyZcgbN4',
+    //     txid: '40bf49a02731b04b71951d2e7782b93bd30678c5f5608f0cfe9cdaed6d392903',
+    //     vout: 1,
+    //     scriptPubKey: '76a914f93aef4f4ef998b7ae44bd5bc8f6627b79cdc07588ac',
+    //     amount: 659.9999325,
+    //     satoshis: 65999993250,
+    //     height: 295680,
+    //     confirmations: 5706
+    //  } ]
+}</code></pre>
+
+
+  </div>
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Array.&lt;<a href="global.html#utxo">utxo</a>>>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#removeSpent">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="removeSpent">
+      <span class="type-signature"></span>removeSpent<span class="signature">(unspentTransactions)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="global.html#utxo">utxo</a>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Removes already spent transactions (that are kept in local memory)</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>unspentTransactions</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Array.&lt;<a href="global.html#utxo">utxo</a>>
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>An array of utxos</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line366">line 366</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#removeSpent-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="removeSpent-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>//shouldn't ever have to write this. Use `OIP.getUTXO()` instead
+let oip = new OIP(wif, 'testnet')
+let utxo
+try {
+    utxo = await oip.explorer.getAddressUtxo(pubAddr)
+} catch (err) {
+    throw new Error(`${err}`)
+}
+return oip.removeSpent(utxo)</code></pre>
+
+
+  </div>
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Array.&lt;<a href="global.html#utxo">utxo</a>>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#save">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="save">
+      <span class="type-signature"></span>save<span class="signature">(txid, hex)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Saves a transaction to localStorage and memory</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>txid</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>hex</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line579">line 579</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#save-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="save-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>let oip = new OIP(wif)
+oip.save(`${txid}`, `${hex}`)</code></pre>
+
+
+  </div>
+
+
+
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#sendDataToChain">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="sendDataToChain">
+      <span class="type-signature">(async) </span>sendDataToChain<span class="signature">(data)</span><span class="type-signature"> &rarr; {Promise.&lt;string>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Send string data to the FLO Chain</p>
   </div>
 
 
@@ -1417,7 +2979,7 @@ let result = await oip.publish(artifact)</p>
         
 
         <td class="description last">
-          <p>The data you wish to publish</p>
+          <p>String data. Must be below or equal to 1040 characters</p>
           
         </td>
       </tr>
@@ -1461,7 +3023,7 @@ let result = await oip.publish(artifact)</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="core_oip_oip.js.html">core/oip/oip.js</a>, <a href="core_oip_oip.js.html#line246">line 246</a>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line111">line 111</a>
         </li>
       </ul>
     </dd>
@@ -1487,17 +3049,16 @@ let result = await oip.publish(artifact)</p>
 
 
   <div class="example-container">
-    <a class="link-icon" href="#publishMultiparts-examples">
+    <a class="link-icon" href="#sendDataToChain-examples">
       <svg height="20" width="20" style="fill: black;">
         <use xlink:href="#linkIcon"></use>
       </svg>
     </a>
-    <h5 id="publishMultiparts-examples">Example</h5>
+    <h5 id="sendDataToChain-examples">Example</h5>
     
 
   <pre class="prettyprint"><code>let oip = new OIP(wif, "testnet")
-let txArray = await oip.publishMultiparts(superLongStringData)
-//For multipart publishing, use oip.publish() instead. Will auto redirect to this function</code></pre>
+let txid = await oip.sendData`ToChain('Hello, world')</code></pre>
 
 
   </div>
@@ -1508,7 +3069,7 @@ let txArray = await oip.publishMultiparts(superLongStringData)
 
         
   <div class="param-desc">
-    <p>txids - An array of transaction IDs</p>
+    <p>txid - Returns the id of the transaction that contains the published data</p>
   </div>
 
 
@@ -1518,7 +3079,7 @@ let txArray = await oip.publishMultiparts(superLongStringData)
     <dd>
       
     <span class="param-type">
-      Promise.&lt;Array.&lt;String>>
+      Promise.&lt;string>
     </span>
 
     
@@ -1541,13 +3102,13 @@ let txArray = await oip.publishMultiparts(superLongStringData)
   
 
   <span class='name-container'>
-    <a class="link-icon" href="#signRecord">
+    <a class="link-icon" href="#sendTx">
       <svg height="20" width="20" style="fill: black;">
         <use xlink:href="#linkIcon"></use>
       </svg>
     </a>
-    <h4 class="name" id="signRecord">
-      <span class="type-signature">(async) </span>signRecord<span class="signature">(record)</span><span class="type-signature"></span>
+    <h4 class="name" id="sendTx">
+      <span class="type-signature">(async) </span>sendTx<span class="signature">(output, floData)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="global.html#TXID">TXID</a>>}</span>
     </h4>
   </span>
 
@@ -1556,7 +3117,7 @@ let txArray = await oip.publishMultiparts(superLongStringData)
 
 
   <div class="description">
-    <p>Sign an OIP Record (if unsigned), and verify it's signature</p>
+    <p>Create and send a FLO tx with a custom output</p>
   </div>
 
 
@@ -1589,14 +3150,14 @@ let txArray = await oip.publishMultiparts(superLongStringData)
     
       <tr>
         
-          <td class="name"><code>record</code></td>
+          <td class="name"><code>output</code></td>
         
 
         <td class="type">
           
             
     <span class="param-type">
-      <a href="OIPRecord.html">OIPRecord</a>
+      object
     </span>
 
     
@@ -1610,7 +3171,36 @@ let txArray = await oip.publishMultiparts(superLongStringData)
         
 
         <td class="description last">
-          <p>The record you want to make sure is signed</p>
+          
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>floData</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
           
         </td>
       </tr>
@@ -1654,7 +3244,7 @@ let txArray = await oip.publishMultiparts(superLongStringData)
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="core_oip_oip.js.html">core/oip/oip.js</a>, <a href="core_oip_oip.js.html#line67">line 67</a>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line539">line 539</a>
         </li>
       </ul>
     </dd>
@@ -1678,6 +3268,158 @@ let txArray = await oip.publishMultiparts(superLongStringData)
 
 
 
+
+  <div class="example-container">
+    <a class="link-icon" href="#sendTx-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="sendTx-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>let oip = new OIP(wif, "testnet")
+let output = {
+    address: "oNAydz5TjkhdP3RPuu3nEirYQf49Jrzm4S",
+    value: 100000000
+}
+let txid = await oip.createAndSendFloTx(output, "to testnet")</code></pre>
+
+
+  </div>
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;<a href="global.html#TXID">TXID</a>>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#serialize">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="serialize">
+      <span class="type-signature"></span>serialize<span class="signature">()</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Stores important local variables to localStorage such as spent transactions and publish history</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="modules_wallets_ExplorerWallet.js.html">modules/wallets/ExplorerWallet.js</a>, <a href="modules_wallets_ExplorerWallet.js.html#line593">line 593</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#serialize-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="serialize-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>let oip = new OIP(wif)
+oip.serialize() //saves this.spentTransactions and this.history to localStorage memory</code></pre>
+
+
+  </div>
 
 
 
