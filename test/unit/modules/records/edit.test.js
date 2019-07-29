@@ -177,7 +177,8 @@ describe('Apply Squashed Patch to Record', () => {
   test('apply Squashed Patch', () => {
     let originalRecord = new Record()
 
-    originalRecord.setTXID('testTXID')
+    originalRecord.setTXID('wrongTXID')
+    originalRecord.setOriginalTXID('testTXID')
     originalRecord.setTitle('original title')
     originalRecord.setType('Text')
 
@@ -201,7 +202,8 @@ describe('Create Squashed Patch from Records', () => {
     let originalRecord = new Record()
 
     originalRecord.meta.type = 'oip042'
-    originalRecord.setTXID('testTXID')
+    originalRecord.setTXID('wrongTXID')
+    originalRecord.setOriginalTXID('testTXID')
     originalRecord.setTitle('original title')
     originalRecord.setSignature('originalSig')
     originalRecord.setTimestamp(1234)
@@ -227,7 +229,8 @@ describe('Create Squashed Patch from Records', () => {
     let originalRecord = new Record()
 
     originalRecord.meta.type = 'oip042'
-    originalRecord.setTXID('testTXID')
+    originalRecord.setTXID('wrongTXID')
+    originalRecord.setOriginalTXID('testTXID')
     originalRecord.setTitle('original title')
     originalRecord.setTimestamp(1234)
     originalRecord.setSignature('mySig')
@@ -241,6 +244,7 @@ describe('Create Squashed Patch from Records', () => {
     edit.setTimestamp(Date.now())
     edit.setSignature('editSig')
 
+    expect(edit.edit.txid).toBe('testTXID')
     expect(edit.getPatch()).toEqual({
       replace: {
         '/signature': 'updatedSig',
