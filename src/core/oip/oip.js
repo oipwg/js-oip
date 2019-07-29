@@ -196,7 +196,7 @@ class OIP {
     // Lookup the currently latest version of the Record
     let original
     try {
-      let { success, record, error } = await this.oipdAPI.getRecord(editedRecord.getTXID())
+      let { success, record, error } = await this.oipdAPI.getRecord(editedRecord.getOriginalTXID())
       // If OIPd reported an error, then throw the error
       if (success) {
         original = record
@@ -209,7 +209,7 @@ class OIP {
     }
     // Throw an Error if record does not exist
     if (!original) {
-      return { success: false, error: `A Record with the txid ${editedRecord.getTXID()} was not found in OIP daemon! Please make sure you have set 'options.oipdURL' to your OIP daemon server!` }
+      return { success: false, error: `A Record with the txid ${editedRecord.getOriginalTXID()} was not found in OIP daemon! Please make sure you have set 'options.oipdURL' to your OIP daemon server!` }
     }
 
     // Set the Publisher Address before we sign

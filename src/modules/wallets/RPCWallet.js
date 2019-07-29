@@ -33,6 +33,57 @@ const PEER_CONNECT_LENGTH = 2 * ONE_SECOND
 const REBROADCAST_LENGTH = 10 * ONE_SECOND
 const REPAIR_MIN_TX = 100
 
+// List of all Wallet-Only RPC Methods
+const WALLET_RPC_METHODS = [
+  'selectwallet',
+  'getwalletinfo',
+  'fundrawtransaction',
+  'resendwallettransactions',
+  'abandontransaction',
+  'addmultisigaddress',
+  'addwitnessaddress',
+  'backupwallet',
+  'dumpprivkey',
+  'dumpwallet',
+  'encryptwallet',
+  'getaccountaddress',
+  'getaccount',
+  'getaddressesbyaccount',
+  'getbalance',
+  'getnewaddress',
+  'getrawchangeaddress',
+  'getreceivedbyaccount',
+  'getreceivedbyaddress',
+  'gettransaction',
+  'getunconfirmedbalance',
+  'importprivkey',
+  'importwallet',
+  'importaddress',
+  'importprunedfunds',
+  'importpubkey',
+  'keypoolrefill',
+  'listaccounts',
+  'listaddressgroupings',
+  'lockunspent',
+  'listlockunspent',
+  'listreceivedbyaccount',
+  'listreceivedbyaddress',
+  'listsinceblock',
+  'listtransactions',
+  'listunspent',
+  'move',
+  'sendfrom',
+  'sendmany',
+  'sendtoaddress',
+  'setaccount',
+  'settxfee',
+  'signmessage',
+  'walletlock',
+  'walletpassphrasechange',
+  'walletpassphrase',
+  'removeprunedfunds'
+]
+
 /**
  * Easily interact with an RPC Wallet to send Bulk transactions extremely quickly in series
  */
@@ -60,15 +111,18 @@ class RPCWallet {
 
     // Create the RPC connection using Axios
     this.rpc = axios.create({
-      baseURL: 'http://' + this.options.rpc.host + ':' + this.options.rpc.port,
       auth: {
         username: this.options.rpc.username,
         password: this.options.rpc.password
       },
       validateStatus: function (status) {
+        if ([400, 401, 402, 403, 404].includes(status)) { return false }
+
         return true
       }
     })
+    // Default to not being an fcoin RPC node
+    this.fcoinRPC = false
 
     // Store the Private Key and the Public Key
     this.wif = this.options.wif
@@ -111,10 +165,24 @@ class RPCWallet {
     // Perform the RPC request using Axios
     let rpcRequest
     try {
-      rpcRequest = await this.rpc.post('/', { 'jsonrpc': '2.0', 'id': 1, 'method': method, 'params': parameters })
+      let rpcPort = this.options.rpc.port
+      // If we are using an fcoin RPC, the wallet RPC runs on a different port (7315/17315 instead of 7313/17313)
+      if (WALLET_RPC_METHODS.includes(method) && this.fcoinRPC) { rpcPort += 2 }
+
+      rpcRequest = await this.rpc.post(`http://${this.options.rpc.host}:${rpcPort}/`, { 'jsonrpc': '2.0', 'id': 1, 'method': method, 'params': parameters })
+
+      // If we have an error with the Method not being found, it is likely an issue with the RPC server being fcoin.
+      if (rpcRequest.data && rpcRequest.data.error && rpcRequest.data.error.message && rpcRequest.data.error.message.includes('Method not found')) {
+        this.fcoinRPC = true
+        return this.rpcRequest(method, parameters)
+      }
     } catch (e) {
       // Throw if there was some weird error for some reason.
-      throw new Error("Unable to perform RPC request! Method: '" + method + "' - Params: '" + JSON.stringify(parameters) + "' | RPC settings: " + JSON.stringify(this.options.rpc) + ' | Thrown Error: ' + e)
+      console.log("[RPC Wallet] Unable to perform RPC request, retrying! Method: '" + method + "' - Params: '" + JSON.stringify(parameters) + "' | RPC settings: " + JSON.stringify(this.options.rpc) + ' | Thrown Error: ' + e)
+      // Sleep 1 second
+      await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, 1000) })
+      // Retry RPC Request recursively
+      return this.rpcRequest(method, parameters)
     }
 
     // Remove the `id` field from the response, since we do not care about it
@@ -318,7 +386,7 @@ class RPCWallet {
       console.log(`[RPC Wallet] Importing the Private Key to the RPC Wallet, this may take a long time...`)
 
       // First, we import the Private Key to make sure it exists when we attempt to send transactions.
-      let importPrivKey = await this.rpcRequest('importprivkey', [ this.wif, '', true ])
+      let importPrivKey = await this.rpcRequest('importprivkey', [ this.wif, 'default', true ])
 
       console.log(`[RPC Wallet] Private Key Import to the RPC Wallet Complete!`)
 
