@@ -73,13 +73,13 @@ export default class EditRecord extends OIPRecord {
       if (this.getOriginalRecord().getSignature() === this.getPatchedRecord().getSignature()) { this.getPatchedRecord().setSignature('') }
 
       this.createPatch()
-    } else { this.setOriginalRecordTXID(patchedRecord.getTXID()) }
+    } else { this.setOriginalRecordTXID(patchedRecord.getOriginalTXID()) }
   }
 
   setOriginalRecord (originalRecord) {
     this.originalRecord = originalRecord
 
-    this.setOriginalRecordTXID(originalRecord.getTXID())
+    this.setOriginalRecordTXID(originalRecord.getOriginalTXID())
   }
 
   setOriginalRecordTXID (originalTXID) {
