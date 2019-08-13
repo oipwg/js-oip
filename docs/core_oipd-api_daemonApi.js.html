@@ -190,7 +190,7 @@ class DaemonApi {
    * let oipd = new DaemonApi("localhost:1606") //leave blank for default API URL
    * let latestArtifacts = await oipd.getLatestArtifacts()
    * ```
-   * @param  {Object} [daemonUrl="https://api.oip.io/oip"] - The URL of an OIP Daemon
+   * @param  {String} [daemonUrl="https://api.oip.io/oip"] - The URL of an OIP Daemon
    */
   constructor (daemonUrl) {
     if (daemonUrl) {
@@ -206,7 +206,7 @@ class DaemonApi {
 
   /**
    * Set the DaemonUrl
-   * @param {string} daemonUrl - the URL of an OIP Daemon (OIPd)
+   * @param {String} daemonUrl - the URL of an OIP Daemon (OIPd)
    * @example
    * DaemonApi.setUrl('https://api.oip.io/oip')
    * let url = DaemonUrl.getUrl()
