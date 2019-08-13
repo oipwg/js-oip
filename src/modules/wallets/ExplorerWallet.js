@@ -143,7 +143,7 @@ class ExplorerWallet {
   /**
    * Build a valid FLO Raw TX Hex containing floData
    * @param {String} [floData=""] - String data to send with tx. Defaults to an empty string
-   * @param {Object} [output] - custom output object
+   * @param {object|Array.<object>} [output] - Custom output object
    * @return {Promise<string>} hex - Returns raw transaction hex
    * @example
    * //if no output is designed, it will send 0.0001 * 1e8 FLO to yourself
@@ -222,7 +222,7 @@ class ExplorerWallet {
   /**
    * Builds the inputs and outputs to form a valid transaction hex for the FLO Chain
    * @param {string} [floData=""] - defaults to an empty string
-   * @param {Object} [output] - custom output object
+   * @param {object|Array.<object>} [outputs] - Output or an array of Outputs to send to
    * @return {Promise<Object>} Returns the selected inputs, outputs, and fee to use for the transaction hex
    * @example
    * //basic
@@ -524,7 +524,7 @@ class ExplorerWallet {
 
   /**
    * Create and send a FLO tx with a custom output
-   * @param {object} output
+   * @param {object|Array.<object>} outputs
    * @param {string} floData
    * @return {Promise<TXID>}
    * @example
@@ -535,7 +535,7 @@ class ExplorerWallet {
    * }
    * let txid = await oip.createAndSendFloTx(output, "to testnet")
    */
-  async sendTx (output, floData = '') {
+  async sendTx (outputs, floData = '') {
     if (floData && typeof floData !== 'string') {
       throw new Error(`Data must be of type string. Got: ${typeof floData}`)
     }
@@ -544,7 +544,7 @@ class ExplorerWallet {
     }
     let hex
     try {
-      hex = await this.buildTXHex(floData, output)
+      hex = await this.buildTXHex(floData, outputs)
     } catch (err) {
       throw new Error(`Error building TX Hex: ${err}`)
     }
