@@ -1,7 +1,7 @@
 import { sign } from 'bitcoinjs-message'
-import bitcoin from 'bitcoinjs-lib'
+import { ECPair, payments, address } from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
-import { Insight } from 'insight-explorer'
+import Insight from 'insight-explorer'
 
 // This dependency was not found:
 //
@@ -9,6 +9,7 @@ import { Insight } from 'insight-explorer'
 import floTx from 'fcoin/lib/primitives/tx'
 import { isValidWIF } from '../../util'
 import { floMainnet, floTestnet } from '../../config'
+import FLOTransactionBuilder from '../flo/FLOTransactionBuilder'
 
 if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
   if (typeof localStorage === 'undefined') { // eslint-disable-line
@@ -57,7 +58,6 @@ class ExplorerWallet {
    * let oip = new OIP(wif, "testnet")
    * ```
    * @param {string} options.wif - private key in Wallet Import Format (WIF) see: {@link https://en.bitcoin.it/wiki/Wallet_import_format}
-   * @param {string} [options.explorerUrl] - api url to a blockchain explorer
    * @param {string} [options.network="mainnet"] - Use "testnet" for testnet
    */
   // ToDo:: Switch to mainnet for prod
@@ -75,8 +75,8 @@ class ExplorerWallet {
     this.coin = network
     this.network = network.network
     this.explorer = network.explorer
-    this.ECPair = bitcoin.ECPair.fromWIF(options.wif, this.network)
-    this.p2pkh = bitcoin.payments.p2pkh({ pubkey: this.ECPair.publicKey, network: this.network }).address
+    this.ECPair = ECPair.fromWIF(options.wif, this.network)
+    this.p2pkh = payments.p2pkh({ pubkey: this.ECPair.publicKey, network: this.network }).address
     this.spentTransactions = []
     this.history = []
 
@@ -106,7 +106,7 @@ class ExplorerWallet {
    * @return {Promise<string>} txid - Returns the id of the transaction that contains the published data
    * @example
    * let oip = new OIP(wif, "testnet")
-   * let txid = await oip.sendData`ToChain('Hello, world')
+   * let txid = await oip.sendDataToChain('Hello, world')
    */
   async sendDataToChain (data) {
     if (typeof data !== 'string') {
@@ -143,13 +143,13 @@ class ExplorerWallet {
   /**
    * Build a valid FLO Raw TX Hex containing floData
    * @param {String} [floData=""] - String data to send with tx. Defaults to an empty string
-   * @param {Object|Array.<object>} [output] - custom output object
+   * @param {object|Array.<object>} [output] - Custom output object
    * @return {Promise<string>} hex - Returns raw transaction hex
    * @example
    * //if no output is designed, it will send 0.0001 * 1e8 FLO to yourself
    * let output = {
    *     address: "ofbB67gqjgaYi45u8Qk2U3hGoCmyZcgbN4",
-   *     value: 1e8 // satoshis
+   *     value: 1e8 //satoshis
    * }
    * let op = new OIP(wif, "testnet")
    * let hex = await op.buildTXHex("floData", output)
@@ -171,9 +171,7 @@ class ExplorerWallet {
       throw new Error('No Inputs or Outputs selected! Fail!')
     }
 
-    let txb = new bitcoin.TransactionBuilder(this.network)
-
-    txb.setVersion(this.coin.txVersion) // 1: w/o floData, 2: w/ floData
+    let txb = new FLOTransactionBuilder(this.network)
 
     inputs.forEach(input => txb.addInput(input.txId, input.vout))
 
@@ -198,16 +196,16 @@ class ExplorerWallet {
 
     outputs.forEach(output => {
       if (!output.address) {
-        output.address = this.p2pkh
+        throw new Error(`Missing output address: ${outputs}`)
       }
       txb.addOutput(output.address, output.value)
     })
 
-    let extraBytes = this.coin.getExtraBytes({ floData })
+    txb.setFloData(floData)
 
     for (let i in inputs) {
       if (this.p2pkh !== inputs[i].address) throw new Error(`Invalid inputs. Addresses don't match: ${inputs} & ${this.p2pkh}`)
-      this.coin.sign(txb, extraBytes, parseInt(i), this.ECPair)
+      txb.sign(parseInt(i), this.ECPair)
     }
 
     let builtHex
@@ -218,15 +216,13 @@ class ExplorerWallet {
       throw new Error(`Unable to build Transaction Hex!: ${err}`)
     }
 
-    builtHex += extraBytes
-
     return builtHex
   }
 
   /**
    * Builds the inputs and outputs to form a valid transaction hex for the FLO Chain
    * @param {string} [floData=""] - defaults to an empty string
-   * @param {Object|Array.<Object>} [outputs] - custom output object
+   * @param {object|Array.<object>} [outputs] - Output or an array of Outputs to send to
    * @return {Promise<Object>} Returns the selected inputs, outputs, and fee to use for the transaction hex
    * @example
    * //basic
@@ -237,7 +233,7 @@ class ExplorerWallet {
    * let oip = new OIP(wif, "testnet")
    * let output = {
    *     address: "ofbB67gqjgaYi45u8Qk2U3hGoCmyZcgbN4",
-   *     value: 1e8 // in satoshis
+   *     value: 1e8 //in satoshis
    * }
    * let {inputs, outputs, fee} = await oip.buildInputsAndOutputs("floData", output)
    */
@@ -297,7 +293,6 @@ class ExplorerWallet {
     if (!Array.isArray(outputs)) {
       outputs = [outputs]
     }
-    // console.log(outputs)
     let targets = outputs
 
     let extraBytes = this.coin.getExtraBytes({ floData })
@@ -430,8 +425,8 @@ class ExplorerWallet {
         }
         // convert mainnet addr -> testnet addr
         addr = addr.toBase58()
-        let { hash } = bitcoin.address.fromBase58Check(addr)
-        let testnetAddr = bitcoin.address.toBase58Check(hash, 115)
+        let { hash } = address.fromBase58Check(addr)
+        let testnetAddr = address.toBase58Check(hash, 115)
         if (testnetAddr === this.p2pkh) {
           let tmpObj = {
             address: testnetAddr,
@@ -536,7 +531,7 @@ class ExplorerWallet {
    * let oip = new OIP(wif, "testnet")
    * let output = {
    *     address: "oNAydz5TjkhdP3RPuu3nEirYQf49Jrzm4S",
-   *     value: 100000000 // satoshis
+   *     value: 100000000
    * }
    * let txid = await oip.createAndSendFloTx(output, "to testnet")
    */

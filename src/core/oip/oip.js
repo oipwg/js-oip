@@ -1,14 +1,12 @@
-import bitcoin from 'bitcoinjs-lib'
+import { ECPair, payments } from 'bitcoinjs-lib'
 
 import { DaemonApi } from '../oipd-api'
 import { MultipartX } from '../../modules'
 import { OIPRecord } from '../../modules/records'
 import { EditRecord } from '../../modules/records/edit'
 import { ExplorerWallet, RPCWallet } from '../../modules/wallets'
+import { FLODATA_MAX_LEN } from '../../modules/flo/FLOTransaction'
 import { floMainnet, floTestnet } from '../../config'
-
-// The maximum floData that fits in one transaction
-export const FLODATA_MAX_LEN = 1040
 
 /**
  * Class to publish, register, edit, transfer, and deactivate OIP Records
@@ -26,7 +24,6 @@ class OIP {
    * @param {String} [network="mainnet"] - Use "testnet" for mainnet
    * @param {Object} [options] - Options to for the OIP class
    * @param {Object} [options.publicAddress] - Explicitly define a public address for the passed WIF
-   * @param {string} [options.explorerUrl] - api url to a blockchain explorer
    * @param {Object} [options.oipdURL] - The OIP daemon API url to use when looking up the Latest Record in oip.edit()
    * @param {Object} [options.rpc] - By default, OIP uses a connection to a web explorer to publish Records, you can however use a connection to an RPC wallet instead by passing an object into this option
    * @param {Object} [options.rpc.host] - The Hostname for the RPC wallet connection
@@ -45,8 +42,8 @@ class OIP {
       let tmpNetwork = floMainnet
       if (network === 'testnet') { tmpNetwork = floTestnet }
 
-      let ECPair = bitcoin.ECPair.fromWIF(this.options.wif, tmpNetwork.network)
-      this.options.publicAddress = bitcoin.payments.p2pkh({ pubkey: ECPair.publicKey, network: tmpNetwork.network }).address
+      let myECPair = ECPair.fromWIF(this.options.wif, tmpNetwork.network)
+      this.options.publicAddress = payments.p2pkh({ pubkey: myECPair.publicKey, network: tmpNetwork.network }).address
     }
 
     if (this.options.rpc) {
@@ -199,10 +196,10 @@ class OIP {
     // Lookup the currently latest version of the Record
     let original
     try {
-      let { success, artifact, error } = await this.oipdAPI.getArtifact(editedRecord.getTXID())
+      let { success, record, error } = await this.oipdAPI.getRecord(editedRecord.getOriginalTXID())
       // If OIPd reported an error, then throw the error
       if (success) {
-        original = artifact
+        original = record
       } else {
         return { success: false, error: `Unable to load Original Record from OIP daemon: ${error}` }
       }
@@ -212,7 +209,7 @@ class OIP {
     }
     // Throw an Error if record does not exist
     if (!original) {
-      return { success: false, error: `A Record with the txid ${editedRecord.getTXID()} was not found in OIP daemon! Please make sure you have set 'options.oipdURL' to your OIP daemon server!` }
+      return { success: false, error: `A Record with the txid ${editedRecord.getOriginalTXID()} was not found in OIP daemon! Please make sure you have set 'options.oipdURL' to your OIP daemon server!` }
     }
 
     // Set the Publisher Address before we sign

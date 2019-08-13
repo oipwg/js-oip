@@ -1,0 +1,23 @@
+image: node:lts
+
+stages:
+  - test
+
+Unit Tests:
+  stage: test
+  script:
+   - npm ci
+   - npm run test:unit
+
+Integration Tests:
+  stage: test
+  script:
+   - npm ci
+   - npm run test:integration
+  allow_failure: true
+
+Code Format:
+  stage: test
+  script:
+   - npm ci
+   - npm run test:format
