@@ -189,7 +189,20 @@ export default class EditRecord extends OIPRecord {
       if (['add', 'replace', 'test'].includes(patch.op)) {
         if (!squashedPatch[patch.op]) { squashedPatch[patch.op] = {} }
 
-        squashedPatch[patch.op][patch.path] = patch.value
+        // Check if we have already stored a value at `patch.path` and if so, convert the "add" to an Array and append the extra operation
+        if (squashedPatch[patch.op][patch.path]) {
+          let previousValue = squashedPatch[patch.op][patch.path]
+          // Check if we are already an Array, if not, convert to an array
+          if (!Array.isArray(previousValue)) {
+            squashedPatch[patch.op][patch.path] = [ previousValue ]
+          }
+
+          // Add the latest add for the path to the Add array
+          squashedPatch[patch.op][patch.path].push(patch.value)
+        } else {
+          // This is the first time we are adding for this patch.path, go ahead and just assign directly
+          squashedPatch[patch.op][patch.path] = patch.value
+        }
       }
       // The "move", and "copy" operations are also stored in an Object,
       // however, they use "from" as the key and "path" as the value
