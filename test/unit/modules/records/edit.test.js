@@ -9,6 +9,18 @@ describe('RFC6902 Tests', () => {
 
     expect(rfc6902Patch).toEqual([ { op: 'replace', path: '/field', value: 'after' } ])
   })
+
+  test('create RFC6902 Patch with multiple adds to Array', () => {
+    let edit = new EditRecord()
+
+    let rfc6902Patch = edit.createRFC6902Patch({ field: [ 'one', 'two' ] }, { field: [ 'two', 'three', 'four' ] })
+
+    expect(rfc6902Patch).toEqual([
+      { 'op': 'remove', 'path': '/field/0' },
+      { 'op': 'add', 'path': '/field/-', 'value': 'three' },
+      { 'op': 'add', 'path': '/field/-', 'value': 'four' }
+    ])
+  })
 })
 
 describe('Squash RFC6902', () => {
@@ -20,6 +32,19 @@ describe('Squash RFC6902', () => {
     let squashedPatch = edit.squashRFC6902Patch(rfc6902Patch)
 
     expect(squashedPatch).toEqual({ replace: { '/field': 'after' } })
+  })
+  test('squash RFC6902 Patch (multiple adds to same array)', () => {
+    let edit = new EditRecord()
+
+    let rfc6902Patch = [
+      { 'op': 'remove', 'path': '/field/0' },
+      { 'op': 'add', 'path': '/field/-', 'value': 'three' },
+      { 'op': 'add', 'path': '/field/-', 'value': 'four' }
+    ]
+
+    let squashedPatch = edit.squashRFC6902Patch(rfc6902Patch)
+
+    expect(squashedPatch).toEqual({ 'add': { '/field/-': ['three', 'four'] }, 'remove': ['/field/0'] })
   })
   test('squash RFC6902 Patch (multiple fields, single op)', () => {
     let edit = new EditRecord()
