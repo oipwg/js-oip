@@ -97,7 +97,7 @@ class DaemonApi {
    * let oipd = new DaemonApi("localhost:1606") //leave blank for default API URL
    * let latestArtifacts = await oipd.getLatestArtifacts()
    * ```
-   * @param  {Object} [daemonUrl="http://snowflake.oip.fun:1606"] - The URL of an OIP Daemon
+   * @param  {Object} [daemonUrl="https://api.oip.io/oip"] - The URL of an OIP Daemon
    */
   constructor (daemonUrl) {
     if (daemonUrl) {
@@ -115,9 +115,9 @@ class DaemonApi {
    * Set the DaemonUrl
    * @param {string} daemonUrl - the URL of an OIP Daemon (OIPd)
    * @example
-   * DaemonApi.setUrl('snowflake.oip.fun:1606')
+   * DaemonApi.setUrl('https://api.oip.io/oip')
    * let url = DaemonUrl.getUrl()
-   * url === 'snowflake.oip.fun:1606' //true
+   * url === 'https://api.oip.io/oip' //true
    */
   setUrl (daemonUrl) {
     this.url = daemonUrl
