@@ -165,10 +165,12 @@ class RPCWallet {
     // Perform the RPC request using Axios
     let rpcRequest
     try {
-      let rpcPort = this.options.rpc.port
+      // Make sure that rpcPort is an int so that we don't append 2 as a string to the port
+      let rpcPort = parseInt(this.options.rpc.port)
       // If we are using an fcoin RPC, the wallet RPC runs on a different port (7315/17315 instead of 7313/17313)
       if (WALLET_RPC_METHODS.includes(method) && this.fcoinRPC) { rpcPort += 2 }
 
+      // Attempt the RPC request
       rpcRequest = await this.rpc.post(`http://${this.options.rpc.host}:${rpcPort}/`, { 'jsonrpc': '2.0', 'id': 1, 'method': method, 'params': parameters })
 
       // If we have an error with the Method not being found, it is likely an issue with the RPC server being fcoin.
