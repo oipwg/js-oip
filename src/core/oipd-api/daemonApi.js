@@ -1049,7 +1049,7 @@ class DaemonApi {
   }
   async isVerifiedPublisher ({ pubAddr, templateName, apiUrl, localhost = false }) {
     const VERIFIED_PUBLISHER_TEMPLATE = 'tmpl_F471DFF9'
-    const verifyApiEndpoint = 'https://snowflake.oip.fun/verified/publisher/check/' // toDo: change for prod
+    const verifyApiEndpoint = 'https://api.oip.io/verified/publisher/check/'
     const localhostVerifyEndpoint = 'http://localhost:1607/verified/publisher/check/'
 
     let tmplName = templateName || VERIFIED_PUBLISHER_TEMPLATE
