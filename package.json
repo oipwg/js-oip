@@ -42,7 +42,7 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^24.8.0",
     "jest": "^24.8.0",
-    "jsdoc": "^3.6.1",
+    "jsdoc": "^3.6.3",
     "jsdoc-template": "git+https://github.com/oipwg/jsdoc-template.git",
     "standard": "^12.0.1"
   },
