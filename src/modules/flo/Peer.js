@@ -13,6 +13,9 @@ class Peer {
     // Store our internally settings for later use
     this.settings = settings
 
+    // Rename the mainnet network to be what fcoin expects
+    if (this.settings.network === 'mainnet' || this.settings.network === 'livenet') { this.settings.network = 'main' }
+
     // Set the initial connection status
     this.connected = false
     // Initialize the transaction map to store { 'txid': 'hex' } the txid related to the hex
@@ -30,7 +33,7 @@ class Peer {
     // Create the Fcoin Peer
     this.peer = peer.fromOptions({
       logger: log,
-      network: 'testnet',
+      network: this.settings.network,
       agent: this.settings.agent,
       hasWitness: () => {
         return false

@@ -89,7 +89,7 @@ import {DaemonApi} from 'js-oip'
 let api = new DaemonApi()
 ```
 ### Spawn a DaemonApi with a custom OIPd server
-OIPd refers to an Open Index Protocol Daemon. Our current implementation is in golang and can be found [here](https://github.com/bitspill/oip).
+OIPd refers to an Open Index Protocol Daemon. Our current implementation is in golang and can be found [here](https://github.com/oipwg/oip).
 If for instance, we are running a daemon locally, we hit the endpoints it exposes by pointing our DaemonApi to the URL its running at.
 ```javascript
 import {DaemonApi} from 'js-oip'
@@ -156,7 +156,7 @@ let txid = 'f550b9739e7453224075630d44cba24c31959af913aeb7cb364a563f96f54548'
 let {success, multipart, error} = await api.getMultipart(txid)
 ```
 ### Search floData
-[The OIP Daemon](https://github.com/bitspill/oip) indexes *not only* data serialized using the OIP, but all floData found on the FLO Chain. 
+[The OIP Daemon](https://github.com/oipwg/oip) indexes *not only* data serialized using the OIP, but all floData found on the FLO Chain. 
 Using this method we can search for text found within any TX's floData field. Again, Ryan seems like a cool guy so we'll search for his name.
 Note here how we're going to receive back transactions (`txs`) that contain the floData and not just the floData itself.
 ```javascript
@@ -327,7 +327,7 @@ For further documentation on use cases and methods, please see the [official doc
 ## License
 MIT License
 
-Copyright (c) 2018 Open Index Protocol Working Group
+Copyright (c) 2019 Open Index Protocol Working Group
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

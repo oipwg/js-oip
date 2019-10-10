@@ -1,10 +1,11 @@
 {
   "name": "js-oip",
-  "version": "2.3.6",
+  "version": "2.4.0",
   "description": "A Javascript Library to fully interact with the Open Index Protocol",
   "main": "lib/index.js",
   "scripts": {
     "test": "npm run test:unit && npm run test:format",
+    "test:flo": "jest test/unit/modules/flo",
     "test:unit": "jest test/unit --detectOpenHandles --verbose",
     "test:integration": "jest test/integration --detectOpenHandles --verbose",
     "test:format": "standard",
@@ -42,13 +43,14 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^24.8.0",
     "jest": "^24.8.0",
+    "jest-expect-message": "^1.0.2",
     "jsdoc": "^3.6.3",
     "jsdoc-template": "git+https://github.com/oipwg/jsdoc-template.git",
     "standard": "^12.0.1"
   },
   "dependencies": {
     "axios": "^0.19.0",
-    "bitcoinjs-lib": "git+https://github.com/oipwg/bitcoinjs-lib.git#export-classify",
+    "bitcoinjs-lib": "^5.0.3",
     "bitcoinjs-message": "^2.0.0",
     "coinselect": "^3.1.11",
     "fcoin": "^1.0.0-beta.34",
@@ -64,7 +66,8 @@
     "lib"
   ],
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "setupTestFrameworkScriptFile": "jest-expect-message"
   },
   "standard": {
     "env": [

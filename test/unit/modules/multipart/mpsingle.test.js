@@ -1,5 +1,5 @@
 import { sign } from 'bitcoinjs-message'
-import bitcoin from 'bitcoinjs-lib'
+import { ECPair, payments } from 'bitcoinjs-lib'
 import { floTestnet } from '../../../../src/config/networks'
 import MPSingle from '../../../../src/modules/multipart/mpsingle'
 
@@ -59,16 +59,16 @@ describe('MPSingle', () => {
   describe('Signing', () => {
     it('Create and verify signature', async () => {
       let network = floTestnet.network
-      let ECPair = bitcoin.ECPair.makeRandom({ network })
+      let tmpECPair = ECPair.makeRandom({ network })
 
       let signMessage = async (message) => {
-        let privateKeyBuffer = ECPair.privateKey
+        let privateKeyBuffer = tmpECPair.privateKey
 
-        let compressed = ECPair.compressed || true
+        let compressed = tmpECPair.compressed || true
 
         let signatureBuffer
         try {
-          signatureBuffer = sign(message, privateKeyBuffer, compressed, ECPair.network.messagePrefix)
+          signatureBuffer = sign(message, privateKeyBuffer, compressed, tmpECPair.network.messagePrefix)
         } catch (e) {
           throw new Error(e)
         }
@@ -78,7 +78,7 @@ describe('MPSingle', () => {
         return signature
       }
 
-      let address = bitcoin.payments.p2pkh({ pubkey: ECPair.publicKey, network }).address
+      let address = payments.p2pkh({ pubkey: tmpECPair.publicKey, network }).address
       let mps = new MPSingle({ part: 0, max: 1, reference: 'reference', address, data: 'data' })
       let { success, signature, error } = await mps.signSelf(signMessage)
 
