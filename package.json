@@ -44,7 +44,7 @@
     "babel-jest": "^24.8.0",
     "jest": "^24.8.0",
     "jest-expect-message": "^1.0.2",
-    "jsdoc": "^3.6.1",
+    "jsdoc": "^3.6.3",
     "jsdoc-template": "git+https://github.com/oipwg/jsdoc-template.git",
     "standard": "^12.0.1"
   },
