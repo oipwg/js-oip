@@ -2,7 +2,7 @@ import axios from 'axios'
 import { sign } from 'bitcoinjs-message'
 import { ECPair } from 'bitcoinjs-lib'
 
-import { floMainnet, floTestnet } from '../../config'
+import { floMainnet, floTestnet, floRegtest } from '../../config'
 import FLOTransactionBuilder from '../flo/FLOTransactionBuilder'
 import { FLODATA_MAX_LEN } from '../flo/FLOTransaction'
 import Peer from '../flo/Peer'
@@ -104,7 +104,8 @@ class RPCWallet {
 
     // If the port is not set, default to Livenet (7313), otherwise if they passed the string "testnet" use the testnet port (17313)
     if (!this.options.rpc.port) {
-      if (this.options.network && this.options.network === 'testnet') { this.options.rpc.port = 17313 } else { this.options.rpc.port = 7313 }
+      if (this.options.network && (this.options.network === 'testnet' || this.options.network === 'regtest')) { this.options.rpc.port = 17313 }
+      else { this.options.rpc.port = 7313 }
     }
     // If host is not set, use localhost
     if (!this.options.rpc.host) { this.options.rpc.host = 'localhost' }
@@ -134,6 +135,8 @@ class RPCWallet {
       this.coin = floMainnet
     } else if (this.options.network === 'testnet') {
       this.coin = floTestnet
+    } else if (this.options.network === 'regtest') {
+      this.coin = floRegtest
     }
 
     // Store information about our tx chain and the previous tx output
