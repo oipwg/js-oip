@@ -94,11 +94,15 @@
     <article>
       <p><a href="https://badge.fury.io/js/js-oip"><img src="https://badge.fury.io/js/js-oip.svg" alt="npm version"></a>
 <a href="https://travis-ci.org/oipwg/js-oip"><img src="https://travis-ci.org/oipwg/js-oip.svg?branch=master" alt="Build Status"></a></p>
-<h1>js-oip</h1><p>The <code>js-oip</code> is a javascript module that allows you to easily interact with the Open Index using the Open Index Protocol.</p>
-<h2>Table of Contents</h2><ul>
+<h1>js-oip</h1>
+<p>The <code>js-oip</code> is a javascript module that allows you to easily interact with the Open Index using the Open Index Protocol.</p>
+<h2>Table of Contents</h2>
+<ul>
 <li><a href="https://github.com/oipwg/js-oip/#installation-instructions">Installation Instructions</a></li>
-<li><a href="https://github.com/oipwg/js-oip/#getting-started">Getting Started</a><ul>
-<li><a href="https://github.com/oipwg/js-oip/#formal-oip-definitions">Formal OIP Definitions</a><ul>
+<li><a href="https://github.com/oipwg/js-oip/#getting-started">Getting Started</a>
+<ul>
+<li><a href="https://github.com/oipwg/js-oip/#formal-oip-definitions">Formal OIP Definitions</a>
+<ul>
 <li><a href="https://github.com/oipwg/js-oip/#oip">OIP</a></li>
 <li><a href="https://github.com/oipwg/js-oip/#flodata">floData</a></li>
 <li><a href="https://github.com/oipwg/js-oip/#record">Record</a></li>
@@ -106,7 +110,8 @@
 <li><a href="https://github.com/oipwg/js-oip/#multipart">Multipart</a></li>
 </ul>
 </li>
-<li><a href="https://github.com/oipwg/js-oip/#using-the-http-api-to-interact-with-an-oip-daemon">Using the HTTP API to interact with an OIP Daemon</a><ul>
+<li><a href="https://github.com/oipwg/js-oip/#using-the-http-api-to-interact-with-an-oip-daemon">Using the HTTP API to interact with an OIP Daemon</a>
+<ul>
 <li><a href="https://github.com/oipwg/js-oip/#spawn-a-daemonapi">Spawn a DaemonApi</a></li>
 <li><a href="https://github.com/oipwg/js-oip/#get-an-artifact-record-from-the-open-index">Get an Artifact Record from the Open Index</a></li>
 <li><a href="https://github.com/oipwg/js-oip/#get-latest-artifact-records">Get latest Artifact Records</a></li>
@@ -117,7 +122,8 @@
 <li><a href="https://github.com/oipwg/js-oip/#get-flodata">Get floData</a></li>
 </ul>
 </li>
-<li><a href="https://github.com/oipwg/js-oip/#using-the-oip-api-to-publish-records-to-the-open-index">Using the OIP API to publish records to the Open Index</a><ul>
+<li><a href="https://github.com/oipwg/js-oip/#using-the-oip-api-to-publish-records-to-the-open-index">Using the OIP API to publish records to the Open Index</a>
+<ul>
 <li><a href="https://github.com/oipwg/js-oip/#importing-the-oip-api">Importing the OIP API</a></li>
 <li><a href="https://github.com/oipwg/js-oip/#publishing-an-artifact-record">Publishing an Artifact Record</a></li>
 <li><a href="https://github.com/oipwg/js-oip/#using-multipartx-and-mpsingle">Using MultipartX and MPSingle</a></li>
@@ -125,7 +131,8 @@
 </ul>
 </li>
 <li><a href="https://github.com/oipwg/js-oip/#adding-files-to-ipfs">Adding files to IPFS</a></li>
-<li><a href="https://github.com/oipwg/js-oip/#creating-an-artifact-record">Creating an Artifact Record</a><ul>
+<li><a href="https://github.com/oipwg/js-oip/#creating-an-artifact-record">Creating an Artifact Record</a>
+<ul>
 <li><a href="https://github.com/oipwg/js-oip/#using-the-artifact-decoder">Using the Artifact Decoder</a></li>
 </ul>
 </li>
@@ -136,104 +143,154 @@
 <li><a href="https://github.com/oipwg/js-oip/#api-documentation">API Documentation</a></li>
 <li><a href="https://github.com/oipwg/js-oip/#license">License</a></li>
 </ul>
-<h2>Installation Instructions</h2><p>Make sure you have the latest version of npm and nodejs installed. Instructions on installing the latest versions can be found on nodesource: <a href="https://github.com/nodesource/distributions#debinstall">nodesource</a>.</p>
+<h2>Installation Instructions</h2>
+<p>Make sure you have the latest version of npm and nodejs installed. Instructions on installing the latest versions can be found on nodesource: <a href="https://github.com/nodesource/distributions#debinstall">nodesource</a>.</p>
 <p>You can install the latest version by running the following <code>npm install</code> command.</p>
-<pre class="prettyprint source lang-bash"><code>$ npm install --save js-oip</code></pre><p>or with yarn.</p>
-<pre class="prettyprint source lang-bash"><code>$ yarn add js-oip</code></pre><h2>Getting Started</h2><p>This module is based entirely around the Open Index Protocol. To read in depth material about this protocol, please refer to the <a href="https://oip.wiki">OIP Wiki</a>.</p>
-<h3>Formal OIP Definitions</h3><p>It will be helpful to understand certain terms used throughout this module.</p>
-<h4>OIP</h4><p><em>&quot;The Open Index Protocol (OIP) is a specification for a worldwide database for decentralized publishing, distribution and payments. OIP uses distributed networking and peer-to-peer technology to operate with no central authority: content indexing, file storage/distribution and transaction management are carried out collectively by the network.&quot;</em></p>
-<h4>floData</h4><p>The Open Index 'sits' on top of the <a href="https://www.flo.cash/">FLO Blockchain</a> (formerly known as Florincoin). FLO is a fork of Litecoin, itelf a fork of Bitcoin. FLO operates in
+<pre class="prettyprint source lang-bash"><code>$ npm install --save js-oip
+</code></pre>
+<p>or with yarn.</p>
+<pre class="prettyprint source lang-bash"><code>$ yarn add js-oip
+</code></pre>
+<h2>Getting Started</h2>
+<p>This module is based entirely around the Open Index Protocol. To read in depth material about this protocol, please refer to the <a href="https://oip.wiki">OIP Wiki</a>.</p>
+<h3>Formal OIP Definitions</h3>
+<p>It will be helpful to understand certain terms used throughout this module.</p>
+<h4>OIP</h4>
+<p><em>&quot;The Open Index Protocol (OIP) is a specification for a worldwide database for decentralized publishing, distribution and payments. OIP uses distributed networking and peer-to-peer technology to operate with no central authority: content indexing, file storage/distribution and transaction management are carried out collectively by the network.&quot;</em></p>
+<h4>floData</h4>
+<p>The Open Index 'sits' on top of the <a href="https://www.flo.cash/">FLO Blockchain</a> (formerly known as Florincoin). FLO is a fork of Litecoin, itelf a fork of Bitcoin. FLO operates in
 almost the exact same way except for certain key elements, one of those being floData.</p>
 <p>floData is arbitrary text data appended to the end of a FLO transaction. Allowing up to 1040 bytes of data to be appended onto a transaction,
 the FLO chain is a perfect fit for the Open Index use case. We use this extra field as an immutable record holder of data. Using the OIP,
-users can serialize/format their data and push it to the blockchain where it remains unchangeable and decentralized. Using our 
+users can serialize/format their data and push it to the blockchain where it remains unchangeable and decentralized. Using our
 modules/libraries we can then retrieve this information from the blockchain and use it to populate our own apps.</p>
-<p>For a live example, check out <a href="https://livenet.flocha.in/tx/6ffbffd475c7eabe0acc664087ac56c13ac7c2084746619182b360c2f19e430e">this transaction</a> on the FLO chain. 
+<p>For a live example, check out <a href="https://livenet.flocha.in/tx/6ffbffd475c7eabe0acc664087ac56c13ac7c2084746619182b360c2f19e430e">this transaction</a> on the FLO chain.
 In the Details section at the bottom we see a floData field containing text that begins with 'oip-mp'. This is an example of data that was serialized with the Open Index Protocol
 and pushed to the chain. The '-mp' refers to the fact that its a multipart which we'll get to in a sec.</p>
-<h4>Record</h4><p>By our current definition a Record is a piece of data that was serialized with the OIP and pushed to the blockchain and indexed by an OIP Daemon.
+<h4>Record</h4>
+<p>By our current definition a Record is a piece of data that was serialized with the OIP and pushed to the blockchain and indexed by an OIP Daemon.
 The major types of Records will be: Artifact, Publisher, Platform, Influencer, and Autominers (&quot;spartanbots&quot;). Currently, only Artifact Records
 are in main implementation so that's all we'll focus on for now.</p>
-<h4>Artifact</h4><p>An Artifact [Record] is a piece of data published to the Index. It typically contains the IPFS locations to the raw data published (mp3, mp4, mpeg, mov, etc), 
+<h4>Artifact</h4>
+<p>An Artifact [Record] is a piece of data published to the Index. It typically contains the IPFS locations to the raw data published (mp3, mp4, mpeg, mov, etc),
 as well as the metadata about the raw data. Artifact types can range from image, movie, audio, text, etc. Any digital form of data can be published as an artifact.
-Think of an Artifact as a piece of content. Similiar to how one would upload a piece of content to YouTube, so one would 'upload' a piece of content to the Open Index, 
+Think of an Artifact as a piece of content. Similiar to how one would upload a piece of content to YouTube, so one would 'upload' a piece of content to the Open Index,
 but in our case, we use the word 'Artifact' instead of 'content'.</p>
-<h4>Multipart</h4><p>A Multipart is a term that relates to a Record on the FLO Chain that is split up into chunks or pieces. As stated previously, the FLO Chain allows
+<h4>Multipart</h4>
+<p>A Multipart is a term that relates to a Record on the FLO Chain that is split up into chunks or pieces. As stated previously, the FLO Chain allows
 for 1040 bytes of data to be appended to a transaction. If when a Record is being pushed to the chain is more than 1040 bytes, it gets split up into mulitple
 parts and gets sent as multiple transactions. We use a special serialization format for multiparts that allows us to easily retrieve all pieces of a Record back with ease.
-You can tell if a record was published in multiple parts if the floData in which it is contained in begins with 'oip-mp' (open index protocl multipart). </p>
-<h2>Using the HTTP API to interact with an OIP Daemon</h2><h3>Spawn a DaemonApi</h3><p>First we must import the DaemonApi from the module and then initialize it with the 'new' keyword. For these examples we will be using es6 import syntax.
-Also note the object deconstruction import. </p>
+You can tell if a record was published in multiple parts if the floData in which it is contained in begins with 'oip-mp' (open index protocl multipart).</p>
+<h2>Using the HTTP API to interact with an OIP Daemon</h2>
+<h3>Spawn a DaemonApi</h3>
+<p>First we must import the DaemonApi from the module and then initialize it with the 'new' keyword. For these examples we will be using es6 import syntax.
+Also note the object deconstruction import.</p>
 <pre class="prettyprint source lang-javascript"><code>import {DaemonApi} from 'js-oip'
 
-let api = new DaemonApi()</code></pre><h3>Spawn a DaemonApi with a custom OIPd server</h3><p>OIPd refers to an Open Index Protocol Daemon. Our current implementation is in golang and can be found <a href="https://github.com/bitspill/oip">here</a>.
+let api = new DaemonApi()
+</code></pre>
+<h3>Spawn a DaemonApi with a custom OIPd server</h3>
+<p>OIPd refers to an Open Index Protocol Daemon. Our current implementation is in golang and can be found <a href="https://github.com/oipwg/oip">here</a>.
 If for instance, we are running a daemon locally, we hit the endpoints it exposes by pointing our DaemonApi to the URL its running at.</p>
 <pre class="prettyprint source lang-javascript"><code>import {DaemonApi} from 'js-oip'
 
-let api = new DaemonApi('http://localhost:1606')</code></pre><p>Alternatively you can manually set the URL:</p>
+let api = new DaemonApi('http://localhost:1606')
+</code></pre>
+<p>Alternatively you can manually set the URL:</p>
 <pre class="prettyprint source lang-javascript"><code>let api = new DaemonApi()
 api.setUrl('http://localhost:1606')
-console.log(api.getUrl())</code></pre><h3>Get an Artifact Record from the Open Index</h3><p>Once we have our Daemon Api spawned, we can use its methods to retrieve data back from the Index. In this example we'll get back an Artifact Record.</p>
+console.log(api.getUrl())
+</code></pre>
+<h3>Get an Artifact Record from the Open Index</h3>
+<p>Once we have our Daemon Api spawned, we can use its methods to retrieve data back from the Index. In this example we'll get back an Artifact Record.</p>
 <pre class="prettyprint source lang-javascript"><code>import {DaemonApi} from 'js-oip'
 
 let api = new DaemonApi()
 let txid = 'cc9a11050acdc4401aec3f40c4cce123d99c0f2c27d4403ae4a2536ee38a4716'
 let {success, error, artifact} = await api.getArtifact(txid)
 console.log(artifact instanceof Artifact) //true
-console.log(artifact instanceof Record) //true</code></pre><h3>Get latest Artifact Records</h3><p>Similiarly, we can get back just the latest Artifact Records.</p>
+console.log(artifact instanceof Record) //true
+</code></pre>
+<h3>Get latest Artifact Records</h3>
+<p>Similiarly, we can get back just the latest Artifact Records.</p>
 <pre class="prettyprint source lang-javascript"><code>import {DaemonApi} from 'js-oip'
 
 let api = new DaemonApi()
 const limit = 50
-let {success, artifacts, error} = await api.getLatestArtifacts(limit)</code></pre><h3>Search Artifact Records</h3><p>Or we can search for Artifacts with a text query. In this example we are searching for Artifacts that contain the text: 'ryan' in it.</p>
+let {success, artifacts, error} = await api.getLatestArtifacts(limit)
+</code></pre>
+<h3>Search Artifact Records</h3>
+<p>Or we can search for Artifacts with a text query. In this example we are searching for Artifacts that contain the text: 'ryan' in it.</p>
 <pre class="prettyprint source lang-javascript"><code>import {DaemonApi} from 'js-oip'
 
 let api = new DaemonApi()
 let query = 'ryan'
-let {success, error, artifacts} = await api.searchArtifacts(query)</code></pre><h3>Create a complex search query</h3><p>We can even create complex search queries, searching on certain fields using AND, OR, or NOT. For examples on how 
-to do this please refer to the our <a href="https://oipwg.github.io/js-oip/global.html#queryObject">query documentation</a>. But essentially 
-what it comes out to is creating a query as such: <code>(artifact.type:&quot;research&quot; OR artifact.type:&quot;music&quot;) AND artifact.info.year:&quot;2017&quot;</code>. Plugging that into 
+let {success, error, artifacts} = await api.searchArtifacts(query)
+</code></pre>
+<h3>Create a complex search query</h3>
+<p>We can even create complex search queries, searching on certain fields using AND, OR, or NOT. For examples on how
+to do this please refer to the our <a href="https://oipwg.github.io/js-oip/global.html#queryObject">query documentation</a>. But essentially
+what it comes out to is creating a query as such: <code>(artifact.type:&quot;research&quot; OR artifact.type:&quot;music&quot;) AND artifact.info.year:&quot;2017&quot;</code>. Plugging that into
 DaemonApi.searchArtifact(query) will get you the results you can intuit from that complex query.</p>
-<h3>Get multiparts</h3><p>For a brief descrpition of what a multipart is, navigate <a href="https://github.com/oipwg/js-oip/#multipart">here</a>. 
+<h3>Get multiparts</h3>
+<p>For a brief descrpition of what a multipart is, navigate <a href="https://github.com/oipwg/js-oip/#multipart">here</a>.
 This first example gets all multiparts back by given the method the txid of the first multipart, known as the <code>reference</code> txid.</p>
 <pre class="prettyprint source lang-javascript"><code>import {DaemonApi} from 'js-oip'
 
 let api = new DaemonApi()
 let reference = '8c204c5f39'
-let {success, multiparts, error} = await api.getMultiparts(reference)</code></pre><p>Or alternatively, you can retrieve just a single multipart.</p>
+let {success, multiparts, error} = await api.getMultiparts(reference)
+</code></pre>
+<p>Or alternatively, you can retrieve just a single multipart.</p>
 <pre class="prettyprint source lang-javascript"><code>import {DaemonApi} from 'js-oip'
 
 let api = new DaemonApi()
 let txid = 'f550b9739e7453224075630d44cba24c31959af913aeb7cb364a563f96f54548'
-let {success, multipart, error} = await api.getMultipart(txid)</code></pre><h3>Search floData</h3><p><a href="https://github.com/bitspill/oip">The OIP Daemon</a> indexes <em>not only</em> data serialized using the OIP, but all floData found on the FLO Chain. 
+let {success, multipart, error} = await api.getMultipart(txid)
+</code></pre>
+<h3>Search floData</h3>
+<p><a href="https://github.com/oipwg/oip">The OIP Daemon</a> indexes <em>not only</em> data serialized using the OIP, but all floData found on the FLO Chain.
 Using this method we can search for text found within any TX's floData field. Again, Ryan seems like a cool guy so we'll search for his name.
 Note here how we're going to receive back transactions (<code>txs</code>) that contain the floData and not just the floData itself.</p>
 <pre class="prettyprint source lang-javascript"><code>import {DaemonApi} from 'js-oip'
 
 let api = new DaemonApi()
 let query = 'ryan'
-let {success, txs, error} = await api.searchFloData(q)</code></pre><h3>Get floData</h3><p>Or if we know the txid of the floData we want we can do:</p>
+let {success, txs, error} = await api.searchFloData(q)
+</code></pre>
+<h3>Get floData</h3>
+<p>Or if we know the txid of the floData we want we can do:</p>
 <pre class="prettyprint source lang-javascript"><code>import {DaemonApi} from 'js-oip'
 
 let api = new DaemonApi()
 let txid = '83452d60230d3c2c69000c2a79da79fe60cdf63012f946ac46e6df3409fb1fa7'
-let {success, tx, error} = await api.getFloData(txid)</code></pre><h2>Using the OIP API to publish records to the Open Index</h2><p>This is where this module gets kind of fun. We can use the OIP API to send data to the FLO Chain... where it stays... forever! =O Become immortal. Use the Open Index Protocol.</p>
-<h3>Importing the OIP API</h3><p>Two important things: This module accepts two arguments, a wif and a network. We take care of the network details so all
+let {success, tx, error} = await api.getFloData(txid)
+</code></pre>
+<h2>Using the OIP API to publish records to the Open Index</h2>
+<p>This is where this module gets kind of fun. We can use the OIP API to send data to the FLO Chain... where it stays... forever! =O Become immortal. Use the Open Index Protocol.</p>
+<h3>Importing the OIP API</h3>
+<p>Two important things: This module accepts two arguments, a wif and a network. We take care of the network details so all
 you have to do is specify whether you want mainnet (default) or testnet by giving it <code>'mainnet'</code> or <code>'testnet'</code> as a string argument. If nothing is passed
-it will default to mainnet. </p>
+it will default to mainnet.</p>
 <p>The WIF, or the first argument passed to the module, stands for <a href="https://en.bitcoin.it/wiki/Wallet_import_format">Wallet Import Format</a>. It's essentially your private key. It's needed to sign
-transactions and Records going out to the blockchain. If you need to generate a WIF, you can do so by generating an ECPair (Elliptic Curve Pair), generally known as a just a key-pair. 
+transactions and Records going out to the blockchain. If you need to generate a WIF, you can do so by generating an ECPair (Elliptic Curve Pair), generally known as a just a key-pair.
 This <a href="https://github.com/bitcoinjs/bitcoinjs-lib">module</a> allows you to easily to that - just make sure you pass in the correct network parameters (which you can get from one of our <a href="https://github.com/oipwg/js-oip/#importing-submodules">submodules</a>).</p>
 <pre class="prettyprint source lang-javascript"><code>import {OIP} from 'js-oip'
 
 let wif = '5HueCGU8rMjxEXxiPuD5BDk_SAMPLE_PRIVATE_KEY_DO_NOT_IMPORT_u4MkFqeZyd4dZ1jvhTVqvbTLvyTJ'
-let oip = new OIP(wif, 'testnet')</code></pre><h3>Publishing an Artifact Record</h3><p>is super easy!</p>
+let oip = new OIP(wif, 'testnet')
+</code></pre>
+<h3>Publishing an Artifact Record</h3>
+<p>is super easy!</p>
 <pre class="prettyprint source lang-javascript"><code>import {OIP} from 'js-oip'
 
 let artifact = new Artifact(someValidArtifactJSON)
 let results = await OIP.publish(artifact)
-//results can be either a txid or an array of transcation ids</code></pre><h3>Using MultipartX and MPSingle</h3><p>MultipartX is a Multipart Converter (X). It can take in either string data (a stringified Record) or an array of multiparts, known as
-Multipart Singles (MPSingle)s. Using MultipartX, you can take a large Record and convert it into valid parts that can be published independently to the blockchain. Or 
+//results can be either a txid or an array of transcation ids
+</code></pre>
+<h3>Using MultipartX and MPSingle</h3>
+<p>MultipartX is a Multipart Converter (X). It can take in either string data (a stringified Record) or an array of multiparts, known as
+Multipart Singles (MPSingle)s. Using MultipartX, you can take a large Record and convert it into valid parts that can be published independently to the blockchain. Or
 you can take MPSingles and form them back into the original Record (in JSON/string format).</p>
 <p>See how to <a href="https://github.com/oipwg/js-oip/#importing-submodules">import submodules</a> to import these two classes.</p>
 <p>Taken straight from one of our tests:</p>
@@ -248,7 +305,10 @@ let mps = results.multiparts
 
 let mpx = new MultipartX(mps)
 expect(mpx.toString()).toEqual(assembled)
-expect(mpx.getMultiparts().length).toEqual(2) //this would return an array of two MPSingle[s]</code></pre><h3>Publish using an RPC Wallet</h3><p>You can publish an Artifact using an RPC Wallet instead of the built in Web Explorer Wallet by including RPC settings as a third parameter when initializing OIP. After that, just use the OIP class like normal.</p>
+expect(mpx.getMultiparts().length).toEqual(2) //this would return an array of two MPSingle[s]
+</code></pre>
+<h3>Publish using an RPC Wallet</h3>
+<p>You can publish an Artifact using an RPC Wallet instead of the built in Web Explorer Wallet by including RPC settings as a third parameter when initializing OIP. After that, just use the OIP class like normal.</p>
 <pre class="prettyprint source lang-javascript"><code>import {OIP} from 'js-oip'
 
 let wif = '5HueCGU8rMjxEXxiPuD5BDk_SAMPLE_PRIVATE_KEY_DO_NOT_IMPORT_u4MkFqeZyd4dZ1jvhTVqvbTLvyTJ'
@@ -262,10 +322,13 @@ let oip = new OIP(wif, &quot;testnet&quot;, {
 })
 
 let artifact = new Artifact(someValidArtifactJSON)
-let results = await OIP.publish(artifact)</code></pre><h2>Adding files to IPFS</h2><p><a href="https://ipfs.io/">IPFS</a> is a peer-to-peer file transfer network (techincally a 'hypermedia protocol'). Anyway's we need IPFS for 
+let results = await OIP.publish(artifact)
+</code></pre>
+<h2>Adding files to IPFS</h2>
+<p><a href="https://ipfs.io/">IPFS</a> is a peer-to-peer file transfer network (techincally a 'hypermedia protocol'). Anyway's we need IPFS for
 the actual storage of raw data and they let us have that for free and in a decentralized manner. Perfect! To create a valid Artifact, you need to include
-the address or location of the files which your Record contains. Using the <code>ipfs-http-api</code>, we can add a file to IPFS and get back its location. 
-This module is just a wrapper around their API. </p>
+the address or location of the files which your Record contains. Using the <code>ipfs-http-api</code>, we can add a file to IPFS and get back its location.
+This module is just a wrapper around their API.</p>
 <p>To see what formats the IPFS API accepts files in, please see: <a href="https://github.com/ipfs/interface-ipfs-core/blob/master/SPEC/FILES.md#add">their documentation</a>.</p>
 <p>Other methods and classes for IPFS coming soon...</p>
 <pre class="prettyprint source lang-javascript"><code>import {IpfsHttpApi} from 'js-oip'
@@ -273,35 +336,63 @@ This module is just a wrapper around their API. </p>
 let file = ipfsFormattedFile
 
 let options = {
-    filename: &quot;someFileName.mp4&quot;,
-    filesize: 777,
-    host: 'ipfs-dev.alexandria.io',
-    port: 443,
-    protocol: 'https',
-    oip_auth: {
-        address:&quot;oNRs1nuR1vUAjWJwhMtxJPQoTFAm9MWz1G&quot;,
-        message:'1534278675842{&quot;oip042&quot;:{}}',
-        signature:&quot;Hw2iuomv/fhYYoKX8bNroVXmOvbh/e9gqZjP+I9kZymHD72mqtDw1qjN6/Qh4nhTDOHI8mkxbWtsaLSTuCkSihU=&quot;
-    }
+	filename: &quot;someFileName.mp4&quot;,
+	filesize: 777,
+	host: 'ipfs-dev.alexandria.io',
+	port: 443,
+	protocol: 'https',
+	oip_auth: {
+		address:&quot;oNRs1nuR1vUAjWJwhMtxJPQoTFAm9MWz1G&quot;,
+		message:'1534278675842{&quot;oip042&quot;:{}}',
+		signature:&quot;Hw2iuomv/fhYYoKX8bNroVXmOvbh/e9gqZjP+I9kZymHD72mqtDw1qjN6/Qh4nhTDOHI8mkxbWtsaLSTuCkSihU=&quot;
+	}
 }
 
 let fileUploader = new IpfsHttpApi(file, options)
-let response = await fileUploader.start()</code></pre><h2>Creating an Artifact Record</h2><p>To see the current spec, refer to <a href="https://oip.wiki/Message_protocol#Artifact_Publish">the wiki</a>.</p>
+let response = await fileUploader.start()
+</code></pre>
+<h2>Creating an Artifact Record</h2>
+<p>To see the current spec, refer to <a href="https://oip.wiki/Message_protocol#Artifact_Publish">the wiki</a>.</p>
 <pre class="prettyprint source lang-javascript"><code>import {Artifact} from 'js-oip/modules/records/artifact'
 
 let artifact = new Artifact(artifactJSON)
-let {success} = artifact.isValid())</code></pre><h3>Using the Artifact Decoder</h3><p>While it may be necessary to import the Artifact module directly, we recommend using an Artifact Decoder which will parse a JSON Artifact
+let {success} = artifact.isValid())
+</code></pre>
+<h3>Using the Artifact Decoder</h3>
+<p>While it may be necessary to import the Artifact module directly, we recommend using an Artifact Decoder which will parse a JSON Artifact
 and return an Artifact based on its type. Currently there are only a few unique types, but as more get added it will be a good habit to use this function
 instead of an Artifact constructor.</p>
 <pre class="prettyprint source lang-javascript"><code>import {decodeArtifact} from 'js-oip'
 
 let artifact = decodeArtifact(artifactJSON)
-let {success} = artifact.isValid()</code></pre><h2>Networks</h2><p>To import our current Coin Network modules. Use these to generate ECPairs and much more! Currently just contains the FLO and FLO_testnet networks.</p>
-<pre class="prettyprint source lang-javascript"><code>import {Networks} from 'js-oip'</code></pre><h2>Importing submodules</h2><p>To import Records or other modules directly.</p>
-<pre class="prettyprint source lang-javascript"><code>import * as modules from 'js-oip/modules'</code></pre><pre class="prettyprint source lang-javascript"><code>import {Records} from 'js-oip/modules'</code></pre><pre class="prettyprint source lang-javascript"><code>import {ArtifactFile} from 'js-oip/modules'</code></pre><pre class="prettyprint source lang-javascript"><code>import {MultipartX} from 'js-oip/modules'</code></pre><pre class="prettyprint source lang-javascript"><code>import {MPSingle} from 'js-oip/modules'</code></pre><pre class="prettyprint source lang-javascript"><code>import {Artifact} from 'js-oip/modules/records'</code></pre><pre class="prettyprint source lang-javascript"><code>import {Artifact} from 'js-oip/modules/records/artifact'</code></pre><p>You get the jist. You can import everything (*) from <code>js-oip/[folder]</code> where folder is <code>modules</code>, <code>decoders</code>, <code>core</code>, or <code>config</code> to see what else lies in this library.</p>
-<h2>API Documentation</h2><p>For further documentation on use cases and methods, please see the <a href="https://oipwg.github.io/js-oip/">official documentation page</a></p>
-<h2>License</h2><p>MIT License</p>
-<p>Copyright (c) 2018 Open Index Protocol Working Group</p>
+let {success} = artifact.isValid()
+</code></pre>
+<h2>Networks</h2>
+<p>To import our current Coin Network modules. Use these to generate ECPairs and much more! Currently just contains the FLO and FLO_testnet networks.</p>
+<pre class="prettyprint source lang-javascript"><code>import {Networks} from 'js-oip'
+</code></pre>
+<h2>Importing submodules</h2>
+<p>To import Records or other modules directly.</p>
+<pre class="prettyprint source lang-javascript"><code>import * as modules from 'js-oip/modules'
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>import {Records} from 'js-oip/modules'
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>import {ArtifactFile} from 'js-oip/modules'
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>import {MultipartX} from 'js-oip/modules'
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>import {MPSingle} from 'js-oip/modules'
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>import {Artifact} from 'js-oip/modules/records'
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>import {Artifact} from 'js-oip/modules/records/artifact'
+</code></pre>
+<p>You get the jist. You can import everything (*) from <code>js-oip/[folder]</code> where folder is <code>modules</code>, <code>decoders</code>, <code>core</code>, or <code>config</code> to see what else lies in this library.</p>
+<h2>API Documentation</h2>
+<p>For further documentation on use cases and methods, please see the <a href="https://oipwg.github.io/js-oip/">official documentation page</a></p>
+<h2>License</h2>
+<p>MIT License</p>
+<p>Copyright (c) 2019 Open Index Protocol Working Group</p>
 <p>Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the &quot;Software&quot;), to deal
 in the Software without restriction, including without limitation the rights
@@ -329,7 +420,7 @@ SOFTWARE.</p>
   <br class="clear">
 
   <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a>
   </footer>
 
   <script src="scripts/linenumber.js"></script>
