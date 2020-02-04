@@ -575,9 +575,9 @@ class RPCWallet {
     // Check if we have no transaction outputs available to spend from, and throw an error if so
     if (filtered.length === 0) { throw new Error('No previous unspent output available! Please send some FLO to ' + this.publicAddress + ' and then try again!') }
 
-    // Sort by confirmations ascending (lowest conf first)
+    // Sort by confirmations descending (highest conf first)
     filtered.sort((a, b) => {
-      return a.confirmations - b.confirmations
+      return b.confirmations - a.confirmations
     })
 
     // Return the filtered and sorted utxos
