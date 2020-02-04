@@ -104,7 +104,8 @@ class RPCWallet {
 
     // If the port is not set, default to Livenet (7313), otherwise if they passed the string "testnet" use the testnet port (17313)
     if (!this.options.rpc.port) {
-      if (this.options.network && (this.options.network === 'testnet' || this.options.network === 'regtest')) { this.options.rpc.port = 17313 }
+      if (this.options.network && this.options.network === 'testnet') { this.options.rpc.port = 17313 }
+      if (this.options.network && this.options.network === 'regtest') { this.options.rpc.port = 17413 }
       else { this.options.rpc.port = 7313 }
     }
     // If host is not set, use localhost
