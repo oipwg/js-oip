@@ -8,7 +8,6 @@ import { ExplorerWallet, RPCWallet } from '../../modules/wallets'
 import { FLODATA_MAX_LEN } from '../../modules/flo/FLOTransaction'
 import { floMainnet, floTestnet, floRegtest } from '../../config'
 
-
 /**
  * Class to publish, register, edit, transfer, and deactivate OIP Records
  */
