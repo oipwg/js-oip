@@ -1,6 +1,7 @@
 import { sign } from 'bitcoinjs-message'
 import { ECPair, payments, address } from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
+import Insight from 'insight-explorer'
 
 // This dependency was not found:
 //
@@ -64,6 +65,8 @@ class ExplorerWallet {
     let network = floMainnet
 
     if (options.network === 'testnet') { network = floTestnet }
+
+    if (options.explorerUrl) { network.explorer = new Insight(options.explorerUrl) }
 
     if (!isValidWIF(options.wif, network.network)) {
       return { success: false, message: 'Invalid WIF', wif: options.wif, network: network.network }
@@ -140,7 +143,7 @@ class ExplorerWallet {
   /**
    * Build a valid FLO Raw TX Hex containing floData
    * @param {String} [floData=""] - String data to send with tx. Defaults to an empty string
-   * @param {Object} [output] - custom output object
+   * @param {object|Array.<object>} [output] - Custom output object
    * @return {Promise<string>} hex - Returns raw transaction hex
    * @example
    * //if no output is designed, it will send 0.0001 * 1e8 FLO to yourself
@@ -219,7 +222,7 @@ class ExplorerWallet {
   /**
    * Builds the inputs and outputs to form a valid transaction hex for the FLO Chain
    * @param {string} [floData=""] - defaults to an empty string
-   * @param {Object} [output] - custom output object
+   * @param {object|Array.<object>} [outputs] - Output or an array of Outputs to send to
    * @return {Promise<Object>} Returns the selected inputs, outputs, and fee to use for the transaction hex
    * @example
    * //basic
@@ -234,7 +237,7 @@ class ExplorerWallet {
    * }
    * let {inputs, outputs, fee} = await oip.buildInputsAndOutputs("floData", output)
    */
-  async buildInputsAndOutputs (floData = '', output) {
+  async buildInputsAndOutputs (floData = '', outputs) {
     let utxo
     try {
       utxo = await this.getUTXO()
@@ -282,12 +285,15 @@ class ExplorerWallet {
 
     // console.log('formatted utxos', formattedUtxos)
 
-    output = output || {
+    outputs = outputs || {
       address: this.p2pkh,
       value: Math.floor(0.0001 * this.coin.satPerCoin)
     }
 
-    let targets = [output]
+    if (!Array.isArray(outputs)) {
+      outputs = [outputs]
+    }
+    let targets = outputs
 
     let extraBytes = this.coin.getExtraBytes({ floData })
     let extraBytesLength = extraBytes.length
@@ -518,7 +524,7 @@ class ExplorerWallet {
 
   /**
    * Create and send a FLO tx with a custom output
-   * @param {object} output
+   * @param {object|Array.<object>} outputs
    * @param {string} floData
    * @return {Promise<TXID>}
    * @example
@@ -529,7 +535,7 @@ class ExplorerWallet {
    * }
    * let txid = await oip.createAndSendFloTx(output, "to testnet")
    */
-  async sendTx (output, floData = '') {
+  async sendTx (outputs, floData = '') {
     if (floData && typeof floData !== 'string') {
       throw new Error(`Data must be of type string. Got: ${typeof floData}`)
     }
@@ -538,7 +544,7 @@ class ExplorerWallet {
     }
     let hex
     try {
-      hex = await this.buildTXHex(floData, output)
+      hex = await this.buildTXHex(floData, outputs)
     } catch (err) {
       throw new Error(`Error building TX Hex: ${err}`)
     }

@@ -1,0 +1,798 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+      modules/wallets/RPCWallet.js - Documentation
+  </title>
+
+  <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.3.0/highlightjs-line-numbers.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad();
+  </script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+  <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+  <link type="text/css" rel="stylesheet" href="styles/monokai-sublime.css">
+
+  
+
+  <!-- start Mixpanel -->
+  <script type="text/javascript">(function(e,a){if(!a.__SV){var b=window;try{var c,l,i,j=b.location,g=j.hash;c=function(a,b){return(l=a.match(RegExp(b+"=([^&]*)")))?l[1]:null};g&&c(g,"state")&&(i=JSON.parse(decodeURIComponent(c(g,"state"))),"mpeditor"===i.action&&(b.sessionStorage.setItem("_mpcehash",g),history.replaceState(i.desiredHash||"",e.title,j.pathname+j.search)))}catch(m){}var k,h;window.mixpanel=a;a._i=[];a.init=function(b,c,f){function e(b,a){var c=a.split(".");2==c.length&&(b=b[c[0]],a=c[1]);b[a]=function(){b.push([a].concat(Array.prototype.slice.call(arguments,
+  0)))}}var d=a;"undefined"!==typeof f?d=a[f]=[]:f="mixpanel";d.people=d.people||[];d.toString=function(b){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);b||(a+=" (stub)");return a};d.people.toString=function(){return d.toString(1)+".people (stub)"};k="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+  for(h=0;h<k.length;h++)e(d,k[h]);a._i.push([b,c,f])};a.__SV=1.2;b=e.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";c=e.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c)}})(document,window.mixpanel||[]);
+  mixpanel.init("1919205b2da72e4da3b9b6639b444d59");</script>
+  <!-- end Mixpanel -->
+</head>
+
+<body>
+  <svg style="display: none;">
+    <defs>
+      <symbol id="linkIcon" fill="#706d77" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0h24v24H0z" fill="none"/>
+          <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+  <label for="nav-trigger" class="navicon-button x">
+    <div class="navicon"></div>
+  </label>
+
+  <label for="nav-trigger" class="overlay"></label>
+
+  <div class="top-nav-wrapper">
+    <ul>
+      <li >
+        <a href="index.html">
+          
+            <svg fill="#6D6D6D" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+          
+          
+        </a>
+      </li>
+
+      
+
+    </ul>
+  </div>
+
+  <nav>
+    <h3 class="reference-title">
+      js-oip
+    </h3>
+
+    <h3>Classes</h3><ul><li id="Artifact-nav"><a href="Artifact.html">Artifact</a><ul class='methods'><li data-type="method" id="Artifact-getArtifactSubtype-nav"><a href="Artifact.html#.getArtifactSubtype">getArtifactSubtype</a></li><li data-type="method" id="Artifact-getArtifactType-nav"><a href="Artifact.html#.getArtifactType">getArtifactType</a></li><li data-type="method" id="Artifact-addFile-nav"><a href="Artifact.html#addFile">addFile</a></li><li data-type="method" id="Artifact-addSinglePaymentAddress-nav"><a href="Artifact.html#addSinglePaymentAddress">addSinglePaymentAddress</a></li><li data-type="method" id="Artifact-addTokenRule-nav"><a href="Artifact.html#addTokenRule">addTokenRule</a></li><li data-type="method" id="Artifact-createPreimage-nav"><a href="Artifact.html#createPreimage">createPreimage</a></li><li data-type="method" id="Artifact-fromJSON-nav"><a href="Artifact.html#fromJSON">fromJSON</a></li><li data-type="method" id="Artifact-getArtifact-nav"><a href="Artifact.html#getArtifact">getArtifact</a></li><li data-type="method" id="Artifact-getBlock-nav"><a href="Artifact.html#getBlock">getBlock</a></li><li data-type="method" id="Artifact-getBlockHash-nav"><a href="Artifact.html#getBlockHash">getBlockHash</a></li><li data-type="method" id="Artifact-getClassName-nav"><a href="Artifact.html#getClassName">getClassName</a></li><li data-type="method" id="Artifact-getDeactivated-nav"><a href="Artifact.html#getDeactivated">getDeactivated</a></li><li data-type="method" id="Artifact-getDescription-nav"><a href="Artifact.html#getDescription">getDescription</a></li><li data-type="method" id="Artifact-getDetail-nav"><a href="Artifact.html#getDetail">getDetail</a></li><li data-type="method" id="Artifact-getDuration-nav"><a href="Artifact.html#getDuration">getDuration</a></li><li data-type="method" id="Artifact-getEditVersion-nav"><a href="Artifact.html#getEditVersion">getEditVersion</a></li><li data-type="method" id="Artifact-getFiles-nav"><a href="Artifact.html#getFiles">getFiles</a></li><li data-type="method" id="Artifact-getLocation-nav"><a href="Artifact.html#getLocation">getLocation</a></li><li data-type="method" id="Artifact-getMaxDiscount-nav"><a href="Artifact.html#getMaxDiscount">getMaxDiscount</a></li><li data-type="method" id="Artifact-getMeta-nav"><a href="Artifact.html#getMeta">getMeta</a></li><li data-type="method" id="Artifact-getNetwork-nav"><a href="Artifact.html#getNetwork">getNetwork</a></li><li data-type="method" id="Artifact-getNSFW-nav"><a href="Artifact.html#getNSFW">getNSFW</a></li><li data-type="method" id="Artifact-getOriginalTXID-nav"><a href="Artifact.html#getOriginalTXID">getOriginalTXID</a></li><li data-type="method" id="Artifact-getPaymentAddress-nav"><a href="Artifact.html#getPaymentAddress">getPaymentAddress</a></li><li data-type="method" id="Artifact-getPaymentAddresses-nav"><a href="Artifact.html#getPaymentAddresses">getPaymentAddresses</a></li><li data-type="method" id="Artifact-getPaymentFiat-nav"><a href="Artifact.html#getPaymentFiat">getPaymentFiat</a></li><li data-type="method" id="Artifact-getPaymentScale-nav"><a href="Artifact.html#getPaymentScale">getPaymentScale</a></li><li data-type="method" id="Artifact-getPromoterCut-nav"><a href="Artifact.html#getPromoterCut">getPromoterCut</a></li><li data-type="method" id="Artifact-getPubAddress-nav"><a href="Artifact.html#getPubAddress">getPubAddress</a></li><li data-type="method" id="Artifact-getPublisherName-nav"><a href="Artifact.html#getPublisherName">getPublisherName</a></li><li data-type="method" id="Artifact-getRetailerCut-nav"><a href="Artifact.html#getRetailerCut">getRetailerCut</a></li><li data-type="method" id="Artifact-getSignature-nav"><a href="Artifact.html#getSignature">getSignature</a></li><li data-type="method" id="Artifact-getSubtype-nav"><a href="Artifact.html#getSubtype">getSubtype</a></li><li data-type="method" id="Artifact-getSuggestedTip-nav"><a href="Artifact.html#getSuggestedTip">getSuggestedTip</a></li><li data-type="method" id="Artifact-getSupportedCoins-nav"><a href="Artifact.html#getSupportedCoins">getSupportedCoins</a></li><li data-type="method" id="Artifact-getTags-nav"><a href="Artifact.html#getTags">getTags</a></li><li data-type="method" id="Artifact-getThumbnail-nav"><a href="Artifact.html#getThumbnail">getThumbnail</a></li><li data-type="method" id="Artifact-getTime-nav"><a href="Artifact.html#getTime">getTime</a></li><li data-type="method" id="Artifact-getTimestamp-nav"><a href="Artifact.html#getTimestamp">getTimestamp</a></li><li data-type="method" id="Artifact-getTipAddresses-nav"><a href="Artifact.html#getTipAddresses">getTipAddresses</a></li><li data-type="method" id="Artifact-getTitle-nav"><a href="Artifact.html#getTitle">getTitle</a></li><li data-type="method" id="Artifact-getTokenRules-nav"><a href="Artifact.html#getTokenRules">getTokenRules</a></li><li data-type="method" id="Artifact-getTXID-nav"><a href="Artifact.html#getTXID">getTXID</a></li><li data-type="method" id="Artifact-getType-nav"><a href="Artifact.html#getType">getType</a></li><li data-type="method" id="Artifact-getVersion-nav"><a href="Artifact.html#getVersion">getVersion</a></li><li data-type="method" id="Artifact-getYear-nav"><a href="Artifact.html#getYear">getYear</a></li><li data-type="method" id="Artifact-import041-nav"><a href="Artifact.html#import041">import041</a></li><li data-type="method" id="Artifact-import042-nav"><a href="Artifact.html#import042">import042</a></li><li data-type="method" id="Artifact-importAlexandriaMedia-nav"><a href="Artifact.html#importAlexandriaMedia">importAlexandriaMedia</a></li><li data-type="method" id="Artifact-isPaid-nav"><a href="Artifact.html#isPaid">isPaid</a></li><li data-type="method" id="Artifact-isValid-nav"><a href="Artifact.html#isValid">isValid</a></li><li data-type="method" id="Artifact-setBlock-nav"><a href="Artifact.html#setBlock">setBlock</a></li><li data-type="method" id="Artifact-setBlockHash-nav"><a href="Artifact.html#setBlockHash">setBlockHash</a></li><li data-type="method" id="Artifact-setDeactivated-nav"><a href="Artifact.html#setDeactivated">setDeactivated</a></li><li data-type="method" id="Artifact-setDescription-nav"><a href="Artifact.html#setDescription">setDescription</a></li><li data-type="method" id="Artifact-setDetail-nav"><a href="Artifact.html#setDetail">setDetail</a></li><li data-type="method" id="Artifact-setEditVersion-nav"><a href="Artifact.html#setEditVersion">setEditVersion</a></li><li data-type="method" id="Artifact-setLocation-nav"><a href="Artifact.html#setLocation">setLocation</a></li><li data-type="method" id="Artifact-setMaxDiscount-nav"><a href="Artifact.html#setMaxDiscount">setMaxDiscount</a></li><li data-type="method" id="Artifact-setNetwork-nav"><a href="Artifact.html#setNetwork">setNetwork</a></li><li data-type="method" id="Artifact-setNSFW-nav"><a href="Artifact.html#setNSFW">setNSFW</a></li><li data-type="method" id="Artifact-setOriginalTXID-nav"><a href="Artifact.html#setOriginalTXID">setOriginalTXID</a></li><li data-type="method" id="Artifact-setPaymentFiat-nav"><a href="Artifact.html#setPaymentFiat">setPaymentFiat</a></li><li data-type="method" id="Artifact-setPaymentScale-nav"><a href="Artifact.html#setPaymentScale">setPaymentScale</a></li><li data-type="method" id="Artifact-setPromoterCut-nav"><a href="Artifact.html#setPromoterCut">setPromoterCut</a></li><li data-type="method" id="Artifact-setPubAddress-nav"><a href="Artifact.html#setPubAddress">setPubAddress</a></li><li data-type="method" id="Artifact-setPublisherName-nav"><a href="Artifact.html#setPublisherName">setPublisherName</a></li><li data-type="method" id="Artifact-setRetailerCut-nav"><a href="Artifact.html#setRetailerCut">setRetailerCut</a></li><li data-type="method" id="Artifact-setSignature-nav"><a href="Artifact.html#setSignature">setSignature</a></li><li data-type="method" id="Artifact-setSubtype-nav"><a href="Artifact.html#setSubtype">setSubtype</a></li><li data-type="method" id="Artifact-setSuggestedTip-nav"><a href="Artifact.html#setSuggestedTip">setSuggestedTip</a></li><li data-type="method" id="Artifact-setTags-nav"><a href="Artifact.html#setTags">setTags</a></li><li data-type="method" id="Artifact-setTime-nav"><a href="Artifact.html#setTime">setTime</a></li><li data-type="method" id="Artifact-setTimestamp-nav"><a href="Artifact.html#setTimestamp">setTimestamp</a></li><li data-type="method" id="Artifact-setTitle-nav"><a href="Artifact.html#setTitle">setTitle</a></li><li data-type="method" id="Artifact-setTXID-nav"><a href="Artifact.html#setTXID">setTXID</a></li><li data-type="method" id="Artifact-setType-nav"><a href="Artifact.html#setType">setType</a></li><li data-type="method" id="Artifact-setVersion-nav"><a href="Artifact.html#setVersion">setVersion</a></li><li data-type="method" id="Artifact-setYear-nav"><a href="Artifact.html#setYear">setYear</a></li><li data-type="method" id="Artifact-toJSON-nav"><a href="Artifact.html#toJSON">toJSON</a></li><li data-type="method" id="Artifact-toString-nav"><a href="Artifact.html#toString">toString</a></li></ul></li><li id="DaemonApi-nav"><a href="DaemonApi.html">DaemonApi</a><ul class='methods'><li data-type="method" id="DaemonApi-createQs-nav"><a href="DaemonApi.html#createQs">createQs</a></li><li data-type="method" id="DaemonApi-get041Artifact-nav"><a href="DaemonApi.html#get041Artifact">get041Artifact</a></li><li data-type="method" id="DaemonApi-get041Artifacts-nav"><a href="DaemonApi.html#get041Artifacts">get041Artifacts</a></li><li data-type="method" id="DaemonApi-getAlexandriaMediaArtifact-nav"><a href="DaemonApi.html#getAlexandriaMediaArtifact">getAlexandriaMediaArtifact</a></li><li data-type="method" id="DaemonApi-getAlexandriaMediaArtifacts-nav"><a href="DaemonApi.html#getAlexandriaMediaArtifacts">getAlexandriaMediaArtifacts</a></li><li data-type="method" id="DaemonApi-getArtifact-nav"><a href="DaemonApi.html#getArtifact">getArtifact</a></li><li data-type="method" id="DaemonApi-getArtifacts-nav"><a href="DaemonApi.html#getArtifacts">getArtifacts</a></li><li data-type="method" id="DaemonApi-getFloData-nav"><a href="DaemonApi.html#getFloData">getFloData</a></li><li data-type="method" id="DaemonApi-getHistorianData-nav"><a href="DaemonApi.html#getHistorianData">getHistorianData</a></li><li data-type="method" id="DaemonApi-getLastestHistorianData-nav"><a href="DaemonApi.html#getLastestHistorianData">getLastestHistorianData</a></li><li data-type="method" id="DaemonApi-getLatest041Artifacts-nav"><a href="DaemonApi.html#getLatest041Artifacts">getLatest041Artifacts</a></li><li data-type="method" id="DaemonApi-getLatest042Artifacts-nav"><a href="DaemonApi.html#getLatest042Artifacts">getLatest042Artifacts</a></li><li data-type="method" id="DaemonApi-getLatestAlexandriaMediaArtifacts-nav"><a href="DaemonApi.html#getLatestAlexandriaMediaArtifacts">getLatestAlexandriaMediaArtifacts</a></li><li data-type="method" id="DaemonApi-getLatestArtifacts-nav"><a href="DaemonApi.html#getLatestArtifacts">getLatestArtifacts</a></li><li data-type="method" id="DaemonApi-getLatestOip5Records-nav"><a href="DaemonApi.html#getLatestOip5Records">getLatestOip5Records</a></li><li data-type="method" id="DaemonApi-getLatestOip5Templates-nav"><a href="DaemonApi.html#getLatestOip5Templates">getLatestOip5Templates</a></li><li data-type="method" id="DaemonApi-getMultipart-nav"><a href="DaemonApi.html#getMultipart">getMultipart</a></li><li data-type="method" id="DaemonApi-getMultiparts-nav"><a href="DaemonApi.html#getMultiparts">getMultiparts</a></li><li data-type="method" id="DaemonApi-getNetwork-nav"><a href="DaemonApi.html#getNetwork">getNetwork</a></li><li data-type="method" id="DaemonApi-getOip5Mapping-nav"><a href="DaemonApi.html#getOip5Mapping">getOip5Mapping</a></li><li data-type="method" id="DaemonApi-getOip5Record-nav"><a href="DaemonApi.html#getOip5Record">getOip5Record</a></li><li data-type="method" id="DaemonApi-getOip5Records-nav"><a href="DaemonApi.html#getOip5Records">getOip5Records</a></li><li data-type="method" id="DaemonApi-getOip5Template-nav"><a href="DaemonApi.html#getOip5Template">getOip5Template</a></li><li data-type="method" id="DaemonApi-getOip5Templates-nav"><a href="DaemonApi.html#getOip5Templates">getOip5Templates</a></li><li data-type="method" id="DaemonApi-getRecord-nav"><a href="DaemonApi.html#getRecord">getRecord</a></li><li data-type="method" id="DaemonApi-getSyncStatus-nav"><a href="DaemonApi.html#getSyncStatus">getSyncStatus</a></li><li data-type="method" id="DaemonApi-getUrl-nav"><a href="DaemonApi.html#getUrl">getUrl</a></li><li data-type="method" id="DaemonApi-getVersion-nav"><a href="DaemonApi.html#getVersion">getVersion</a></li><li data-type="method" id="DaemonApi-searchArtifacts-nav"><a href="DaemonApi.html#searchArtifacts">searchArtifacts</a></li><li data-type="method" id="DaemonApi-searchArtifactsByType-nav"><a href="DaemonApi.html#searchArtifactsByType">searchArtifactsByType</a></li><li data-type="method" id="DaemonApi-searchFloData-nav"><a href="DaemonApi.html#searchFloData">searchFloData</a></li><li data-type="method" id="DaemonApi-searchOip5Records-nav"><a href="DaemonApi.html#searchOip5Records">searchOip5Records</a></li><li data-type="method" id="DaemonApi-searchOip5Templates-nav"><a href="DaemonApi.html#searchOip5Templates">searchOip5Templates</a></li><li data-type="method" id="DaemonApi-setUrl-nav"><a href="DaemonApi.html#setUrl">setUrl</a></li></ul></li><li id="ExplorerWallet-nav"><a href="ExplorerWallet.html">ExplorerWallet</a><ul class='methods'><li data-type="method" id="ExplorerWallet-addSpentTransaction-nav"><a href="ExplorerWallet.html#addSpentTransaction">addSpentTransaction</a></li><li data-type="method" id="ExplorerWallet-broadcastRawHex-nav"><a href="ExplorerWallet.html#broadcastRawHex">broadcastRawHex</a></li><li data-type="method" id="ExplorerWallet-buildInputsAndOutputs-nav"><a href="ExplorerWallet.html#buildInputsAndOutputs">buildInputsAndOutputs</a></li><li data-type="method" id="ExplorerWallet-buildTXHex-nav"><a href="ExplorerWallet.html#buildTXHex">buildTXHex</a></li><li data-type="method" id="ExplorerWallet-createManualUtxos-nav"><a href="ExplorerWallet.html#createManualUtxos">createManualUtxos</a></li><li data-type="method" id="ExplorerWallet-deleteHistory-nav"><a href="ExplorerWallet.html#deleteHistory">deleteHistory</a></li><li data-type="method" id="ExplorerWallet-deserialize-nav"><a href="ExplorerWallet.html#deserialize">deserialize</a></li><li data-type="method" id="ExplorerWallet-getCoinInfo-nav"><a href="ExplorerWallet.html#getCoinInfo">getCoinInfo</a></li><li data-type="method" id="ExplorerWallet-getECPair-nav"><a href="ExplorerWallet.html#getECPair">getECPair</a></li><li data-type="method" id="ExplorerWallet-getNetwork-nav"><a href="ExplorerWallet.html#getNetwork">getNetwork</a></li><li data-type="method" id="ExplorerWallet-getPubAddress-nav"><a href="ExplorerWallet.html#getPubAddress">getPubAddress</a></li><li data-type="method" id="ExplorerWallet-getSpentTransactions-nav"><a href="ExplorerWallet.html#getSpentTransactions">getSpentTransactions</a></li><li data-type="method" id="ExplorerWallet-getTxHistory-nav"><a href="ExplorerWallet.html#getTxHistory">getTxHistory</a></li><li data-type="method" id="ExplorerWallet-getUTXO-nav"><a href="ExplorerWallet.html#getUTXO">getUTXO</a></li><li data-type="method" id="ExplorerWallet-removeSpent-nav"><a href="ExplorerWallet.html#removeSpent">removeSpent</a></li><li data-type="method" id="ExplorerWallet-save-nav"><a href="ExplorerWallet.html#save">save</a></li><li data-type="method" id="ExplorerWallet-sendDataToChain-nav"><a href="ExplorerWallet.html#sendDataToChain">sendDataToChain</a></li><li data-type="method" id="ExplorerWallet-sendTx-nav"><a href="ExplorerWallet.html#sendTx">sendTx</a></li><li data-type="method" id="ExplorerWallet-serialize-nav"><a href="ExplorerWallet.html#serialize">serialize</a></li></ul></li><li id="IpfsHttpApi-nav"><a href="IpfsHttpApi.html">IpfsHttpApi</a><ul class='methods'><li data-type="method" id="IpfsHttpApi-onProgress-nav"><a href="IpfsHttpApi.html#onProgress">onProgress</a></li><li data-type="method" id="IpfsHttpApi-start-nav"><a href="IpfsHttpApi.html#start">start</a></li></ul></li><li id="IpfsXml-nav"><a href="IpfsXml.html">IpfsXml</a><ul class='methods'><li data-type="method" id="IpfsXml-onProgress-nav"><a href="IpfsXml.html#onProgress">onProgress</a></li><li data-type="method" id="IpfsXml-start-nav"><a href="IpfsXml.html#start">start</a></li></ul></li><li id="MPSingle-nav"><a href="MPSingle.html">MPSingle</a><ul class='methods'><li data-type="method" id="MPSingle-fromInput-nav"><a href="MPSingle.html#fromInput">fromInput</a></li><li data-type="method" id="MPSingle-getAddress-nav"><a href="MPSingle.html#getAddress">getAddress</a></li><li data-type="method" id="MPSingle-getAssembled-nav"><a href="MPSingle.html#getAssembled">getAssembled</a></li><li data-type="method" id="MPSingle-getBlock-nav"><a href="MPSingle.html#getBlock">getBlock</a></li><li data-type="method" id="MPSingle-getBlockHash-nav"><a href="MPSingle.html#getBlockHash">getBlockHash</a></li><li data-type="method" id="MPSingle-getData-nav"><a href="MPSingle.html#getData">getData</a></li><li data-type="method" id="MPSingle-getMax-nav"><a href="MPSingle.html#getMax">getMax</a></li><li data-type="method" id="MPSingle-getMeta-nav"><a href="MPSingle.html#getMeta">getMeta</a></li><li data-type="method" id="MPSingle-getPart-nav"><a href="MPSingle.html#getPart">getPart</a></li><li data-type="method" id="MPSingle-getReference-nav"><a href="MPSingle.html#getReference">getReference</a></li><li data-type="method" id="MPSingle-getSignature-nav"><a href="MPSingle.html#getSignature">getSignature</a></li><li data-type="method" id="MPSingle-getSignatureData-nav"><a href="MPSingle.html#getSignatureData">getSignatureData</a></li><li data-type="method" id="MPSingle-getTXID-nav"><a href="MPSingle.html#getTXID">getTXID</a></li><li data-type="method" id="MPSingle-hasValidSignature-nav"><a href="MPSingle.html#hasValidSignature">hasValidSignature</a></li><li data-type="method" id="MPSingle-isComplete-nav"><a href="MPSingle.html#isComplete">isComplete</a></li><li data-type="method" id="MPSingle-isStale-nav"><a href="MPSingle.html#isStale">isStale</a></li><li data-type="method" id="MPSingle-setAddress-nav"><a href="MPSingle.html#setAddress">setAddress</a></li><li data-type="method" id="MPSingle-setAssembled-nav"><a href="MPSingle.html#setAssembled">setAssembled</a></li><li data-type="method" id="MPSingle-setBlock-nav"><a href="MPSingle.html#setBlock">setBlock</a></li><li data-type="method" id="MPSingle-setBlockHash-nav"><a href="MPSingle.html#setBlockHash">setBlockHash</a></li><li data-type="method" id="MPSingle-setData-nav"><a href="MPSingle.html#setData">setData</a></li><li data-type="method" id="MPSingle-setIsComplete-nav"><a href="MPSingle.html#setIsComplete">setIsComplete</a></li><li data-type="method" id="MPSingle-setIsStale-nav"><a href="MPSingle.html#setIsStale">setIsStale</a></li><li data-type="method" id="MPSingle-setMax-nav"><a href="MPSingle.html#setMax">setMax</a></li><li data-type="method" id="MPSingle-setPart-nav"><a href="MPSingle.html#setPart">setPart</a></li><li data-type="method" id="MPSingle-setReference-nav"><a href="MPSingle.html#setReference">setReference</a></li><li data-type="method" id="MPSingle-setSignature-nav"><a href="MPSingle.html#setSignature">setSignature</a></li><li data-type="method" id="MPSingle-setTXID-nav"><a href="MPSingle.html#setTXID">setTXID</a></li><li data-type="method" id="MPSingle-signSelf-nav"><a href="MPSingle.html#signSelf">signSelf</a></li><li data-type="method" id="MPSingle-toString-nav"><a href="MPSingle.html#toString">toString</a></li></ul></li><li id="MultipartX-nav"><a href="MultipartX.html">MultipartX</a><ul class='methods'><li data-type="method" id="MultipartX-fromMultiparts-nav"><a href="MultipartX.html#fromMultiparts">fromMultiparts</a></li><li data-type="method" id="MultipartX-fromString-nav"><a href="MultipartX.html#fromString">fromString</a></li><li data-type="method" id="MultipartX-getMultiparts-nav"><a href="MultipartX.html#getMultiparts">getMultiparts</a></li><li data-type="method" id="MultipartX-toString-nav"><a href="MultipartX.html#toString">toString</a></li></ul></li><li id="OIP-nav"><a href="OIP.html">OIP</a><ul class='methods'><li data-type="method" id="OIP-broadcastRecord-nav"><a href="OIP.html#broadcastRecord">broadcastRecord</a></li><li data-type="method" id="OIP-edit-nav"><a href="OIP.html#edit">edit</a></li><li data-type="method" id="OIP-publish-nav"><a href="OIP.html#publish">publish</a></li><li data-type="method" id="OIP-publishMultiparts-nav"><a href="OIP.html#publishMultiparts">publishMultiparts</a></li><li data-type="method" id="OIP-signRecord-nav"><a href="OIP.html#signRecord">signRecord</a></li></ul></li><li id="Peer-nav"><a href="Peer.html">Peer</a><ul class='methods'><li data-type="method" id="Peer-announceTX-nav"><a href="Peer.html#announceTX">announceTX</a></li><li data-type="method" id="Peer-connect-nav"><a href="Peer.html#connect">connect</a></li><li data-type="method" id="Peer-handleGetData-nav"><a href="Peer.html#handleGetData">handleGetData</a></li><li data-type="method" id="Peer-onPacket-nav"><a href="Peer.html#onPacket">onPacket</a></li></ul></li><li id="RPCWallet-nav"><a href="RPCWallet.html">RPCWallet</a><ul class='methods'><li data-type="method" id="RPCWallet-addAncestor-nav"><a href="RPCWallet.html#addAncestor">addAncestor</a></li><li data-type="method" id="RPCWallet-checkAncestorCount-nav"><a href="RPCWallet.html#checkAncestorCount">checkAncestorCount</a></li><li data-type="method" id="RPCWallet-connectToPeers-nav"><a href="RPCWallet.html#connectToPeers">connectToPeers</a></li><li data-type="method" id="RPCWallet-createAndSignTransaction-nav"><a href="RPCWallet.html#createAndSignTransaction">createAndSignTransaction</a></li><li data-type="method" id="RPCWallet-destroyPeers-nav"><a href="RPCWallet.html#destroyPeers">destroyPeers</a></li><li data-type="method" id="RPCWallet-getUTXOs-nav"><a href="RPCWallet.html#getUTXOs">getUTXOs</a></li><li data-type="method" id="RPCWallet-initialize-nav"><a href="RPCWallet.html#initialize">initialize</a></li><li data-type="method" id="RPCWallet-rebroadcastTransactions-nav"><a href="RPCWallet.html#rebroadcastTransactions">rebroadcastTransactions</a></li><li data-type="method" id="RPCWallet-rpcRequest-nav"><a href="RPCWallet.html#rpcRequest">rpcRequest</a></li><li data-type="method" id="RPCWallet-sendDataToChain-nav"><a href="RPCWallet.html#sendDataToChain">sendDataToChain</a></li><li data-type="method" id="RPCWallet-sendTX-nav"><a href="RPCWallet.html#sendTX">sendTX</a></li><li data-type="method" id="RPCWallet-signMessage-nav"><a href="RPCWallet.html#signMessage">signMessage</a></li><li data-type="method" id="RPCWallet-updateAncestorStatus-nav"><a href="RPCWallet.html#updateAncestorStatus">updateAncestorStatus</a></li></ul></li></ul><h3 id="global-nav">Global</h3><ul><li><a href="global.html#createPatch">createPatch</a></li><li><a href="global.html#createPatchedRecord">createPatchedRecord</a></li><li><a href="global.html#createRFC6902Patch">createRFC6902Patch</a></li><li><a href="global.html#decodeArtifact">decodeArtifact</a></li><li><a href="global.html#fromJSON">fromJSON</a></li><li><a href="global.html#getClassName">getClassName</a></li><li><a href="global.html#isValidWIF">isValidWIF</a></li><li><a href="global.html#signSelf">signSelf</a></li><li><a href="global.html#squashRFC6902Patch">squashRFC6902Patch</a></li><li><a href="global.html#toJSON">toJSON</a></li><li><a href="global.html#unsquashRFC6902Patch">unsquashRFC6902Patch</a></li></ul>
+  </nav>
+
+  <div id="main">
+    
+      <h1 class="page-title">
+        modules/wallets/RPCWallet.js
+      </h1>
+    
+
+    
+      
+
+<section>
+  <article>
+    <pre class="prettyprint source linenums"><code>import axios from 'axios'
+import { sign } from 'bitcoinjs-message'
+import { ECPair } from 'bitcoinjs-lib'
+
+import { floMainnet, floTestnet } from '../../config'
+import FLOTransactionBuilder from '../flo/FLOTransactionBuilder'
+import { FLODATA_MAX_LEN } from '../flo/FLOTransaction'
+import Peer from '../flo/Peer'
+import { varIntBuffer } from '../../util'
+
+// Helper const
+const ONE_MB = 1000000
+const ONE_SECOND = 1000
+const ONE_MINUTE = 60 * ONE_SECOND
+
+// 1 satoshis per byte (1000 satoshi per kb) (100 million satoshi in 1 FLO)
+const TX_FEE_PER_BYTE = 0.00000001
+// Average size of tx data (without floData) to calculate min txFee
+const TX_AVG_BYTE_SIZE = 200
+const SAT_PER_FLO = 100000000
+
+// The minimum amount a utxo is allowed to be for us to use
+const MIN_UTXO_AMOUNT = 0.0001
+
+// Prevent chaining over ancestor limit
+const MAX_MEMPOOL_ANCESTORS = 1250
+const MAX_MEMPOOL_ANCESTOR_SIZE = 1.75 * ONE_MB
+
+// Timer lengths used to track and fix the Ancestor chain
+const UPDATE_ANCESTOR_STATUS = 1 * ONE_SECOND
+const REPAIR_ANCESTORS_AFTER = 1 * ONE_MINUTE
+const PEER_CONNECT_LENGTH = 2 * ONE_SECOND
+const REBROADCAST_LENGTH = 10 * ONE_SECOND
+const REPAIR_MIN_TX = 100
+
+// List of all Wallet-Only RPC Methods
+const WALLET_RPC_METHODS = [
+  'selectwallet',
+  'getwalletinfo',
+  'fundrawtransaction',
+  'resendwallettransactions',
+  'abandontransaction',
+  'addmultisigaddress',
+  'addwitnessaddress',
+  'backupwallet',
+  'dumpprivkey',
+  'dumpwallet',
+  'encryptwallet',
+  'getaccountaddress',
+  'getaccount',
+  'getaddressesbyaccount',
+  'getbalance',
+  'getnewaddress',
+  'getrawchangeaddress',
+  'getreceivedbyaccount',
+  'getreceivedbyaddress',
+  'gettransaction',
+  'getunconfirmedbalance',
+  'importprivkey',
+  'importwallet',
+  'importaddress',
+  'importprunedfunds',
+  'importpubkey',
+  'keypoolrefill',
+  'listaccounts',
+  'listaddressgroupings',
+  'lockunspent',
+  'listlockunspent',
+  'listreceivedbyaccount',
+  'listreceivedbyaddress',
+  'listsinceblock',
+  'listtransactions',
+  'listunspent',
+  'move',
+  'sendfrom',
+  'sendmany',
+  'sendtoaddress',
+  'setaccount',
+  'settxfee',
+  'signmessage',
+  'walletlock',
+  'walletpassphrasechange',
+  'walletpassphrase',
+  'removeprunedfunds'
+]
+
+/**
+ * Easily interact with an RPC Wallet to send Bulk transactions extremely quickly in series
+ */
+class RPCWallet {
+  constructor (options) {
+    // Store options for later
+    this.options = options || {}
+
+    // Set default network to livenet if unset
+    if (!this.options.network) { this.options.network = 'livenet' }
+
+    // Make sure we have connection to an RPC wallet
+    if (!this.options.rpc) { throw new Error("RPC options ('options.rpc') are required with an RPC wallet!") }
+
+    // Make sure we are being passed a public and private key pair
+    if (!this.options.wif) { throw new Error('`wif` (a Private Key) is a required option in order to use RPC Wallet!') }
+    if (!this.options.publicAddress) { throw new Error('`publicAddress` (the Public Address for the `wif`) is a required option in order to use RPC Wallet!') }
+
+    // If the port is not set, default to Livenet (7313), otherwise if they passed the string "testnet" use the testnet port (17313)
+    if (!this.options.rpc.port) {
+      if (this.options.network &amp;&amp; this.options.network === 'testnet') { this.options.rpc.port = 17313 } else { this.options.rpc.port = 7313 }
+    }
+    // If host is not set, use localhost
+    if (!this.options.rpc.host) { this.options.rpc.host = 'localhost' }
+
+    // Create the RPC connection using Axios
+    this.rpc = axios.create({
+      auth: {
+        username: this.options.rpc.username,
+        password: this.options.rpc.password
+      },
+      validateStatus: function (status) {
+        if ([400, 401, 402, 403, 404].includes(status)) { return false }
+
+        return true
+      }
+    })
+    // Default to not being an fcoin RPC node
+    this.fcoinRPC = false
+
+    // Store the Private Key and the Public Key
+    this.wif = this.options.wif
+    this.publicAddress = this.options.publicAddress
+    this.importPrivateKey = this.options.importPrivateKey || true
+
+    // Store the "coin" network we should use
+    if (this.options.network === 'livenet' || this.options.network === 'mainnet' || this.options.network === 'main') {
+      this.coin = floMainnet
+    } else if (this.options.network === 'testnet') {
+      this.coin = floTestnet
+    }
+
+    // Store information about our tx chain and the previous tx output
+    this.unconfirmedTransactions = []
+    this.previousTXOutput = undefined
+
+    // Initialize our initial peer array
+    this.peers = []
+
+    // Variables to count utxo ancestors (maximum number of unconfirmed transactions you can chain)
+    this.currentAncestorCount = 0
+    this.currentAncestorSize = 0
+
+    // Repair mode tracker
+    this.repairMode = false
+  }
+
+  /**
+   * Make any RPC request
+   * @param  {String} method - The RPC method you wish to call
+   * @param  {Array} parameters - The parameters to pass to with RPC method you are calling
+   * @return {Object} Returns the data response
+   */
+  async rpcRequest (method, parameters) {
+    // Verify we have all the parameters we need
+    if (!method) { throw new Error("rpcRequest parameter 'method' is Required!") }
+    if (!parameters) { throw new Error("rpcRequest parameter 'parameters' is Required!") }
+
+    // Perform the RPC request using Axios
+    let rpcRequest
+    try {
+      let rpcPort = this.options.rpc.port
+      // If we are using an fcoin RPC, the wallet RPC runs on a different port (7315/17315 instead of 7313/17313)
+      if (WALLET_RPC_METHODS.includes(method) &amp;&amp; this.fcoinRPC) { rpcPort += 2 }
+
+      rpcRequest = await this.rpc.post(`http://${this.options.rpc.host}:${rpcPort}/`, { 'jsonrpc': '2.0', 'id': 1, 'method': method, 'params': parameters })
+
+      // If we have an error with the Method not being found, it is likely an issue with the RPC server being fcoin.
+      if (rpcRequest.data &amp;&amp; rpcRequest.data.error &amp;&amp; rpcRequest.data.error.message &amp;&amp; rpcRequest.data.error.message.includes('Method not found')) {
+        this.fcoinRPC = true
+        return this.rpcRequest(method, parameters)
+      }
+    } catch (e) {
+      // Throw if there was some weird error for some reason.
+      console.log("[RPC Wallet] Unable to perform RPC request, retrying! Method: '" + method + "' - Params: '" + JSON.stringify(parameters) + "' | RPC settings: " + JSON.stringify(this.options.rpc) + ' | Thrown Error: ' + e)
+      // Sleep 1 second
+      await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, 1000) })
+      // Retry RPC Request recursively
+      return this.rpcRequest(method, parameters)
+    }
+
+    // Remove the `id` field from the response, since we do not care about it
+    return {
+      result: rpcRequest.data.result,
+      error: rpcRequest.data.error
+    }
+  }
+
+  /**
+   * Grab the latest unconfirmed tx and check how many ancestors it has
+   * @return {Boolean} Returns true if the update was successful
+   */
+  async updateAncestorStatus () {
+    console.log('[RPC Wallet] Updating Ancestor Status...')
+    // We next check to see if there are any transactions currently in the mempool that we need to be aware of.
+    // To check the mempool, we start by grabbing the UTXO's to get the txid of the most recent transaction that was sent
+    let utxos = await this.getUTXOs()
+
+    // Grab the most recent txid
+    let mostRecentUTXO = utxos[0]
+    let mostRecentTXID = mostRecentUTXO.txid
+    // Check to see if the utxo is still in the mempool and if it has ancestors
+    let getMempoolEntry = await this.rpcRequest('getmempoolentry', [ mostRecentTXID ])
+    // Check if we have an error and handle it
+    if (getMempoolEntry.error &amp;&amp; getMempoolEntry.error !== null) {
+      // If the error 'Transaction not in mempool' occurs, that means that the most recent transaction
+      // has already recieved a confirmation, so it has no ancestors we need to worry about.
+
+      // If the error is different, than throw it up for further inspection.
+      if (getMempoolEntry.error.message === 'Transaction not in mempool' || getMempoolEntry.error.message === 'Transaction not in mempool.') {
+        // Grab the transaction and check the number of confirmations
+        let checkConfirmations = await this.rpcRequest('getrawtransaction', [ mostRecentTXID, true ])
+
+        // Ignore if there was an error, but set the number of confirmations if available
+        if (checkConfirmations.result &amp;&amp; checkConfirmations.result.confirmations) { mostRecentUTXO.confirmations = checkConfirmations.result.confirmations }
+
+        // Check to make sure if it is not in the mempool, that it at least has one confirmation.
+        if (mostRecentUTXO.confirmations >= 1) {
+          // Reset utxo count if the most recent one was confirmed
+          this.currentAncestorCount = 0
+          this.currentAncestorSize = 0
+        } else {
+          // If we have gotten here, that means the transaction has zero confirmations, and is not included in the mempool, and so we need to repair it's chain...
+          console.log('[RPC Wallet] [WARNING] The most recent unspent transaction has zero confirmations and is not in the mempool! Attempting to repair mempool by rebroadcasting transactions, please wait... (txid: ' + mostRecentTXID + ')')
+          await this.rebroadcastTransactions()
+
+          // Don't update anything, and return for now, so that `updateAncestorStatus` will run again
+          return
+        }
+      } else {
+        // Throw an error if the transaction error is not that it is missing from the mempool.
+        throw new Error('Error grabbing the mempool entry! ' + JSON.stringify(getMempoolEntry.error))
+      }
+    }
+
+    // If the tx is still in the mempool, it will have results
+    if (getMempoolEntry.result) {
+      let txMempoolStatus = getMempoolEntry.result
+
+      // Store the current ancestor count &amp; size
+      this.currentAncestorCount = txMempoolStatus.ancestorcount
+      this.currentAncestorSize = txMempoolStatus.ancestorsize
+
+      // Also increase the count by one in order to account for the txid from the mempool
+      this.currentAncestorCount++
+    }
+
+    return true
+  }
+
+  /**
+   * Add a transaction we just sent to the ancestor count/size
+   * @param {String} hex - The transaction hex to count
+   * @return {Boolean} Returns true on success
+   */
+  addAncestor (hex) {
+    // Increase the ancestor count
+    this.currentAncestorCount++
+    // Increase the ancestor size (byte length)
+    this.currentAncestorSize += Buffer.from(hex, 'hex').length
+
+    // Log every 50
+    if (this.currentAncestorCount % 50 === 0) { console.log(`[RPC Wallet] Updated Ancestor Count: ${this.currentAncestorCount} - Updated Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`) }
+
+    return true
+  }
+
+  /**
+   * Checks the current ancestor count and returns when it is safe to send more transactions.
+   * This method will wait for tx's in the mempool to be confirmed before continuing.
+   * @async
+   * @return {Boolean} Returns `true` once it is safe to continue sending transactions
+   */
+  async checkAncestorCount () {
+    // Store our starting count
+    let startAncestorCount = this.currentAncestorCount
+    let startAncestorSize = this.currentAncestorSize
+
+    // Variables to track loop state
+    let firstLoop = true
+    let hadMaxAncestors = false
+
+    let reachedAncestorLimitTimestamp
+
+    // Check if we have too many ancestors, and if we do, wait for the ancestor count to decrease (aka, some transactions to get confirmed in a block)
+    while (this.currentAncestorCount >= MAX_MEMPOOL_ANCESTORS || this.currentAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE) {
+      // Wait for UPDATE_ANCESTOR_STATUS seconds (don't run on the first loop through)
+      if (!firstLoop) { await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, UPDATE_ANCESTOR_STATUS) }) }
+      // Update the ancestor status (this is what will break us out of our while loop)
+      await this.updateAncestorStatus()
+
+      // Check if we currently have the maximum number of ancestors
+      let hasMaxAncestors = (this.currentAncestorCount >= MAX_MEMPOOL_ANCESTORS || this.currentAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE)
+
+      // Only log ancestor count if it is the first loop, and we still have too many ancestors
+      if (hasMaxAncestors &amp;&amp; firstLoop) {
+        console.log(`[RPC Wallet] Maximum Unconfirmed Transaction count reached, pausing sending of transactions until some of the current transactions get confirmed | Ancestor Count: ${this.currentAncestorCount} - Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`)
+        hadMaxAncestors = true
+        reachedAncestorLimitTimestamp = Date.now()
+      }
+
+      // After it has been REPAIR_ANCESTORS_AFTER amount of time since the max ancestor limit was reached, enable repair mode
+      if (hasMaxAncestors &amp;&amp; (Date.now() - REPAIR_ANCESTORS_AFTER) > reachedAncestorLimitTimestamp) {
+        // Announce that we are going to attempt the repair
+        console.log(`[RPC Wallet] [WARNING] Unconfirmed Transaction count has not decreased in ${REPAIR_ANCESTORS_AFTER / ONE_MINUTE} minutes, rebroadcasting transactions in an attempt to repair the utxo chain!`)
+        // Attempt the actual repair
+        await this.rebroadcastTransactions()
+
+        // Reset the timestamp so that we wait for REPAIR_ANCESTORS_AFTER seconds/minutes
+        reachedAncestorLimitTimestamp = Date.now()
+      }
+
+      firstLoop = false
+    }
+
+    // Count the number of confirmed
+    let numberConfirmed = startAncestorCount - this.currentAncestorCount
+    // Remove the transactions that just got confirmed
+    for (let i = 0; i &lt; numberConfirmed; i++) { this.unconfirmedTransactions.shift() }
+
+    // Check to see how many transactions got confirmed
+    if (startAncestorCount >= MAX_MEMPOOL_ANCESTORS || startAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE) {
+      console.log(`[RPC Wallet] ${numberConfirmed} Transactions Confirmed! (${((startAncestorSize - this.currentAncestorSize) / ONE_MB).toFixed(2)} MB)`)
+
+      // If there are less confirmed than REPAIR_MIN_TX, then rebroadcast the transactions
+      if (numberConfirmed &lt; REPAIR_MIN_TX) {
+        console.log(`[RPC Wallet] Detected low number of transactions confirmed, re-announcing transactions to make sure miners saw them.`)
+        await this.rebroadcastTransactions()
+      }
+    }
+
+    // If we had started with maximum ancestors, then log the status
+    if (hadMaxAncestors) { console.log(`[RPC Wallet] Unconfirmed count has decreased, resuming sending transactions! | Ancestor Count: ${this.currentAncestorCount} - Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`) }
+
+    // If we enabled repair mode, then
+    this.repairMode = false
+
+    // There are fewer ancestors than the maximum, so we can send the next transaction!
+    return true
+  }
+
+  /**
+   * Rebroadcast out all transactions on our local mempool
+   */
+  async rebroadcastTransactions () {
+    // Announce that we are starting
+    console.log(`[RPC Wallet] Announcing ${this.unconfirmedTransactions.length} transactions to Peers...`)
+
+    // Connect to Peers to use for the rebroadcast
+    await this.connectToPeers()
+
+    // Announce all of our local unconfirmed transactions
+    let numAnnounced = 0
+    for (let txHex of this.unconfirmedTransactions) {
+      // Loop through all peers and announce TX individually to each (if we have connected to them\
+      for (let peer of this.peers) {
+        if (peer.connected) { await peer.announceTX(txHex) }
+      }
+
+      // Log every 50 transactions
+      numAnnounced++
+      if (numAnnounced % 50 === 0) { console.log(`[RPC Wallet] Announced ${numAnnounced}/${this.unconfirmedTransactions.length} transactions so far...`) }
+    }
+    console.log(`[RPC Wallet] Announced ${numAnnounced} transactions!`)
+
+    // Wait for REBROADCAST_LENGTH in order to give some time for transactions to be requested, and sent out.
+    await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, REBROADCAST_LENGTH) })
+
+    // Destroy the peers we connected too
+    this.destroyPeers()
+  }
+
+  /**
+   * Initialize the RPC Wallet. This imports the Private Key, and then checks for unconfirmed transactions in the mempool.
+   * @async
+   * @return {Boolean} Returns true on Success
+   */
+  async initialize () {
+    if (this.importPrivateKey) {
+      console.log(`[RPC Wallet] Importing the Private Key to the RPC Wallet, this may take a long time...`)
+
+      // First, we import the Private Key to make sure it exists when we attempt to send transactions.
+      let importPrivKey = await this.rpcRequest('importprivkey', [ this.wif, 'default', true ])
+
+      console.log(`[RPC Wallet] Private Key Import to the RPC Wallet Complete!`)
+
+      // Check for an error importing the private key. If there is no error, the private key import was successful.
+      // No error and no result signify that the Private Key was already imported previously to the wallet.
+      if (importPrivKey.error &amp;&amp; importPrivKey.error !== null &amp;&amp; importPrivKey.error.message !== 'Key already exists.') { throw new Error('Error Importing Private Key to RPC Wallet: ' + JSON.stringify(importPrivKey.error)) }
+    }
+
+    // Update our ancestor count &amp; status
+    await this.updateAncestorStatus()
+
+    // If we have no ancestors (i.e. if our tx already got confirmed), skip grabbing the ancestor transaction hex and return true early
+    if (this.currentAncestorCount === 0) { return true }
+
+    console.log(`[RPC Wallet] Loading ${this.currentAncestorCount} transactions into local mempool, please wait... (this may take a little while)`)
+
+    /* Update the tx chain */
+    // First, we need to get a list of unconfirmed transactions, to do this, we need the most recent utxo.
+    let utxos = await this.getUTXOs()
+
+    // Then, while we have ancestors, lookup the transaction hex, and add it to the start of the unconfirmed transaction chain
+    let nextTXID = utxos[0].txid
+    while (nextTXID) {
+      // Grab the raw transaction hex for the txid
+      let txHex = await this.rpcRequest('getrawtransaction', [ nextTXID ])
+      if (txHex.error &amp;&amp; txHex.error !== null) { throw new Error('Error gathering raw transaction for (' + nextTXID + '): ' + JSON.stringify(txHex.error)) }
+
+      // Add the raw tx hex to the start of the unconfirmed transactions list
+      this.unconfirmedTransactions.unshift(txHex.result)
+
+      // Then lookup to see if it is in the mempool
+      let txMemInfo = await this.rpcRequest('getmempoolentry', [ nextTXID ])
+      if (txMemInfo.error &amp;&amp; txMemInfo.error !== null) { throw new Error('Error gathering mempool entry for (' + nextTXID + '): ' + JSON.stringify(txMemInfo.error)) }
+
+      // See if there are any parent txs that our tx "depends" on and need to be confirmed
+      if (txMemInfo.result.depends.length > 0) {
+        // Store the parent tx to search through next
+        nextTXID = txMemInfo.result.depends[0]
+      } else {
+        // If there are no transactions that ours depend on, then we can exit the loop
+        nextTXID = undefined
+      }
+
+      // Log every 50 added
+      if (this.unconfirmedTransactions.length % 50 === 0) { console.log(`[RPC Wallet] Loaded ${this.unconfirmedTransactions.length}/${this.currentAncestorCount} transactions into local mempool so far...`) }
+    }
+
+    console.log(`[RPC Wallet] Loaded ${this.unconfirmedTransactions.length} transactions into local mempool!`)
+
+    // Return true, signifying that the initialization was successful
+    return true
+  }
+
+  /**
+   * Create fcoin "Peers" for all peers that the rpc full node as access to.
+   * @async
+   */
+  async connectToPeers () {
+    // Initialize/wipe peers
+    this.peers = []
+
+    // Request peers to connect to from the RPC node we have access to
+    let getPeerInfo = await this.rpcRequest('getpeerinfo', [])
+    if (getPeerInfo.error) { throw new Error(getPeerInfo.error) }
+
+    console.log(`[RPC Wallet] Connecting to ${getPeerInfo.result.length} Peers...`)
+
+    // For each of those peers, open up a connection
+    for (let peerInfo of getPeerInfo.result) {
+      // Create an fcoin peer
+
+      let peerHost = peerInfo.addr
+
+      // Always rewrite the port.
+      if (peerHost.includes(':')) {
+        peerHost = peerHost.substring(0, peerHost.indexOf(':'))
+      }
+
+      // Set to test or mainnet ourselves.
+      if (this.options.network &amp;&amp; (this.options.network === 'mainnet' || this.options.network === 'livenet')) {
+        peerHost = peerHost + ':7312'
+      } else {
+        peerHost = peerHost + ':17312'
+      }
+
+      console.log(`peer host ${peerHost}`)
+
+      let peer = new Peer({ ip: peerHost, network: this.options.network })
+      // Start the connection attempt
+      peer.connect()
+      // Add it to our peerrs array
+      this.peers.push(peer)
+    }
+
+    // Wait for PEER_CONNECT_LENGTH in order to allow peers to initialize
+    await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, PEER_CONNECT_LENGTH) })
+
+    // Count how many peers we have successfully connected to
+    let connectedPeers = 0
+    for (let peer of this.peers) {
+      if (peer.connected) { connectedPeers++ }
+    }
+
+    // Log the connected count
+    console.log(`[RPC Wallet] Connected to ${connectedPeers} Peers!`)
+  }
+
+  /**
+   * Destroy peers created in rebroadcastTransactions
+   */
+  destroyPeers () {
+    // Destroy each `fcoin` peer
+    for (let peer of this.peers) {
+      peer.peer.destroy()
+    }
+    // Wipe out the array
+    this.peers = []
+  }
+
+  /**
+   * Sign a message using the internal private key
+   * @async
+   * @param  {String} message - The message you wish to have signed
+   * @return {String}  Returns the base64 version of the Signature
+   */
+  async signMessage (message) {
+    // Create the ECPair to sign with (this is the Private Key basically)
+    let myECPair = ECPair.fromWIF(this.wif, this.coin.network)
+    let privateKeyBuffer = myECPair.privateKey
+
+    // Check if we are a compress privKey
+    let compressed = myECPair.compressed || true
+
+    // Create the actual signature
+    let signatureBuffer
+    try {
+      signatureBuffer = sign(message, privateKeyBuffer, compressed, myECPair.network.messagePrefix)
+    } catch (e) {
+      throw new Error(e)
+    }
+
+    // Convert the signature to a base64 string
+    let signature = signatureBuffer.toString('base64')
+
+    // Return the base64 signature
+    return signature
+  }
+
+  /**
+   * Get the latest unspent transaction outputs
+   * @async
+   * @return {Array.&lt;Object>} Returns an Array of UTXO's
+   */
+  async getUTXOs () {
+    // If we have a previous txo, then just return that one!
+    if (this.previousTXOutput &amp;&amp; this.previousTXOutput.amount > MIN_UTXO_AMOUNT) { return [ this.previousTXOutput ] }
+
+    // On the first run, log that we are requesting the transaction output.
+    if (!this.initialUTXOLog) {
+      console.log('[RPC Wallet] Grabbing initial transaction output to use, this may take a few seconds...')
+      this.initialUTXOLog = true
+    }
+
+    // Request the list of unspent transactions
+    const MIN_CONFIRMATIONS = 0
+    const MAX_CONFIRMATIONS = 9999999
+    let utxoRes = await this.rpcRequest('listunspent', [ MIN_CONFIRMATIONS, MAX_CONFIRMATIONS, [this.publicAddress] ])
+    // Throw if there was an error
+    if (utxoRes.error &amp;&amp; utxoRes.error !== null) { throw new Error('Unable to get unspent transactions for: ' + this.publicAddress + '\n' + JSON.stringify(utxoRes.error)) }
+
+    // Pull out the utxos array
+    let utxos = utxoRes.result
+
+    // Filter out transactions that don't meet our minimum UTXO value
+    let filtered = utxos.filter((utxo) => {
+      if (utxo.amount >= MIN_UTXO_AMOUNT) { return true }
+
+      return false
+    })
+
+    // Check if we have no transaction outputs available to spend from, and throw an error if so
+    if (filtered.length === 0) { throw new Error('No previous unspent output available! Please send some FLO to ' + this.publicAddress + ' and then try again!') }
+
+    // Sort by confirmations ascending (lowest conf first)
+    filtered.sort((a, b) => {
+      return a.confirmations - b.confirmations
+    })
+
+    // Return the filtered and sorted utxos
+    return filtered
+  }
+
+  /**
+   * Create and broadcast a transaction containing the requested data as floData
+   * @async
+   * @param  {String} floData - The data you wish to be placed into the `floData` of the transaction.
+   * @return {String} Returns the TXID of the transaction if sent successfully
+   */
+  async sendDataToChain (floData) {
+    // Grab the unspent outputs for our address
+    let utxos = await this.getUTXOs()
+
+    // Select the first input (since we have already sorted and filtered)
+    let input = utxos[0]
+
+    // Calculate the minimum Transaction fee for our transaction by counting the size of the inputs, outputs, and floData
+    let myTxFee = (this.options.txFeePerByte || TX_FEE_PER_BYTE) * (TX_AVG_BYTE_SIZE + varIntBuffer(floData.length).toString('hex').length + Buffer.from(floData).length)
+
+    // Create an output to send the funds to
+    let output = {}
+    output[this.publicAddress] = parseFloat((input.amount - myTxFee).toFixed(8))
+
+    // Send the transaction
+    let txid = await this.sendTX([ input ], output, floData)
+
+    // Returns the TXID of the transaction if sent successfully
+    return txid
+  }
+
+  /**
+   * Create and sign a transaction using bitcoinjs-lib and js-oip libraries
+   * @param  {Object} input   [description]
+   * @param  {Object} outputs [description]
+   * @param  {String} floData [description]
+   * @return {String} Returns the built hex string
+   */
+  createAndSignTransaction (input, outputs, floData) {
+    // Create a Bitcoinjs-lib transaction builder, and pass it the FLO network params
+    let txb = new FLOTransactionBuilder(this.coin.network)
+
+    // Add our single input
+    txb.addInput(input.txid, input.vout)
+    // Add our output
+    txb.addOutput(this.publicAddress, parseInt(outputs[this.publicAddress] * SAT_PER_FLO))
+    // Add our floData
+    txb.setFloData(floData)
+
+    // Sign our transaction using the local `flosigner` at `src/config/networks/flo/flosigner.js`
+    txb.sign(0, ECPair.fromWIF(this.wif, this.coin.network))
+
+    // Build the hex
+    let builtHex
+    try {
+      builtHex = txb.build().toHex()
+    } catch (err) {
+      throw new Error(`Unable to build Transaction Hex!: ${err}`)
+    }
+
+    // Return the completed hex as a string
+    return builtHex
+  }
+
+  /**
+   * Send a Transaction using the requested inputs, outputs, and floData
+   * @async
+   * @param  {Array.&lt;Object>} inputs  - An array of utxo inputs to use to fund the transaction
+   * @param  {Object} outputs - An Object that contains addresses to output to as the key, and the amount to send as the value (i.e. `{ 'mypublicaddresshere': 1 }`)
+   * @param  {String} floData - The `floData` you wish to include in the transaction
+   * @return {String} Returns the txid of the transaction if sent successfully
+   */
+  async sendTX (inputs, outputs, floData) {
+    // Perform validation checks on the floData being added to the chain
+    if (typeof floData !== 'string') { throw new Error(`Data must be of type string. Got: ${typeof floData}`) }
+    if (floData.length > FLODATA_MAX_LEN) { throw new Error(`Error: 'floData' length exceeds ${FLODATA_MAX_LEN} characters. Please send a smaller data package.`) }
+
+    // Make sure that we don't have too many ancestors. If we do, then waits for some transactions to be confirmed.
+    await this.checkAncestorCount()
+
+    // Create and sign the transaction hex
+    let signedTXHex = this.createAndSignTransaction(inputs[0], outputs, floData)
+
+    // Broadcast the transaction hex we created to the network
+    let broadcastTX = await this.rpcRequest('sendrawtransaction', [ signedTXHex ])
+    // Check if there was an error broadcasting the transaction
+    if (broadcastTX.error &amp;&amp; broadcastTX.error !== null) { throw new Error('Error broadcasting tx: ' + signedTXHex + '\n' + JSON.stringify(broadcastTX.error)) }
+
+    // Add the tx we just sent to the Ancestor count
+    this.addAncestor(signedTXHex)
+    // Add our tx hex to the unconfirmed transactions array
+    this.unconfirmedTransactions.push(signedTXHex)
+
+    // Set the new tx to be used as the next output.
+    this.previousTXOutput = {
+      txid: broadcastTX.result,
+      amount: outputs[this.publicAddress],
+      vout: 0
+    }
+
+    // Return the TXID of the transaction
+    return broadcastTX.result
+  }
+}
+
+export default RPCWallet
+</code></pre>
+  </article>
+</section>
+
+    
+
+
+  </div>
+
+  <br class="clear">
+
+  <footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+  </footer>
+
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/pagelocation.js"></script>
+
+  
+  
+</body>
+</html>
