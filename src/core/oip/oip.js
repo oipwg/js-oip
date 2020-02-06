@@ -6,7 +6,7 @@ import { OIPRecord } from '../../modules/records'
 import { EditRecord } from '../../modules/records/edit'
 import { ExplorerWallet, RPCWallet } from '../../modules/wallets'
 import { FLODATA_MAX_LEN } from '../../modules/flo/FLOTransaction'
-import { floMainnet, floTestnet } from '../../config'
+import { floMainnet, floTestnet, floRegtest } from '../../config'
 
 /**
  * Class to publish, register, edit, transfer, and deactivate OIP Records
@@ -41,6 +41,7 @@ class OIP {
     if (!this.options.publicAddress) {
       let tmpNetwork = floMainnet
       if (network === 'testnet') { tmpNetwork = floTestnet }
+      if (network === 'regtest') { tmpNetwork = floRegtest }
 
       let myECPair = ECPair.fromWIF(this.options.wif, tmpNetwork.network)
       this.options.publicAddress = payments.p2pkh({ pubkey: myECPair.publicKey, network: tmpNetwork.network }).address

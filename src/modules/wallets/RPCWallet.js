@@ -2,7 +2,7 @@ import axios from 'axios'
 import { sign } from 'bitcoinjs-message'
 import { ECPair } from 'bitcoinjs-lib'
 
-import { floMainnet, floTestnet } from '../../config'
+import { floMainnet, floTestnet, floRegtest } from '../../config'
 import FLOTransactionBuilder from '../flo/FLOTransactionBuilder'
 import { FLODATA_MAX_LEN } from '../flo/FLOTransaction'
 import Peer from '../flo/Peer'
@@ -104,7 +104,13 @@ class RPCWallet {
 
     // If the port is not set, default to Livenet (7313), otherwise if they passed the string "testnet" use the testnet port (17313)
     if (!this.options.rpc.port) {
-      if (this.options.network && this.options.network === 'testnet') { this.options.rpc.port = 17313 } else { this.options.rpc.port = 7313 }
+      if (this.options.network && this.options.network === 'testnet') {
+        this.options.rpc.port = 17313
+      } else if (this.options.network && this.options.network === 'regtest') {
+        this.options.rpc.port = 17413
+      } else {
+        this.options.rpc.port = 7313
+      }
     }
     // If host is not set, use localhost
     if (!this.options.rpc.host) { this.options.rpc.host = 'localhost' }
@@ -134,6 +140,8 @@ class RPCWallet {
       this.coin = floMainnet
     } else if (this.options.network === 'testnet') {
       this.coin = floTestnet
+    } else if (this.options.network === 'regtest') {
+      this.coin = floRegtest
     }
 
     // Store information about our tx chain and the previous tx output
@@ -165,10 +173,12 @@ class RPCWallet {
     // Perform the RPC request using Axios
     let rpcRequest
     try {
-      let rpcPort = this.options.rpc.port
+      // Make sure that rpcPort is an int so that we don't append 2 as a string to the port
+      let rpcPort = parseInt(this.options.rpc.port)
       // If we are using an fcoin RPC, the wallet RPC runs on a different port (7315/17315 instead of 7313/17313)
       if (WALLET_RPC_METHODS.includes(method) && this.fcoinRPC) { rpcPort += 2 }
 
+      // Attempt the RPC request
       rpcRequest = await this.rpc.post(`http://${this.options.rpc.host}:${rpcPort}/`, { 'jsonrpc': '2.0', 'id': 1, 'method': method, 'params': parameters })
 
       // If we have an error with the Method not being found, it is likely an issue with the RPC server being fcoin.
@@ -570,9 +580,9 @@ class RPCWallet {
     // Check if we have no transaction outputs available to spend from, and throw an error if so
     if (filtered.length === 0) { throw new Error('No previous unspent output available! Please send some FLO to ' + this.publicAddress + ' and then try again!') }
 
-    // Sort by confirmations ascending (lowest conf first)
+    // Sort by confirmations descending (highest conf first)
     filtered.sort((a, b) => {
-      return a.confirmations - b.confirmations
+      return b.confirmations - a.confirmations
     })
 
     // Return the filtered and sorted utxos

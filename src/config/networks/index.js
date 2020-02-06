@@ -1,6 +1,7 @@
-import { mainnet as floMainnet, testnet as floTestnet } from './flo'
+import { mainnet as floMainnet, testnet as floTestnet, regtest as floRegtest } from './flo'
 
 export {
   floMainnet,
-  floTestnet
+  floTestnet,
+  floRegtest
 }
