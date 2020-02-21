@@ -8,179 +8,180 @@ class PropertySpatialUnit extends Artifact {
   }
 
   /**
- * Returns the Artifact Type (to be used before class initialization)
- * @static
- * @returns {string}
- */
+   * Returns the Artifact Type (to be used before class initialization)
+   * @static
+   * @returns {string}
+   */
   static getArtifactType () {
     return 'property'
   }
 
   /**
- * Return the Artifact Subtype (to be used before class initialization)
- * @returns {string}
- */
+   * Return the Artifact Subtype (to be used before class initialization)
+   * @returns {string}
+   */
   static getArtifactSubtype () {
     return 'spatialUnit'
   }
 
   /**
- * Get Modified Date
- * ISO 8601 date string
- * @returns {"string"}
- */
+   * Get Modified Date
+   * ISO 8601 date string
+   * @returns {"string"}
+   */
   getModifiedDate () {
     return this.artifact.details.modifiedDate
   }
 
   /**
- * Set Modified Date
- * ISO 8601 date string
- * @param {"string"} modifiedDate
- */
+   * Set Modified Date
+   * ISO 8601 date string
+   * @param {"string"} modifiedDate
+   */
   setModifiedDate (modifiedDate) {
     if (modifiedDate) { this.artifact.details.modifiedDate = modifiedDate }
   }
 
   /**
- * Get Spatial Type
- * @returns {string}
- */
+   * Get Spatial Type
+   * @returns {string}
+   */
   getSpatialType () {
     return this.artifact.details.spatialType
   }
 
   /**
- * Set Spatial type
- * @param {string} spatialType
- */
+   * Set Spatial type
+   * @param {string} spatialType
+   */
   setSpatialType (spatialType) {
     if (spatialType) { this.artifact.details.spatialType = spatialType }
   }
 
   /**
- * Get Spatial Data Type
- * @returns {string}
- */
+   * Get Spatial Data Type
+   * @returns {string}
+   */
   getSpatialDataType () {
     return this.artifact.details.spatialDataType
   }
 
   /**
- * Set Spatial Data type
- * @param {string} spatialDataType
- */
+   * Set Spatial Data type
+   * @param {string} spatialDataType
+   */
   setSpatialDataType (spatialDataType) {
     if (spatialDataType) { this.artifact.details.spatialDataType = spatialDataType }
   }
 
   /**
- * Get Spatial Data
- * @returns {Object}
- */
+   * Get Spatial Data
+   * @returns {Object}
+   */
   getSpatialData () {
     return this.artifact.details.spatialData
   }
 
   /**
- * Set Spatial Data
- * @param {Object} spatialData
- */
+   * Set Spatial Data
+   * @param {Object} spatialData
+   */
   setSpatialData (spatialData) {
     if (spatialData) { this.artifact.details.spatialData = spatialData }
   }
 
   /**
- * Get Textual Data
- * @returns {string}
- */
+   * Get Textual Data
+   * @returns {string}
+   */
   getTextualData () {
     return this.artifact.details.textualData
   }
 
   /**
- * Set Textual Data
- * @param {string} textualData
- */
+   * Set Textual Data
+   * @param {string} textualData
+   */
   setTextualData (textualData) {
     if (textualData) { this.artifact.details.textualData = textualData }
   }
 
   /**
- * Get Address Data
- * @returns {Object}
- */
+   * Get Address Data
+   * @returns {Object}
+   */
   getAddressData () {
     return this.artifact.details.addressData
   }
 
   /**
- * Set Address Data
- * @param {Object} addressData
- */
+   * Set Address Data
+   * @param {Object} addressData
+   */
   setAddressData (addressData) {
     if (addressData) { this.artifact.details.addressData = addressData }
   }
 
   /**
- * Get Official ID
- * @returns {string}
- */
+   * Get Official ID
+   * @returns {string}
+   */
   getOfficialID () {
     return this.artifact.details.officialID
   }
 
   /**
- * Set Official ID
- * @param {string} officialID
- */
+   * Set Official ID
+   * @param {string} officialID
+   */
   setOfficialID (officialID) {
     if (officialID) { this.artifact.details.officialID = officialID }
   }
 
   /**
- * Get Parent ID
- * @returns {string}
- */
+   * Get Parent ID
+   * @returns {string}
+   */
   getParentID () {
     return this.artifact.details.parentID
   }
 
   /**
- * Set Parent ID
- * @param {string} parentID
- */
+   * Set Parent ID
+   * @param {string} parentID
+   */
   setParentID (parentID) {
     if (parentID) { this.artifact.details.parentID = parentID }
   }
 
   /**
- * Get Namespace
- * @returns {*}
- */
+   * Get Namespace
+   * @returns {*}
+   */
   getNamespace () {
     return this.artifact.details.ns
   }
 
   /**
- * Set Namespace
- * @param ns
- */
+   * Set Namespace
+   * @param ns
+   */
   setNamespace (ns) {
     if (ns) { this.artifact.details.ns = ns }
   }
+
   /**
- * Return Attributes
- * @returns {Object}
- */
+   * Return Attributes
+   * @returns {Object}
+   */
   getAttributes () {
     return this.artifact.details.attrs
   }
 
   /**
- * Set Attributes
- * @param {Object} attrs
- */
+   * Set Attributes
+   * @param {Object} attrs
+   */
   setAttributes (attrs) {
     if (attrs) {
       this.artifact.details.attrs = {}

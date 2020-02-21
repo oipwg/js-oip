@@ -1,11 +1,12 @@
 import axios from 'axios'
 import { sign } from 'bitcoinjs-message'
-import bitcoin from 'bitcoinjs-lib'
+import { ECPair } from 'bitcoinjs-lib'
 
-import { varIntBuffer } from '../../util'
-import { FLODATA_MAX_LEN } from '../../core/oip/oip'
-import { floMainnet, floTestnet } from '../../config'
+import { floMainnet, floTestnet, floRegtest } from '../../config'
+import FLOTransactionBuilder from '../flo/FLOTransactionBuilder'
+import { FLODATA_MAX_LEN } from '../flo/FLOTransaction'
 import Peer from '../flo/Peer'
+import { varIntBuffer } from '../../util'
 
 // Helper const
 const ONE_MB = 1000000
@@ -32,6 +33,57 @@ const PEER_CONNECT_LENGTH = 2 * ONE_SECOND
 const REBROADCAST_LENGTH = 10 * ONE_SECOND
 const REPAIR_MIN_TX = 100
 
+// List of all Wallet-Only RPC Methods
+const WALLET_RPC_METHODS = [
+  'selectwallet',
+  'getwalletinfo',
+  'fundrawtransaction',
+  'resendwallettransactions',
+  'abandontransaction',
+  'addmultisigaddress',
+  'addwitnessaddress',
+  'backupwallet',
+  'dumpprivkey',
+  'dumpwallet',
+  'encryptwallet',
+  'getaccountaddress',
+  'getaccount',
+  'getaddressesbyaccount',
+  'getbalance',
+  'getnewaddress',
+  'getrawchangeaddress',
+  'getreceivedbyaccount',
+  'getreceivedbyaddress',
+  'gettransaction',
+  'getunconfirmedbalance',
+  'importprivkey',
+  'importwallet',
+  'importaddress',
+  'importprunedfunds',
+  'importpubkey',
+  'keypoolrefill',
+  'listaccounts',
+  'listaddressgroupings',
+  'lockunspent',
+  'listlockunspent',
+  'listreceivedbyaccount',
+  'listreceivedbyaddress',
+  'listsinceblock',
+  'listtransactions',
+  'listunspent',
+  'move',
+  'sendfrom',
+  'sendmany',
+  'sendtoaddress',
+  'setaccount',
+  'settxfee',
+  'signmessage',
+  'walletlock',
+  'walletpassphrasechange',
+  'walletpassphrase',
+  'removeprunedfunds'
+]
+
 /**
  * Easily interact with an RPC Wallet to send Bulk transactions extremely quickly in series
  */
@@ -39,6 +91,9 @@ class RPCWallet {
   constructor (options) {
     // Store options for later
     this.options = options || {}
+
+    // Set default network to livenet if unset
+    if (!this.options.network) { this.options.network = 'livenet' }
 
     // Make sure we have connection to an RPC wallet
     if (!this.options.rpc) { throw new Error("RPC options ('options.rpc') are required with an RPC wallet!") }
@@ -49,32 +104,44 @@ class RPCWallet {
 
     // If the port is not set, default to Livenet (7313), otherwise if they passed the string "testnet" use the testnet port (17313)
     if (!this.options.rpc.port) {
-      if (this.options.network && this.options.network === 'testnet') { this.options.rpc.port = 17313 } else { this.options.rpc.port = 7313 }
+      if (this.options.network && this.options.network === 'testnet') {
+        this.options.rpc.port = 17313
+      } else if (this.options.network && this.options.network === 'regtest') {
+        this.options.rpc.port = 17413
+      } else {
+        this.options.rpc.port = 7313
+      }
     }
     // If host is not set, use localhost
     if (!this.options.rpc.host) { this.options.rpc.host = 'localhost' }
 
     // Create the RPC connection using Axios
     this.rpc = axios.create({
-      baseURL: 'http://' + this.options.rpc.host + ':' + this.options.rpc.port,
       auth: {
         username: this.options.rpc.username,
         password: this.options.rpc.password
       },
       validateStatus: function (status) {
+        if ([400, 401, 402, 403, 404].includes(status)) { return false }
+
         return true
       }
     })
+    // Default to not being an fcoin RPC node
+    this.fcoinRPC = false
 
     // Store the Private Key and the Public Key
     this.wif = this.options.wif
     this.publicAddress = this.options.publicAddress
+    this.importPrivateKey = this.options.importPrivateKey || true
 
     // Store the "coin" network we should use
-    if (this.options.network === 'livenet' || this.options.network === 'mainnet') {
+    if (this.options.network === 'livenet' || this.options.network === 'mainnet' || this.options.network === 'main') {
       this.coin = floMainnet
     } else if (this.options.network === 'testnet') {
       this.coin = floTestnet
+    } else if (this.options.network === 'regtest') {
+      this.coin = floRegtest
     }
 
     // Store information about our tx chain and the previous tx output
@@ -106,10 +173,26 @@ class RPCWallet {
     // Perform the RPC request using Axios
     let rpcRequest
     try {
-      rpcRequest = await this.rpc.post('/', { 'jsonrpc': '2.0', 'id': 1, 'method': method, 'params': parameters })
+      // Make sure that rpcPort is an int so that we don't append 2 as a string to the port
+      let rpcPort = parseInt(this.options.rpc.port)
+      // If we are using an fcoin RPC, the wallet RPC runs on a different port (7315/17315 instead of 7313/17313)
+      if (WALLET_RPC_METHODS.includes(method) && this.fcoinRPC) { rpcPort += 2 }
+
+      // Attempt the RPC request
+      rpcRequest = await this.rpc.post(`http://${this.options.rpc.host}:${rpcPort}/`, { 'jsonrpc': '2.0', 'id': 1, 'method': method, 'params': parameters })
+
+      // If we have an error with the Method not being found, it is likely an issue with the RPC server being fcoin.
+      if (rpcRequest.data && rpcRequest.data.error && rpcRequest.data.error.message && rpcRequest.data.error.message.includes('Method not found')) {
+        this.fcoinRPC = true
+        return this.rpcRequest(method, parameters)
+      }
     } catch (e) {
       // Throw if there was some weird error for some reason.
-      throw new Error("Unable to perform RPC request! Method: '" + method + "' - Params: '" + JSON.stringify(parameters) + "' | RPC settings: " + JSON.stringify(this.options.rpc) + ' | Thrown Error: ' + e)
+      console.log("[RPC Wallet] Unable to perform RPC request, retrying! Method: '" + method + "' - Params: '" + JSON.stringify(parameters) + "' | RPC settings: " + JSON.stringify(this.options.rpc) + ' | Thrown Error: ' + e)
+      // Sleep 1 second
+      await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, 1000) })
+      // Retry RPC Request recursively
+      return this.rpcRequest(method, parameters)
     }
 
     // Remove the `id` field from the response, since we do not care about it
@@ -124,6 +207,7 @@ class RPCWallet {
    * @return {Boolean} Returns true if the update was successful
    */
   async updateAncestorStatus () {
+    console.log('[RPC Wallet] Updating Ancestor Status...')
     // We next check to see if there are any transactions currently in the mempool that we need to be aware of.
     // To check the mempool, we start by grabbing the UTXO's to get the txid of the most recent transaction that was sent
     let utxos = await this.getUTXOs()
@@ -276,7 +360,7 @@ class RPCWallet {
    */
   async rebroadcastTransactions () {
     // Announce that we are starting
-    console.log(`[RPC Wallet] Announcing ${this.unconfirmedTransactions.length} transactions to ${this.peers.length} Peers...`)
+    console.log(`[RPC Wallet] Announcing ${this.unconfirmedTransactions.length} transactions to Peers...`)
 
     // Connect to Peers to use for the rebroadcast
     await this.connectToPeers()
@@ -308,16 +392,18 @@ class RPCWallet {
    * @return {Boolean} Returns true on Success
    */
   async initialize () {
-    console.log(`[RPC Wallet] Importing the Private Key to the RPC Wallet, this may take a long time...`)
+    if (this.importPrivateKey) {
+      console.log(`[RPC Wallet] Importing the Private Key to the RPC Wallet, this may take a long time...`)
 
-    // First, we import the Private Key to make sure it exists when we attempt to send transactions.
-    let importPrivKey = await this.rpcRequest('importprivkey', [ this.wif, '', true ])
+      // First, we import the Private Key to make sure it exists when we attempt to send transactions.
+      let importPrivKey = await this.rpcRequest('importprivkey', [ this.wif, 'default', true ])
 
-    console.log(`[RPC Wallet] Private Key Import to the RPC Wallet Complete!`)
+      console.log(`[RPC Wallet] Private Key Import to the RPC Wallet Complete!`)
 
-    // Check for an error importing the private key. If there is no error, the private key import was successful.
-    // No error and no result signify that the Private Key was already imported previously to the wallet.
-    if (importPrivKey.error && importPrivKey.error !== null && importPrivKey.error.message !== 'Key already exists.') { throw new Error('Error Importing Private Key to RPC Wallet: ' + JSON.stringify(importPrivKey.error)) }
+      // Check for an error importing the private key. If there is no error, the private key import was successful.
+      // No error and no result signify that the Private Key was already imported previously to the wallet.
+      if (importPrivKey.error && importPrivKey.error !== null && importPrivKey.error.message !== 'Key already exists.') { throw new Error('Error Importing Private Key to RPC Wallet: ' + JSON.stringify(importPrivKey.error)) }
+    }
 
     // Update our ancestor count & status
     await this.updateAncestorStatus()
@@ -381,7 +467,24 @@ class RPCWallet {
     // For each of those peers, open up a connection
     for (let peerInfo of getPeerInfo.result) {
       // Create an fcoin peer
-      let peer = new Peer({ ip: peerInfo.addr })
+
+      let peerHost = peerInfo.addr
+
+      // Always rewrite the port.
+      if (peerHost.includes(':')) {
+        peerHost = peerHost.substring(0, peerHost.indexOf(':'))
+      }
+
+      // Set to test or mainnet ourselves.
+      if (this.options.network && (this.options.network === 'mainnet' || this.options.network === 'livenet')) {
+        peerHost = peerHost + ':7312'
+      } else {
+        peerHost = peerHost + ':17312'
+      }
+
+      console.log(`peer host ${peerHost}`)
+
+      let peer = new Peer({ ip: peerHost, network: this.options.network })
       // Start the connection attempt
       peer.connect()
       // Add it to our peerrs array
@@ -421,16 +524,16 @@ class RPCWallet {
    */
   async signMessage (message) {
     // Create the ECPair to sign with (this is the Private Key basically)
-    let ECPair = bitcoin.ECPair.fromWIF(this.wif, this.coin.network)
-    let privateKeyBuffer = ECPair.privateKey
+    let myECPair = ECPair.fromWIF(this.wif, this.coin.network)
+    let privateKeyBuffer = myECPair.privateKey
 
     // Check if we are a compress privKey
-    let compressed = ECPair.compressed || true
+    let compressed = myECPair.compressed || true
 
     // Create the actual signature
     let signatureBuffer
     try {
-      signatureBuffer = sign(message, privateKeyBuffer, compressed, ECPair.network.messagePrefix)
+      signatureBuffer = sign(message, privateKeyBuffer, compressed, myECPair.network.messagePrefix)
     } catch (e) {
       throw new Error(e)
     }
@@ -477,9 +580,9 @@ class RPCWallet {
     // Check if we have no transaction outputs available to spend from, and throw an error if so
     if (filtered.length === 0) { throw new Error('No previous unspent output available! Please send some FLO to ' + this.publicAddress + ' and then try again!') }
 
-    // Sort by confirmations ascending (lowest conf first)
+    // Sort by confirmations descending (highest conf first)
     filtered.sort((a, b) => {
-      return a.confirmations - b.confirmations
+      return b.confirmations - a.confirmations
     })
 
     // Return the filtered and sorted utxos
@@ -500,7 +603,7 @@ class RPCWallet {
     let input = utxos[0]
 
     // Calculate the minimum Transaction fee for our transaction by counting the size of the inputs, outputs, and floData
-    let myTxFee = TX_FEE_PER_BYTE * (TX_AVG_BYTE_SIZE + varIntBuffer(floData.length).toString('hex').length + Buffer.from(floData).length)
+    let myTxFee = (this.options.txFeePerByte || TX_FEE_PER_BYTE) * (TX_AVG_BYTE_SIZE + varIntBuffer(floData.length).toString('hex').length + Buffer.from(floData).length)
 
     // Create an output to send the funds to
     let output = {}
@@ -522,21 +625,17 @@ class RPCWallet {
    */
   createAndSignTransaction (input, outputs, floData) {
     // Create a Bitcoinjs-lib transaction builder, and pass it the FLO network params
-    let txb = new bitcoin.TransactionBuilder(this.coin.network)
-
-    // Set the transaction version (>2 means it contains floData)
-    txb.setVersion(this.coin.txVersion)
+    let txb = new FLOTransactionBuilder(this.coin.network)
 
     // Add our single input
     txb.addInput(input.txid, input.vout)
     // Add our output
     txb.addOutput(this.publicAddress, parseInt(outputs[this.publicAddress] * SAT_PER_FLO))
-
-    // Convert the floData to a byte string
-    let extraBytes = this.coin.getExtraBytes({ floData })
+    // Add our floData
+    txb.setFloData(floData)
 
     // Sign our transaction using the local `flosigner` at `src/config/networks/flo/flosigner.js`
-    this.coin.sign(txb, extraBytes, 0, bitcoin.ECPair.fromWIF(this.wif, this.coin.network))
+    txb.sign(0, ECPair.fromWIF(this.wif, this.coin.network))
 
     // Build the hex
     let builtHex
@@ -545,9 +644,6 @@ class RPCWallet {
     } catch (err) {
       throw new Error(`Unable to build Transaction Hex!: ${err}`)
     }
-
-    // Append on our floData
-    builtHex += extraBytes
 
     // Return the completed hex as a string
     return builtHex
@@ -569,43 +665,18 @@ class RPCWallet {
     // Make sure that we don't have too many ancestors. If we do, then waits for some transactions to be confirmed.
     await this.checkAncestorCount()
 
-    // Create the initial transaction hex
-    /* Code commented out for now as `fcoin` does not properly sign transactions. This can be used again once the RPC node used supports signing via RPC
-
-    const LOCKTIME = 0
-    const REPLACABLE = false
-    let createTXHex = await this.rpcRequest("createrawtransaction", [ inputs, outputs, LOCKTIME, REPLACABLE, floData ])
-    // Check if there was an error creating the transaction hex
-    if (createTXHex.error && createTXHex.error !== null)
-      throw new Error("Error creating raw tx: " + JSON.stringify(inputs, null, 4) + " " + JSON.stringify(outputs, null, 4) + " " + floData + "\n" + JSON.stringify(createTXHex.error, null, 4))
-    // Grab the raw unsigned TX hex
-    let rawUnsignedTXHex = createTXHex.result
-
-    // Sign the Transaction Hex we created above
-    let signTXHex = await this.rpcRequest("signrawtransaction", [ rawUnsignedTXHex ])
-    // Check if there was an error signing the transaction hex
-    if (signTXHex.error && signTXHex.error !== null)
-      throw new Error("Error signing raw tx: " + rawUnsignedTXHex + "\n" + JSON.stringify(signTXHex.error))
-    // Grab the signed tx hex
-    let rawTXHex = signTXHex.result.hex
-
-    if (!signTXHex.result.complete)
-      throw new Error("Error signing raw transaction, signature not complete! " + JSON.stringify(signTXHex.result))
-
-    */
-
-    // Create the raw transction hex using our local code instead of RPC for now
-    let rawTXHex = this.createAndSignTransaction(inputs[0], outputs, floData)
+    // Create and sign the transaction hex
+    let signedTXHex = this.createAndSignTransaction(inputs[0], outputs, floData)
 
     // Broadcast the transaction hex we created to the network
-    let broadcastTX = await this.rpcRequest('sendrawtransaction', [ rawTXHex ])
+    let broadcastTX = await this.rpcRequest('sendrawtransaction', [ signedTXHex ])
     // Check if there was an error broadcasting the transaction
-    if (broadcastTX.error && broadcastTX.error !== null) { throw new Error('Error broadcasting raw tx: ' + rawTXHex + '\n' + JSON.stringify(broadcastTX.error)) }
+    if (broadcastTX.error && broadcastTX.error !== null) { throw new Error('Error broadcasting tx: ' + signedTXHex + '\n' + JSON.stringify(broadcastTX.error)) }
 
     // Add the tx we just sent to the Ancestor count
-    this.addAncestor(rawTXHex)
+    this.addAncestor(signedTXHex)
     // Add our tx hex to the unconfirmed transactions array
-    this.unconfirmedTransactions.push(rawTXHex)
+    this.unconfirmedTransactions.push(signedTXHex)
 
     // Set the new tx to be used as the next output.
     this.previousTXOutput = {

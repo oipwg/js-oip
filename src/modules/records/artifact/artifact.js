@@ -104,6 +104,7 @@ class Artifact extends OIPRecord {
       time: undefined,
       tx: undefined,
       txid: undefined,
+      originalTxid: undefined,
       version: undefined,
       type: undefined
     }
@@ -164,6 +165,8 @@ class Artifact extends OIPRecord {
    */
   setTXID (txid) {
     this.meta.txid = txid
+
+    if (!this.getOriginalTXID) { this.setOriginalTXID(this.getTXID) }
   }
 
   /**
@@ -172,6 +175,22 @@ class Artifact extends OIPRecord {
    */
   getTXID () {
     return this.meta.txid
+  }
+
+  /**
+   * Set the Original Record TXID (setTXID will be different if edits have been performed)
+   * @param {string} originalTxid
+   */
+  setOriginalTXID (originalTxid) {
+    this.meta.originalTxid = originalTxid
+  }
+
+  /**
+   * Get the Original Record TXID (getTXID will be different if edits have been performed)
+   * @return {String} originalTxid
+   */
+  getOriginalTXID () {
+    return this.meta.originalTxid
   }
 
   /**
@@ -1015,6 +1034,7 @@ class Artifact extends OIPRecord {
         this.setDeactivated(artifact.meta.deactivated || false)
         this.setSignature(artifact.meta.signature)
         this.setTXID(artifact.meta.txid)
+        this.setOriginalTXID(artifact.meta.originalTxid)
         this.setTime(artifact.meta.time)
         this.setVersion(artifact.meta.type)
 

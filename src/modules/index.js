@@ -1,5 +1,5 @@
 import { ArtifactFile } from './files'
-import { FloTx } from './flo'
+import { FLOTransaction, FLOTransactionBuilder, Peer, FloTx } from './flo'
 import { MPSingle, MultipartX } from './multipart'
 import * as Records from './records'
 
@@ -8,5 +8,8 @@ export {
   ArtifactFile,
   MultipartX,
   MPSingle,
-  FloTx
+  FloTx,
+  FLOTransaction,
+  FLOTransactionBuilder,
+  Peer
 }

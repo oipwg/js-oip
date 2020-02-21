@@ -39,6 +39,16 @@ describe('DaemonApi', () => {
     expect(artifact).toBeDefined()
     expect(artifact).toBeInstanceOf(Artifact)
   })
+
+  it.skip('GET Record by TXID | getRecord()', async () => {
+    let txid = 'cc9a11050acdc4401aec3f40c4cce123d99c0f2c27d4403ae4a2536ee38a4716'
+    let { success, error, record } = await index.getRecord(txid)
+    expect(success).toBeTruthy()
+    expect(error).toBeUndefined()
+    expect(record).toBeDefined()
+    expect(record).toBeInstanceOf(Artifact)
+  })
+
   it('GET multiple artifact by TXID | getArtifacts()', async () => {
     const txid1 = '6ffbffd475c7eabe0acc664087ac56c13ac7c2084746619182b360c2f19e430e'
     const txid2 = 'f72c314d257d8062581788ab56bbe4ab1dc09dafb7961866903d1144575a3b48'

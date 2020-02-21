@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      modules/flo/Peer.js - Documentation
+      modules/flo/FLOTransaction.js - Documentation
   </title>
 
   <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
@@ -82,7 +82,7 @@
   <div id="main">
     
       <h1 class="page-title">
-        modules/flo/Peer.js
+        modules/flo/FLOTransaction.js
       </h1>
     
 
@@ -91,165 +91,359 @@
 
 <section>
   <article>
-    <pre class="prettyprint source linenums"><code>import { peer, netaddress, packets, tx, logger, invitem } from 'fcoin'
+    <pre class="prettyprint source linenums"><code>import { Transaction, script as bscript, crypto as bcrypto } from 'bitcoinjs-lib'
+import varuint from 'varuint-bitcoin'
 
-/* Create a Flo p2p Peer */
-class Peer {
-  /**
-   * Initialize the Peer
-   * @param  {Object} settings
-   * @param  {Object} settings.ip - The IP address of the Flo Peer to connect to
-   * @param  {Object} [settings.agent="js-oip fcoin Peer"] - The "name" to display to nodes you connect to.
-   * @return {Peer}
-   */
-  constructor (settings) {
-    // Store our internally settings for later use
-    this.settings = settings
+// The maximum floData that fits in one transaction
+export const FLODATA_MAX_LEN = 1040
 
-    // Rename the mainnet network to be what fcoin expects
-    if (this.settings.network === 'mainnet' || this.settings.network === 'livenet') { this.settings.network = 'main' }
+const EMPTY_SCRIPT = Buffer.alloc(0)
+const ZERO = Buffer.from('0000000000000000000000000000000000000000000000000000000000000000', 'hex')
+const ONE = Buffer.from('0000000000000000000000000000000000000000000000000000000000000001', 'hex')
+const VALUE_UINT64_MAX = Buffer.from('ffffffffffffffff', 'hex')
+const BLANK_OUTPUT = {
+  script: EMPTY_SCRIPT,
+  valueBuffer: VALUE_UINT64_MAX
+}
+const EMPTY_WITNESS = []
 
-    // Set the initial connection status
-    this.connected = false
-    // Initialize the transaction map to store { 'txid': 'hex' } the txid related to the hex
-    this.txMap = {}
-    // Initialize a logging limiter variable
-    this.singleLog = 0
+class FLOTransaction extends Transaction {
+  constructor () {
+    super()
+
+    this.version = 2
+    this.floData = Buffer.from([])
   }
 
-  /**
-   * Open a p2p connection to the Peer
-   * @return {Boolean} Returns the connection status
-   */
-  async connect () {
-    let log = logger({ level: 'spam' })
-    // Create the Fcoin Peer
-    this.peer = peer.fromOptions({
-      logger: log,
-      network: this.settings.network,
-      agent: this.settings.agent,
-      hasWitness: () => {
-        return false
+  setFloData (floData, dataType) {
+    let tmpFloData = Buffer.from(floData, dataType)
+
+    // Check if the floData is too long :)
+    if (tmpFloData.length > FLODATA_MAX_LEN) { throw new Error(`Attempted to set too much floData! Maximum is ${FLODATA_MAX_LEN}, you tried ${tmpFloData.length}!`) }
+
+    this.floData = tmpFloData
+  }
+
+  getFloData () {
+    return this.floData
+  }
+
+  clone () {
+    let newTx = new FLOTransaction()
+    newTx.version = this.version
+    newTx.locktime = this.locktime
+
+    newTx.ins = this.ins.map(function (txIn) {
+      return {
+        hash: txIn.hash,
+        index: txIn.index,
+        script: txIn.script,
+        sequence: txIn.sequence,
+        witness: txIn.witness
       }
     })
 
-    // Create a netaddress from our passed in IP address:port
-    let address = netaddress.fromHostname(this.settings.ip)
-
-    // Fire off the initial connection attempt
-    this.peer.connect(address)
-
-    // When we recieve packets from peers, process them using the onPacket function
-    this.peer.on('packet', this.onPacket.bind(this))
-    // Handle/log errors
-    this.peer.on('error', (e) => {
-      console.log('Peer Error: ' + e)
+    newTx.outs = this.outs.map(function (txOut) {
+      return {
+        script: txOut.script,
+        value: txOut.value
+      }
     })
 
-    try {
-      // Wait for the peer to open up
-      await this.peer.open()
-      // Set connected to true once we have connected
-      this.connected = true
-    } catch (e) {
-      // Handle connection error and set connected explicitly to false
-      this.connected = false
-    }
+    newTx.floData = Buffer.from(this.floData)
 
-    // Return the final connection status
-    return this.connected
+    return newTx
   }
 
   /**
-   * Announce the availability of a Transaction to the Peer
-   * @param  {String} hex - The hex string of the transaction
+   * Calculate the Byte Length of the Tranasction
+   * @param  {Boolean} __allowWitness - Should Witness be used in the generation
+   * @return {Integer} Returns the length of the Transaction
    */
-  announceTX (hex) {
-    // First, check if we are connected before attempting to broadcast out
-    if (this.connected) {
-      try {
-        // Create an `fcoin` transaction from our tx hex
-        let mytx = tx().fromRaw(Buffer.from(hex, 'hex'))
+  __byteLength (__allowWitness, options) {
+    let byteLength = Transaction.prototype.__byteLength.call(this, __allowWitness)
 
-        // Store the hash of the transaction in our txMap
-        this.txMap[mytx.hash('hex')] = hex
+    if ((options &amp;&amp; options.excludeFloData) || this.version &lt; 2) { return byteLength }
 
-        // Announce the Transaction to the peer
-        this.peer.announceTX(mytx)
-      } catch (e) {
-        // Throw an error if one happened
-        console.error('Announce TX Error: ' + e)
+    let floDataVarInt = varuint.encode(this.floData.length)
+
+    return (byteLength + floDataVarInt.length + this.floData.length)
+  }
+
+  static fromBuffer (buffer, _NO_STRICT) {
+    let offset = 0
+    function readUInt64LE (buffer, offset) {
+      const a = buffer.readUInt32LE(offset)
+      let b = buffer.readUInt32LE(offset + 4)
+      b *= 0x100000000
+      return b + a
+    }
+    function readSlice (n) {
+      offset += n
+      return buffer.slice(offset - n, offset)
+    }
+    function readUInt32 () {
+      const i = buffer.readUInt32LE(offset)
+      offset += 4
+      return i
+    }
+    function readInt32 () {
+      const i = buffer.readInt32LE(offset)
+      offset += 4
+      return i
+    }
+    function readUInt64 () {
+      const i = readUInt64LE(buffer, offset)
+      offset += 8
+      return i
+    }
+    function readVarInt () {
+      const vi = varuint.decode(buffer, offset)
+      offset += varuint.decode.bytes
+      return vi
+    }
+    function readVarSlice () {
+      return readSlice(readVarInt())
+    }
+    function readVector () {
+      const count = readVarInt()
+      const vector = []
+      for (let i = 0; i &lt; count; i++) { vector.push(readVarSlice()) }
+      return vector
+    }
+    const tx = new FLOTransaction()
+    tx.version = readInt32()
+    const marker = buffer.readUInt8(offset)
+    const flag = buffer.readUInt8(offset + 1)
+    let hasWitnesses = false
+    if (marker === Transaction.ADVANCED_TRANSACTION_MARKER &amp;&amp;
+      flag === Transaction.ADVANCED_TRANSACTION_FLAG) {
+      offset += 2
+      hasWitnesses = true
+    }
+    const vinLen = readVarInt()
+    for (let i = 0; i &lt; vinLen; ++i) {
+      tx.ins.push({
+        hash: readSlice(32),
+        index: readUInt32(),
+        script: readVarSlice(),
+        sequence: readUInt32(),
+        witness: EMPTY_WITNESS
+      })
+    }
+    const voutLen = readVarInt()
+    for (let i = 0; i &lt; voutLen; ++i) {
+      tx.outs.push({
+        value: readUInt64(),
+        script: readVarSlice()
+      })
+    }
+    if (hasWitnesses) {
+      for (let i = 0; i &lt; vinLen; ++i) {
+        tx.ins[i].witness = readVector()
       }
+      // was this pointless?
+      if (!tx.hasWitnesses()) { throw new Error('Transaction has superfluous witness data') }
     }
+    tx.locktime = readUInt32()
+
+    if (tx.version >= 2) { tx.floData = readVarSlice() }
+
+    if (_NO_STRICT) { return tx }
+    if (offset !== buffer.length) { throw new Error('Transaction has unexpected data') }
+    return tx
+  }
+
+  static fromHex (hex) {
+    return FLOTransaction.fromBuffer(Buffer.from(hex, 'hex'))
   }
 
   /**
-   * Handle incoming p2p packets
-   * @param  {Packet} packet - The packet that is incoming
+   * Serialize the Transaction to a Buffer
+   * @param  {Buffer} buffer         - The Buffer to use while building
+   * @param  {Integer} initialOffset  - The initial offset of the buffer
+   * @param  {Boolean} __allowWitness -Should Witness be used in the serialization
+   * @return {Buffer} Returns the TX as a Buffer
    */
-  onPacket (packet) {
-    // Check which packet type is incoming
-    switch (packet.type) {
-      // If the packet is `GETDATA` that means they are requesting us to send them tne transaction
-      case packets.types.GETDATA:
-        // Send the transaction to the peer
-        this.handleGetData(packet)
-        break
+  __toBuffer (buffer, initialOffset, __allowWitness, options) {
+    if (!buffer) {
+      buffer = Buffer.allocUnsafe(this.__byteLength(__allowWitness, options))
     }
+
+    Transaction.prototype.__toBuffer.call(this, buffer, initialOffset, __allowWitness)
+
+    // Included for testing transaction signatures, and legacy signature hashing
+    if ((options &amp;&amp; options.excludeFloData) || this.version &lt; 2) { return buffer }
+
+    // Calculate where we left off
+    let offset = this.__byteLength(__allowWitness, options) - (this.floData.length + varuint.encode(this.floData.length).length)
+
+    // Add the varint for the floData length
+    varuint.encode(this.floData.length, buffer, offset)
+    offset += varuint.encode.bytes
+    // Append the floData itself
+    this.floData.copy(buffer, offset)
+
+    // Return the built transaciton Buffer
+    return buffer
   }
 
-  /**
-   * Handle (respond to) a p2p getdata request
-   * @param  {GetDataPacket} getDataPacket - The packet to respond to with data
-   */
-  handleGetData (getDataPacket) {
-    // Track the total number of transactions relayed
-    let txsRelayed = 0
-    // Track the last txid hash that we sent
-    let lastHash
+  hashForSignature (inIndex, prevOutScript, hashType, options) {
+    // https://github.com/bitcoin/bitcoin/blob/master/src/test/sighash_tests.cpp#L29
+    if (inIndex >= this.ins.length) { return ONE }
 
-    // If the peer is requesting more than one transaction, or if they have not met the singlelog maximum, then log the request
-    if (getDataPacket.items.length > 1 || this.singleLog &lt; 5) { console.log(`[RPC Wallet] Peer ${this.settings.ip} requested ${getDataPacket.items.length} items...`) }
+    let ourScript = bscript.compile(bscript.decompile(prevOutScript).filter(x => {
+      return x !== bscript.OPS.OP_CODESEPARATOR
+    }))
 
-    // Loop through each requested item in the getData packet
-    for (let item of getDataPacket.items) {
-      // We only care about responding if they are requesting a transction
-      let regTX = (item.type === invitem.types.TX)
-      let segTX = (item.type === invitem.types.WITNESS_TX)
-      // If we are a regular tx, or a segwit tx, then continue
-      if (regTX || segTX) {
-        // Check to see if we have this transction in our txMap, and if not, skip it (ignore transactions that are not our own)
-        if (!this.txMap[item.hash]) { return }
+    let txTmp = this.clone()
 
-        // Create an `fcoin` tx from the cached tx hex
-        let mytx = tx().fromRaw(Buffer.from(this.txMap[item.hash], 'hex'))
-        // Include the transaction in a TXPacket to be sent to the Peer
-        let txPacket = packets.TXPacket(mytx, segTX)
-
-        // Send out the TXPacket to the Peer
-        this.peer.send(txPacket)
-        // Increase our count of transactions relayed
-        txsRelayed++
-        // Store the previous hash (for logging purposes)
-        lastHash = mytx.rhash()
+    // SIGHASH_NONE: ignore all outputs? (wildcard payee)
+    if ((hashType &amp; 0x1f) === Transaction.SIGHASH_NONE) {
+      txTmp.outs = []
+      // ignore sequence numbers (except at inIndex)
+      txTmp.ins.forEach((input, i) => {
+        if (i === inIndex) { return }
+        input.sequence = 0
+      })
+      // SIGHASH_SINGLE: ignore all outputs, except at the same index?
+    } else if ((hashType &amp; 0x1f) === Transaction.SIGHASH_SINGLE) {
+      // https://github.com/bitcoin/bitcoin/blob/master/src/test/sighash_tests.cpp#L60
+      if (inIndex >= this.outs.length) { return ONE }
+      // truncate outputs after
+      txTmp.outs.length = inIndex + 1
+      // "blank" outputs before
+      for (let i = 0; i &lt; inIndex; i++) {
+        txTmp.outs[i] = BLANK_OUTPUT
       }
+      // ignore sequence numbers (except at inIndex)
+      txTmp.ins.forEach((input, y) => {
+        if (y === inIndex) { return }
+        input.sequence = 0
+      })
+    }
+    // SIGHASH_ANYONECANPAY: ignore inputs entirely?
+    if (hashType &amp; Transaction.SIGHASH_ANYONECANPAY) {
+      txTmp.ins = [txTmp.ins[inIndex]]
+      txTmp.ins[0].script = ourScript
+      // SIGHASH_ALL: only ignore input scripts
+    } else {
+      // "blank" others input scripts
+      txTmp.ins.forEach(input => {
+        input.script = EMPTY_SCRIPT
+      })
+      txTmp.ins[inIndex].script = ourScript
     }
 
-    // If we have responded to at least one getdata item, then log our response
-    if (txsRelayed > 0) {
-      // If we have logged a single tx being relayed more than 5 times, then just skip logging (to prevent spam)
-      if (txsRelayed === 1 &amp;&amp; this.singleLog > 5) { return }
+    // serialize and hash
+    let buffer = Buffer.alloc(txTmp.__byteLength(false, options) + 4)
+    buffer.writeInt32LE(hashType, buffer.length - 4)
+    txTmp.__toBuffer(buffer, 0, false, options)
 
-      // If we only relayed a single transaction, then increase the "singleLog" counter
-      if (txsRelayed === 1) { this.singleLog++ }
+    return bcrypto.hash256(buffer)
+  }
 
-      // Log information about the sent transactions
-      console.log(`[RPC Wallet] Relayed ${txsRelayed} requested transactions to ${this.settings.ip} (last txid ${lastHash})`)
+  hashForWitnessV0 (inIndex, prevOutScript, value, hashType, options) {
+    function writeUInt64LE (buffer, value, offset) {
+      buffer.writeInt32LE(value &amp; -1, offset)
+      buffer.writeUInt32LE(Math.floor(value / 0x100000000), offset + 4)
+      return offset + 8
     }
+    let tbuffer = Buffer.from([])
+    let toffset = 0
+    function writeSlice (slice) {
+      toffset += slice.copy(tbuffer, toffset)
+    }
+    function writeUInt32 (i) {
+      toffset = tbuffer.writeUInt32LE(i, toffset)
+    }
+    function writeUInt64 (i) {
+      toffset = writeUInt64LE(tbuffer, i, toffset)
+    }
+    function writeVarInt (i) {
+      varuint.encode(i, tbuffer, toffset)
+      toffset += varuint.encode.bytes
+    }
+    function writeVarSlice (slice) {
+      writeVarInt(slice.length)
+      writeSlice(slice)
+    }
+    function varSliceSize (someScript) {
+      const length = someScript.length
+      return varuint.encodingLength(length) + length
+    }
+
+    let hashOutputs = ZERO
+    let hashPrevouts = ZERO
+    let hashSequence = ZERO
+
+    if (!(hashType &amp; Transaction.SIGHASH_ANYONECANPAY)) {
+      tbuffer = Buffer.allocUnsafe(36 * this.ins.length)
+      toffset = 0
+      this.ins.forEach(txIn => {
+        writeSlice(txIn.hash)
+        writeUInt32(txIn.index)
+      })
+      hashPrevouts = bcrypto.hash256(tbuffer)
+    }
+
+    if (!(hashType &amp; Transaction.SIGHASH_ANYONECANPAY) &amp;&amp;
+    (hashType &amp; 0x1f) !== Transaction.SIGHASH_SINGLE &amp;&amp;
+    (hashType &amp; 0x1f) !== Transaction.SIGHASH_NONE) {
+      tbuffer = Buffer.allocUnsafe(4 * this.ins.length)
+      toffset = 0
+      this.ins.forEach(txIn => {
+        writeUInt32(txIn.sequence)
+      })
+      hashSequence = bcrypto.hash256(tbuffer)
+    }
+
+    if ((hashType &amp; 0x1f) !== Transaction.SIGHASH_SINGLE &amp;&amp;
+    (hashType &amp; 0x1f) !== Transaction.SIGHASH_NONE) {
+      const txOutsSize = this.outs.reduce((sum, output) => {
+        return sum + 8 + varSliceSize(output.script)
+      }, 0)
+      tbuffer = Buffer.allocUnsafe(txOutsSize)
+      toffset = 0
+      this.outs.forEach(out => {
+        writeUInt64(out.value)
+        writeVarSlice(out.script)
+      })
+      hashOutputs = bcrypto.hash256(tbuffer)
+    } else if ((hashType &amp; 0x1f) === Transaction.SIGHASH_SINGLE &amp;&amp;
+    inIndex &lt; this.outs.length) {
+      const output = this.outs[inIndex]
+      tbuffer = Buffer.allocUnsafe(8 + varSliceSize(output.script))
+      toffset = 0
+      writeUInt64(output.value)
+      writeVarSlice(output.script)
+      hashOutputs = bcrypto.hash256(tbuffer)
+    }
+
+    tbuffer = Buffer.alloc(156 + varSliceSize(prevOutScript) + varSliceSize(this.floData))
+
+    if ((options &amp;&amp; options.excludeFloData) || this.version &lt; 2) { tbuffer = Buffer.alloc(156 + varSliceSize(prevOutScript)) }
+
+    toffset = 0
+    const input = this.ins[inIndex]
+    writeUInt32(this.version)
+    writeSlice(hashPrevouts)
+    writeSlice(hashSequence)
+    writeSlice(input.hash)
+    writeUInt32(input.index)
+    writeVarSlice(prevOutScript)
+    writeUInt64(value)
+    writeUInt32(input.sequence)
+    writeSlice(hashOutputs)
+    writeUInt32(this.locktime)
+    if (!(options &amp;&amp; options.excludeFloData) &amp;&amp; this.version >= 2) { writeVarSlice(this.floData) }
+    writeUInt32(hashType)
+
+    return bcrypto.hash256(tbuffer)
   }
 }
 
-export default Peer
+export default FLOTransaction
 </code></pre>
   </article>
 </section>

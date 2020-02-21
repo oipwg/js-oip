@@ -97,7 +97,7 @@ class DaemonApi {
    * let oipd = new DaemonApi("localhost:1606") //leave blank for default API URL
    * let latestArtifacts = await oipd.getLatestArtifacts()
    * ```
-   * @param  {string} [daemonUrl="https://api.oip.io/oip"] - The URL of an OIP Daemon
+   * @param  {String} [daemonUrl="https://api.oip.io/oip"] - The URL of an OIP Daemon
    */
   constructor (daemonUrl) {
     if (daemonUrl) {
@@ -107,17 +107,17 @@ class DaemonApi {
         this.setUrl(daemonUrl)
       }
     } else {
-      this.setUrl(defaultOIPdURL) // ToDo: default for prod
+      this.setUrl(defaultOIPdURL)
     }
   }
 
   /**
    * Set the DaemonUrl
-   * @param {string} daemonUrl - the URL of an OIP Daemon (OIPd)
+   * @param {String} daemonUrl - the URL of an OIP Daemon (OIPd)
    * @example
-   * DaemonApi.setUrl('snowflake.oip.fun:1606')
+   * DaemonApi.setUrl('https://api.oip.io/oip')
    * let url = DaemonUrl.getUrl()
-   * url === 'snowflake.oip.fun:1606' //true
+   * url === 'https://api.oip.io/oip' //true
    */
   setUrl (daemonUrl) {
     this.url = daemonUrl
@@ -216,7 +216,7 @@ class DaemonApi {
       case 'text':
         typeArr.push('Text-Basic')
         break
-      // 42s
+        // 42s
       case 'research':
         typeArr.push('research')
         break
@@ -340,6 +340,34 @@ class DaemonApi {
     let [artifact] = res.data.results
 
     return { success: true, artifact: decodeArtifact(artifact) } // ToDO: OIPDecoder
+  }
+
+  /**
+   * Get a Record from the Index by TXID
+   * @param {TXID} txid  - transaction id of the artifact you wish to retrieve
+   * @return {Promise<Object>}
+   * @example
+   * let txid = 'cc9a11050acdc4401aec3f40c4cce123d99c0f2c27d4403ae4a2536ee38a4716'
+   * let {success, record, error} = await DaemonApi.getRecord(txid)
+   */
+  async getRecord (txid) {
+    let res
+    try {
+      res = await this.index.get(`/oip042/record/get/${txid}`)
+    } catch (err) {
+      return new Error(`Failed to get Record: ${txid} -- ${err}`)
+    }
+    if (!res || !res.data) {
+      return { success: false, error: `Missing response data: ${res.data} for txid ${txid}` }
+    }
+
+    if (!res.data.results || !Array.isArray(res.data.results) || res.data.results.length < 1) {
+      return { success: false, error: `No results found for txid ${txid}` }
+    }
+
+    let [record] = res.data.results
+
+    return { success: true, record: decodeArtifact(record) } // ToDO: OIPDecoder
   }
 
   /**
@@ -763,7 +791,7 @@ class DaemonApi {
   async getVersion () {
     let res
     try {
-      res = await this.index.get('daemon/version')
+      res = await this.index.get('/daemon/version')
     } catch (err) {
       throw new Error(`Failed to get daemon version: ${err}`)
     }
@@ -1021,7 +1049,7 @@ class DaemonApi {
   }
   async isVerifiedPublisher ({ pubAddr, templateName, apiUrl, localhost = false }) {
     const VERIFIED_PUBLISHER_TEMPLATE = 'tmpl_F471DFF9'
-    const verifyApiEndpoint = 'https://snowflake.oip.fun/verified/publisher/check/' // toDo: change for prod
+    const verifyApiEndpoint = 'https://api.oip.io/verified/publisher/check/'
     const localhostVerifyEndpoint = 'http://localhost:1607/verified/publisher/check/'
 
     let tmplName = templateName || VERIFIED_PUBLISHER_TEMPLATE

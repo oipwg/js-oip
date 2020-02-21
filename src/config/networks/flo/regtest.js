@@ -4,9 +4,9 @@ import { varIntBuffer } from '../../../util/btc'
 const floFeePerKb = 10000
 
 module.exports = {
-  name: 'floTestnet',
-  displayName: 'Flo Testnet',
-  ticker: 'tFLO',
+  name: 'floRegtest',
+  displayName: 'Flo Regtest',
+  ticker: 'rFLO',
   satPerCoin: 1e8,
   feePerKb: floFeePerKb,
   feePerByte: floFeePerKb / 1024,

@@ -1,6 +1,7 @@
-import { floMainnet, floTestnet } from './networks'
+import { floMainnet, floTestnet, floRegtest } from './networks'
 
 module.exports = {
   floMainnet,
-  floTestnet
+  floTestnet,
+  floRegtest
 }
