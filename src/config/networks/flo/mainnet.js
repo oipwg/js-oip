@@ -1,4 +1,4 @@
-import { Insight } from 'insight-explorer'
+import { Insight } from '@oipwg/insight-explorer'
 import { varIntBuffer } from '../../../util/btc'
 
 const floFeePerKb = 100000

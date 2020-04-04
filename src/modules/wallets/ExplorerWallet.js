@@ -1,7 +1,7 @@
 import { sign } from 'bitcoinjs-message'
 import { ECPair, payments, address } from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
-import Insight from 'insight-explorer'
+import * as ie from '@oipwg/insight-explorer'
 
 // This dependency was not found:
 //
@@ -66,7 +66,7 @@ class ExplorerWallet {
 
     if (options.network === 'testnet') { network = floTestnet }
 
-    if (options.explorerUrl) { network.explorer = new Insight(options.explorerUrl) }
+    if (options.explorerUrl) { network.explorer = new ie.Insight(options.explorerUrl) }
 
     if (!isValidWIF(options.wif, network.network)) {
       return { success: false, message: 'Invalid WIF', wif: options.wif, network: network.network }
