@@ -1,7 +1,7 @@
 import { sign } from 'bitcoinjs-message'
 import { ECPair, payments, address } from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
-import Insight from 'insight-explorer'
+import Insight from '@oipwg/insight-explorer'
 
 // This dependency was not found:
 //
