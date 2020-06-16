@@ -504,14 +504,6 @@ class RPCWallet {
       this.peers.push(peer)
     }
 
-    if (this.options.network === 'regtest') {
-      let peer = new Peer({ ip: '127.0.0.1:17412', network: this.options.network })
-      // Start the connection attempt
-      peer.connect()
-      // Add it to our peerrs array
-      this.peers.push(peer)
-    }
-
     // Wait for PEER_CONNECT_LENGTH in order to allow peers to initialize
     await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, PEER_CONNECT_LENGTH) })
 
