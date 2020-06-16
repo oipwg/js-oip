@@ -89,12 +89,15 @@ class OIP {
    * Broadcast an OIP Record
    * @param {OIPRecord} record - Any Object whos class extends OIPRecord (Artifact, Publisher, Platform, Retailer, Influencer, EditRecord, etc)
    * @param {String} methodType - The method you are wanting to perform, i.e. `publish`, `edit`, `deactivate`, `transfer` etc
+   * @param {Object} options - Broadcast options
+   * @param {function} options.onConfirmation - A function to run once the transaction recieves a confirmation that it was included in a block.
+   * @param {String} options.onConfirmationRef - A reference string that should be returned in the onConfirmation function (useful for ID's).
    * @return {Promise<Object>} response - An object that contains a var for `success`, the `record` that was published, and the `editRecord` if it is an edit
    * let oip = new OIP(wif, "testnet")
    * let artifact = new Artifact()
    * let result = await oip.broadcastRecord(artifact, 'publish')
    */
-  async broadcastRecord (record, methodType) {
+  async broadcastRecord (record, methodType, options) {
     // Verify that we are generally an OIPRecord (aka, we have the required signature and serialization functions)
     if (!(record instanceof OIPRecord)) {
       throw new Error(`Record must be an instanceof OIPRecord`)
@@ -130,7 +133,7 @@ class OIP {
     if (broadcastString.length > FLODATA_MAX_LEN) {
       try {
         // Split the broadcast string up and publish the multiparts for it
-        txids = await this.publishMultiparts(broadcastString)
+        txids = await this.publishMultiparts(broadcastString, options)
       } catch (err) {
         return { success: false, error: `Failed to publish multiparts: ${err}` }
       }
@@ -162,6 +165,10 @@ class OIP {
       response.editRecord = record
     }
 
+
+    // Subscribe to the onConfirmation function to get a callback when all transactions have been confirmed
+    this.wallet.onConfirmation(response, options)
+
     // Return our built response
     return response
   }
@@ -169,14 +176,17 @@ class OIP {
   /**
    * Publish OIP Records
    * @param {OIPRecord} record - an Artifact, Publisher, Platform, Retailer, or Influencer
+   * @param {Object} options - Publishing options
+   * @param {function} options.onConfirmation - A function to run once the transaction recieves a confirmation that it was included in a block.
+   * @param {String} options.onConfirmationRef - A reference string that should be returned in the onConfirmation function (useful for ID's).
    * @return {Promise<Object>} response - An object that contains a var for `success`, the `record` that was published
    * let oip = new OIP(wif, "testnet")
    * let artifact = new Artifact()
    * let result = await oip.publish(artifact)
    */
-  async publish (record) {
+  async publish (record, options) {
     // Forward the publish directly on to the broadcastRecord method
-    let res = await this.broadcastRecord(record, 'publish')
+    let res = await this.broadcastRecord(record, 'publish', options)
     return res
   }
 
@@ -288,6 +298,14 @@ class OIP {
       txids.push(txid)
     }
     return txids
+  }
+
+  /**
+   * Wait for all Confirmation Subscriptions to complete, then resolves the Promise
+   * @return {Promise} Returns a promise that resolves once all subscribed Confirmation callbacks have completed
+   */
+  waitForConfirmations() {
+    return this.wallet.waitForConfirmations()
   }
 }
 
