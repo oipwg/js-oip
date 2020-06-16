@@ -339,8 +339,8 @@ class RPCWallet {
     // Count the number of confirmed
     let numberConfirmed = startAncestorCount - this.currentAncestorCount
     // Remove the transactions that just got confirmed
-    for (let i = 0; i < numberConfirmed; i++) { 
-      this.unconfirmedTransactions.shift() 
+    for (let i = 0; i < numberConfirmed; i++) {
+      this.unconfirmedTransactions.shift()
       this.unconfirmedTxids.shift()
     }
 
@@ -715,7 +715,7 @@ class RPCWallet {
 
   /**
    * Subscribe a callback function to be run when all TXIDs are confirmed.
-   * @param  {Array<String>} response.txids - An Array of TXIDs 
+   * @param  {Array<String>} response.txids - An Array of TXIDs
    * @param  {OIPRecord} response.record - The OIPRecord that was published (to be returned to the Callback)
    * @param {function} options.onConfirmation - A function to run once the transaction recieves a confirmation that it was included in a block.
    * @param {String} options.onConfirmationRef - A reference string that should be returned in the onConfirmation function (useful for ID's).
@@ -739,16 +739,16 @@ class RPCWallet {
   async checkForConfirmations () {
     for (let subscription in this.onConfirmationSubscriptions) {
       let { txids, record, options } = this.onConfirmationSubscriptions[subscription]
-    
+
       // Check if we are still waiting to be confirmed
       let waitingForConfirmation = false
       for (let txid of txids) {
-        if (this.unconfirmedTxids.includes(txid)) { 
-          waitingForConfirmation = true 
+        if (this.unconfirmedTxids.includes(txid)) {
+          waitingForConfirmation = true
         }
       }
 
-      if (!waitingForConfirmation) { 
+      if (!waitingForConfirmation) {
         try {
           await options.onConfirmation(record, txids, options.onConfirmationRef)
         } catch (e) {
@@ -763,7 +763,7 @@ class RPCWallet {
    * Wait for all Confirmation Subscriptions to complete, then resolves the Promise
    * @return {Promise} Returns a promise that resolves once all subscribed Confirmation callbacks have completed
    */
-  async waitForConfirmations() {
+  async waitForConfirmations () {
     let subCount = Object.keys(this.onConfirmationSubscriptions).length
     let lastConfirmationTime = Date.now()
 
@@ -780,7 +780,7 @@ class RPCWallet {
         if (Date.now() - lastConfirmationTime > CONFIRMATION_REBROADCAST_DELAY) {
           // If so, rebroadcast the pending transactions
           lastConfirmationTime = Date.now()
-          console.log(`[RPC Wallet] Rebroadcasting Transactions! There were no record confirmations within the past ${CONFIRMATION_REBROADCAST_DELAY/1000} seconds.`)
+          console.log(`[RPC Wallet] Rebroadcasting Transactions! There were no record confirmations within the past ${CONFIRMATION_REBROADCAST_DELAY / 1000} seconds.`)
           await this.rebroadcastTransactions()
         }
       } else {

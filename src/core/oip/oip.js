@@ -165,7 +165,6 @@ class OIP {
       response.editRecord = record
     }
 
-
     // Subscribe to the onConfirmation function to get a callback when all transactions have been confirmed
     this.wallet.onConfirmation(response, options)
 
@@ -304,7 +303,7 @@ class OIP {
    * Wait for all Confirmation Subscriptions to complete, then resolves the Promise
    * @return {Promise} Returns a promise that resolves once all subscribed Confirmation callbacks have completed
    */
-  waitForConfirmations() {
+  waitForConfirmations () {
     return this.wallet.waitForConfirmations()
   }
 }
