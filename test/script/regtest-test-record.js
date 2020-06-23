@@ -13,14 +13,14 @@ const author = new OIP(authorWif, 'regtest', {
   }
 })
 
-function makeDescription(length) {
-   var result           = '';
-   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-   var charactersLength = characters.length;
-   for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   return result;
+function makeDescription (length) {
+  var result = ''
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  var charactersLength = characters.length
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+  return result
 }
 
 async function run () {
@@ -44,7 +44,7 @@ async function run () {
       console.log(`Error recording ${i}`, original)
     }
   }
-    
+
   // Wait for all records to be confirmed into the Blockchain
   await author.waitForConfirmations()
 }
