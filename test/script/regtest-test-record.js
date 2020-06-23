@@ -13,13 +13,40 @@ const author = new OIP(authorWif, 'regtest', {
   }
 })
 
-async function run () {
-  // Create and broadcast a record
-  const myRecord = new Artifact()
-  myRecord.setTitle('OIP Test Record')
+function makeDescription(length) {
+   var result           = '';
+   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+   var charactersLength = characters.length;
+   for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+   }
+   return result;
+}
 
-  const original = await author.publish(myRecord)
-  console.log('Record TXIDs: ' + original.txids)
+async function run () {
+  for (let i = 0; i < 1000; i++) {
+    // Create and broadcast a record
+    let myRecord = new Artifact()
+    myRecord.setTitle('js-oip onConfirmation test #' + i)
+    myRecord.setDescription(makeDescription(5000))
+
+    let original = await author.publish(myRecord, {
+      onConfirmation: async (recordedRecord, txids, ref) => {
+        await new Promise((resolve, reject) => { setTimeout(resolve, 100) })
+        console.log(`onConfirmation: ${recordedRecord.getTXID()}, ${ref}`)
+      },
+      onConfirmationRef: `my-id-${i}`
+    })
+
+    if (original.success) {
+      console.log(`Record ${i} main TXID: ${original.record.getTXID()}`)
+    } else {
+      console.log(`Error recording ${i}`, original)
+    }
+  }
+    
+  // Wait for all records to be confirmed into the Blockchain
+  await author.waitForConfirmations()
 }
 
 run().then(() => {}).catch((e) => { throw e })
