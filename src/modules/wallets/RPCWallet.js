@@ -710,7 +710,7 @@ class RPCWallet {
    * Get the current onConfirmation subscription count
    * @return {Integer} returns the count of pending onConfirmation subscriptions
    */
-  getConfirmationCount () {
+  getConfirmationSubscribtionCount () {
     return Object.keys(this.onConfirmationSubscriptions).length
   }
 
@@ -746,9 +746,16 @@ class RPCWallet {
    * @return {Promise} Returns a promise that resolves once all of the available confirmation callbacks have been run
    */
   async checkForConfirmations () {
-    if (this.getConfirmationCount() === 0) { return }
+    if (this.getConfirmationSubscribtionCount() === 0) { 
+      // Sanity check to clear out the interval if for whatever reason it currently exists.
+      if (this.onConfirmationInterval) {
+        clearInterval(this.onConfirmationInterval)
+        this.onConfirmationInterval = undefined
+      }
+      return 
+    }
 
-    console.log(`[RPC Wallet] Checking ${this.getConfirmationCount()} transations for confirmations...`)
+    console.log(`[RPC Wallet] Checking ${this.getConfirmationSubscribtionCount()} transations for confirmations...`)
     for (let subscription in this.onConfirmationSubscriptions) {
       let { txids, record, options } = this.onConfirmationSubscriptions[subscription]
 
@@ -770,10 +777,10 @@ class RPCWallet {
       }
     }
 
-    // Check if there are no more subscriptions, if there are no more, clear the Interval for checking the confirmation
-    let subscriptionCount = this.getConfirmationCount()
-    if (subscriptionCount === 0) {
+    // Now that we have attempted to process confirmation subscriptions, see if we should immediately clear the setInterval
+    if (this.getConfirmationSubscribtionCount() === 0 && this.onConfirmationInterval) {
       clearInterval(this.onConfirmationInterval)
+      this.onConfirmationInterval = undefined
     }
   }
 
@@ -782,7 +789,7 @@ class RPCWallet {
    * @return {Promise} Returns a promise that resolves once all subscribed Confirmation callbacks have completed
    */
   async waitForConfirmations () {
-    let subCount = this.getConfirmationCount()
+    let subCount = this.getConfirmationSubscribtionCount()
     let lastConfirmationTime = Date.now()
 
     while (subCount > 0) {
@@ -792,7 +799,7 @@ class RPCWallet {
       await this.checkForConfirmations()
 
       let tmpSubCount = subCount
-      subCount = this.getConfirmationCount()
+      subCount = this.getConfirmationSubscribtionCount()
       if (tmpSubCount === subCount) {
         // Check if we have been waiting longer than CONFIRMATION_REBROADCAST_DELAY for a confirmation to happen
         if (Date.now() - lastConfirmationTime > CONFIRMATION_REBROADCAST_DELAY) {
