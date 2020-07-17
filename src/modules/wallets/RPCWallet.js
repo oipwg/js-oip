@@ -31,6 +31,8 @@ const UPDATE_ANCESTOR_STATUS = 1 * ONE_SECOND
 const REPAIR_ANCESTORS_AFTER = 1 * ONE_MINUTE
 const PEER_CONNECT_LENGTH = 2 * ONE_SECOND
 const REBROADCAST_LENGTH = 10 * ONE_SECOND
+const CONFIRMATION_CHECK_LENGTH = 2 * ONE_SECOND
+const CONFIRMATION_REBROADCAST_DELAY = 1 * ONE_MINUTE
 const REPAIR_MIN_TX = 100
 
 // List of all Wallet-Only RPC Methods
@@ -146,7 +148,10 @@ class RPCWallet {
 
     // Store information about our tx chain and the previous tx output
     this.unconfirmedTransactions = []
+    this.unconfirmedTxids = []
     this.previousTXOutput = undefined
+    this.onConfirmationSubscriptions = {}
+    this.onConfirmationInterval = undefined
 
     // Initialize our initial peer array
     this.peers = []
@@ -287,7 +292,7 @@ class RPCWallet {
    * @async
    * @return {Boolean} Returns `true` once it is safe to continue sending transactions
    */
-  async checkAncestorCount () {
+  async checkAncestorCount (forceUpdateAncestor) {
     // Store our starting count
     let startAncestorCount = this.currentAncestorCount
     let startAncestorSize = this.currentAncestorSize
@@ -299,7 +304,10 @@ class RPCWallet {
     let reachedAncestorLimitTimestamp
 
     // Check if we have too many ancestors, and if we do, wait for the ancestor count to decrease (aka, some transactions to get confirmed in a block)
-    while (this.currentAncestorCount >= MAX_MEMPOOL_ANCESTORS || this.currentAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE) {
+    let forceFirstLoopUpdate = forceUpdateAncestor
+    while (this.currentAncestorCount >= MAX_MEMPOOL_ANCESTORS || this.currentAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE || forceFirstLoopUpdate) {
+      // Only force an update for the first loop, then disable to prevent looping forever
+      forceFirstLoopUpdate = false
       // Wait for UPDATE_ANCESTOR_STATUS seconds (don't run on the first loop through)
       if (!firstLoop) { await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, UPDATE_ANCESTOR_STATUS) }) }
       // Update the ancestor status (this is what will break us out of our while loop)
@@ -332,7 +340,10 @@ class RPCWallet {
     // Count the number of confirmed
     let numberConfirmed = startAncestorCount - this.currentAncestorCount
     // Remove the transactions that just got confirmed
-    for (let i = 0; i < numberConfirmed; i++) { this.unconfirmedTransactions.shift() }
+    for (let i = 0; i < numberConfirmed; i++) {
+      this.unconfirmedTransactions.shift()
+      this.unconfirmedTxids.shift()
+    }
 
     // Check to see how many transactions got confirmed
     if (startAncestorCount >= MAX_MEMPOOL_ANCESTORS || startAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE) {
@@ -426,6 +437,7 @@ class RPCWallet {
 
       // Add the raw tx hex to the start of the unconfirmed transactions list
       this.unconfirmedTransactions.unshift(txHex.result)
+      this.unconfirmedTxids.unshift(nextTXID)
 
       // Then lookup to see if it is in the mempool
       let txMemInfo = await this.rpcRequest('getmempoolentry', [ nextTXID ])
@@ -478,6 +490,8 @@ class RPCWallet {
       // Set to test or mainnet ourselves.
       if (this.options.network && (this.options.network === 'mainnet' || this.options.network === 'livenet')) {
         peerHost = peerHost + ':7312'
+      } else if (this.options.network && this.options.network === 'regtest') {
+        peerHost = peerHost + ':17412'
       } else {
         peerHost = peerHost + ':17312'
       }
@@ -664,6 +678,8 @@ class RPCWallet {
 
     // Make sure that we don't have too many ancestors. If we do, then waits for some transactions to be confirmed.
     await this.checkAncestorCount()
+    // Check if transactions have been confirmed, and if so run the callback provided
+    await this.checkForConfirmations()
 
     // Create and sign the transaction hex
     let signedTXHex = this.createAndSignTransaction(inputs[0], outputs, floData)
@@ -677,6 +693,7 @@ class RPCWallet {
     this.addAncestor(signedTXHex)
     // Add our tx hex to the unconfirmed transactions array
     this.unconfirmedTransactions.push(signedTXHex)
+    this.unconfirmedTxids.push(broadcastTX.result)
 
     // Set the new tx to be used as the next output.
     this.previousTXOutput = {
@@ -687,6 +704,117 @@ class RPCWallet {
 
     // Return the TXID of the transaction
     return broadcastTX.result
+  }
+
+  /**
+   * Get the current onConfirmation subscription count
+   * @return {Integer} returns the count of pending onConfirmation subscriptions
+   */
+  getConfirmationSubscriptionCount () {
+    return Object.keys(this.onConfirmationSubscriptions).length
+  }
+
+  /**
+   * Subscribe a callback function to be run when all TXIDs are confirmed.
+   * @param  {Array<String>} response.txids - An Array of TXIDs
+   * @param  {OIPRecord} response.record - The OIPRecord that was published (to be returned to the Callback)
+   * @param {function} options.onConfirmation - A function to run once the transaction recieves a confirmation that it was included in a block.
+   * @param {String} options.onConfirmationRef - A reference string that should be returned in the onConfirmation function (useful for ID's).
+   */
+  onConfirmation ({ txids, record }, options) {
+    // If we do not have an onConfirmation subscription, exit the function
+    if (!options || !options.onConfirmation || typeof options.onConfirmation !== 'function') { return }
+
+    // Add this subscription to the tracked subscriptions
+    this.onConfirmationSubscriptions[record.getTXID()] = {
+      txids,
+      record,
+      options
+    }
+
+    // If we do not already have a loop going to make sure confirmations get fired off, create one
+    if (!this.onConfirmationInterval) {
+      this.onConfirmationInterval = setInterval((async () => { 
+        await this.checkAncestorCount(true)
+        await this.checkForConfirmations() 
+      }).bind(this), CONFIRMATION_CHECK_LENGTH)
+    }
+  }
+
+  /**
+   * Check if any of the confirmation subscriptions should be run because TXIDs got confirmed
+   * @return {Promise} Returns a promise that resolves once all of the available confirmation callbacks have been run
+   */
+  async checkForConfirmations () {
+    if (this.getConfirmationSubscriptionCount() === 0) { 
+      // Sanity check to clear out the interval if for whatever reason it currently exists.
+      if (this.onConfirmationInterval) {
+        clearInterval(this.onConfirmationInterval)
+        this.onConfirmationInterval = undefined
+      }
+      return 
+    }
+
+    console.log(`[RPC Wallet] Checking ${this.getConfirmationSubscriptionCount()} transations for confirmations...`)
+    for (let subscription in this.onConfirmationSubscriptions) {
+      let { txids, record, options } = this.onConfirmationSubscriptions[subscription]
+
+      // Check if we are still waiting to be confirmed
+      let waitingForConfirmation = false
+      for (let txid of txids) {
+        if (this.unconfirmedTxids.includes(txid)) {
+          waitingForConfirmation = true
+        }
+      }
+
+      if (!waitingForConfirmation) {
+        try {
+          await options.onConfirmation(record, txids, options.onConfirmationRef)
+        } catch (e) {
+          console.warning(`[RPC Wallet] Error when running onConfirmation function in subscription: `, e)
+        }
+        delete this.onConfirmationSubscriptions[subscription]
+      }
+    }
+
+    // Now that we have attempted to process confirmation subscriptions, see if we should immediately clear the setInterval
+    if (this.getConfirmationSubscriptionCount() === 0 && this.onConfirmationInterval) {
+      clearInterval(this.onConfirmationInterval)
+      this.onConfirmationInterval = undefined
+    }
+  }
+
+  /**
+   * Wait for all Confirmation Subscriptions to complete, then resolves the Promise
+   * @return {Promise} Returns a promise that resolves once all subscribed Confirmation callbacks have completed
+   */
+  async waitForConfirmations () {
+    let subCount = this.getConfirmationSubscriptionCount()
+    let lastConfirmationTime = Date.now()
+
+    while (subCount > 0) {
+      console.log(`[RPC Wallet] Waiting for ${Object.keys(this.onConfirmationSubscriptions).length} records to be confirmed! (onConfirmation subscription)`)
+      await new Promise((resolve, reject) => { setTimeout(resolve, CONFIRMATION_CHECK_LENGTH) })
+      await this.checkAncestorCount(true)
+      await this.checkForConfirmations()
+
+      let tmpSubCount = subCount
+      subCount = this.getConfirmationSubscriptionCount()
+      if (tmpSubCount === subCount) {
+        // Check if we have been waiting longer than CONFIRMATION_REBROADCAST_DELAY for a confirmation to happen
+        if (Date.now() - lastConfirmationTime > CONFIRMATION_REBROADCAST_DELAY) {
+          // If so, rebroadcast the pending transactions
+          lastConfirmationTime = Date.now()
+          console.log(`[RPC Wallet] Rebroadcasting Transactions! There were no record confirmations within the past ${CONFIRMATION_REBROADCAST_DELAY / 1000} seconds.`)
+          await this.rebroadcastTransactions()
+        }
+      } else {
+        // Update the last confirmation time
+        lastConfirmationTime = Date.now()
+      }
+    }
+
+    console.log(`[RPC Wallet] No more confirmation subscriptions exist, all Records have been confirmed`)
   }
 }
 
