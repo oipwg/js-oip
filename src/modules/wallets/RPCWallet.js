@@ -737,7 +737,7 @@ class RPCWallet {
       this.onConfirmationInterval = setInterval((async () => { 
         await this.checkAncestorCount(true)
         await this.checkForConfirmations() 
-      }).bind(this), 5 * ONE_SECOND)
+      }).bind(this), CONFIRMATION_CHECK_LENGTH)
     }
   }
 
