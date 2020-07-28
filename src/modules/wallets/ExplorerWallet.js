@@ -175,28 +175,12 @@ class ExplorerWallet {
 
     inputs.forEach(input => txb.addInput(input.txId, input.vout))
 
-    // Check if we are paying to ourself, if so, merge the outputs to just a single output.
-    // Check if we have two outputs (i.e. pay to and change)
-    if (outputs.length === 2) {
-      // If the first input is sending to the from address, and there is a change output,
-      // then merge the outputs.
-      if (outputs[0].address === this.p2pkh && !outputs[1].address) {
-        let totalToSend = outputs[0].value + outputs[1].value
-        outputs = [{
-          address: this.p2pkh,
-          value: totalToSend
-        }]
-      } else {
-        // send the original amount to the first address and send the rest to yourself as change
-        if (outputs[0].address !== this.p2pkh && !outputs[1].address) {
-          outputs[1].address = this.p2pkh
-        }
-      }
-    }
+    // console.log(outputs)
 
     outputs.forEach(output => {
       if (!output.address) {
-        throw new Error(`Missing output address: ${outputs}`)
+        output.address = this.p2pkh
+        // throw new Error(`Missing output address: ${outputs}`)
       }
       txb.addOutput(output.address, output.value)
     })
@@ -209,7 +193,7 @@ class ExplorerWallet {
     }
 
     let builtHex
-
+    // console.log('txb:', txb)
     try {
       builtHex = txb.build().toHex()
     } catch (err) {

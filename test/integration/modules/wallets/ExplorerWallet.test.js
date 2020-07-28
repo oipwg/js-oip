@@ -56,20 +56,42 @@ describe(`ExplorerWallet`, () => {
     //  }
     //  done()
     // }, 250 * 100 * 100)
-    it.skip('build and broadcast TX hex | sendDataToChain', async () => {
+    it('build and broadcast TX hex | sendDataToChain', async () => {
       let wallet = new ExplorerWallet({ wif, network: 'testnet' })
       let txid = await wallet.sendDataToChain(`RC`)
       expect(typeof txid === 'string').toBeTruthy()
       // console.log(txid)
     })
-    it.skip('flotx w custom output | sendTx', async () => {
-      let wallet = new ExplorerWallet(wif, 'testnet')
+    it('flotx w custom output | sendTx', async () => {
+      let wallet = new ExplorerWallet({ wif, network: 'testnet' })
       let output = {
         address: 'oNAydz5TjkhdP3RPuu3nEirYQf49Jrzm4S',
         value: Math.floor(0.0001 * floTestnet.satPerCoin)
       }
       let txid = await wallet.sendTx(output, 'to testnet')
       // console.log(txid)
+      expect(txid).toBeDefined()
+      expect(typeof txid === 'string').toBeTruthy()
+    })
+    it('flotx w multiple custom output | sendTx', async () => {
+      jest.setTimeout(10000)
+      let wallet = new ExplorerWallet({ wif, network: 'testnet' })
+      let outputs = [
+        {
+          address: 'oNAydz5TjkhdP3RPuu3nEirYQf49Jrzm4S',
+          value: Math.floor(0.0001 * floTestnet.satPerCoin)
+        },
+        {
+          address: 'ofbB67gqjgaYi45u8Qk2U3hGoCmyZcgbN4',
+          value: Math.floor(0.0001 * floTestnet.satPerCoin)
+        },
+        {
+          address: 'oV5qwoq9CSaXersHk4DQVHhoMTDjRNWRF2',
+          value: Math.floor(0.0001 * floTestnet.satPerCoin)
+        }
+      ]
+      let txid = await wallet.sendTx(outputs, 'to testnet')
+      console.log(txid)
       expect(txid).toBeDefined()
       expect(typeof txid === 'string').toBeTruthy()
     })
