@@ -23,6 +23,80 @@ export default class Publisher extends OIPRecord {
         facebook: undefined
       }
     }
+    this.signature = undefined
+  }
+
+  /**
+   * Create message to use for Publisher signature
+   * @see `alias-address-timestamp`: https://oip.wiki/Message_protocol#Publisher_Register_signature
+   * @return {string}
+   */
+  createPreimage () {
+    if (!this.getTimestamp()) { this.setTimestamp(Date.now()) }
+
+    let preimage = `${this.getAlias() || ''}-${this.getMainAddress()}-${this.getTimestamp()}`
+    this.preimage = preimage
+    return preimage
+  }
+
+  /**
+   * Check if the Publisher is Valid and has all the required fields to be registered
+   * @return {StatusObject}
+   */
+  isValid () {
+    if (!this._publisher.timestamp || isNaN(this._publisher.timestamp)) {
+      return { success: false, error: 'Timestamp is a Required Field!' }
+    }
+    if (!this._publisher.floAddress || this._publisher.floAddress === '') {
+      return { success: false, error: 'floAddress is a Required Field! Please set it using `setMainAddress`!' }
+    }
+
+    return { success: true }
+  }
+
+  toJSON() {
+    return JSON.parse(JSON.stringify({ pub: this._publisher }))
+  }
+
+  serialize (method) {
+    // convert this to json and extract artifact
+    let publisherJSON = this.toJSON()
+    let pub = publisherJSON.pub
+
+    /* @ToDo: Reimplement publishing of `authorized`, `info`, and `verificatiton` once they are added to be supported by OIP daemon */
+    // Remove `pub.authorized` section
+    pub.authorized = undefined
+    // Remove `pub.info` section
+    pub.info = undefined
+    // Remove `pub.verification` section
+    pub.verification = undefined
+
+    // setup initial object
+    let pubMessage = { oip042: {} }
+    // insert method type
+    pubMessage['oip042'][method] = { pub, signature: this.signature }
+    // add json prefix
+    return 'json:' + JSON.stringify(pubMessage)
+  }
+
+  /**
+   * Set the Signature of the Publisher
+   * @example
+   * publisher.setSignature("IO0i5yhuwDy5p93VdNvEAna6vsH3UmIert53RedinQV+ScLzESIX8+QrL4vsquCjaCY0ms0ZlaSeTyqRDXC3Iw4=")
+   * @param {string} signature - The signature of the Publisher
+   */
+  setSignature (signature) {
+    this.signature = signature
+  }
+
+  /**
+   * Get the Signature of the Publisher
+   * @example
+   * let signature = publisher.getSignature()
+   * @return {string} Returns `undefined` if signature is not set
+   */
+  getSignature () {
+    return this.signature
   }
 
   setTXID (txid) {
@@ -49,6 +123,14 @@ export default class Publisher extends OIPRecord {
 
   getMainAddress () {
     return this._publisher.floAddress
+  }
+
+  setPubAddress (address) {
+    return this.setMainAddress(address)
+  }
+
+  getPubAddress () {
+    return this.getMainAddress()
   }
 
   setTimestamp (timestamp) {
