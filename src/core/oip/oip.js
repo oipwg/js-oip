@@ -195,6 +195,9 @@ class OIP {
   /**
    * Publish an Edit for a Record
    * @param  {OIPRecord} editedRecord - The new version of the Record
+   * @param {Object} options - Publishing options
+   * @param {function} options.onConfirmation - A function to run once the transaction recieves a confirmation that it was included in a block.
+   * @param {String} options.onConfirmationRef - A reference string that should be returned in the onConfirmation function (useful for ID's).
    * @return {Promise<Object>} response - An object that contains a var for `success`, the `record` that was published, and the `editRecord`
    * @Example
    * let oip = new OIP(wif, "testnet")
@@ -202,7 +205,7 @@ class OIP {
    * record.setTitle('new title')
    * let result = await oip.edit(record)
    */
-  async edit (editedRecord) {
+  async edit (editedRecord, options) {
     // Lookup the currently latest version of the Record
     let original
     try {
@@ -231,7 +234,7 @@ class OIP {
     let edit = new EditRecord(undefined, original, editedRecord)
 
     // Publish to chain
-    let res = await this.broadcastRecord(edit, 'edit')
+    let res = await this.broadcastRecord(edit, 'edit', options)
 
     return res
   }

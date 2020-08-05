@@ -83,6 +83,10 @@ class ExplorerWallet {
     this.deserialize()
   }
 
+  onConfirmation({ txids, record }, options) {
+    console.warn(`[ExplorerWallet] Error! ExplorerWallet does not support the onConfirmation function!`)
+  }
+
   signMessage (message) {
     let privateKeyBuffer = this.ECPair.privateKey
 
