@@ -1,10 +1,10 @@
 {
   "name": "js-oip",
-  "version": "2.4.5",
+  "version": "2.4.6-beta.1",
   "description": "A Javascript Library to fully interact with the Open Index Protocol",
   "main": "lib/index.js",
   "scripts": {
-    "test": "npm run test:unit && npm run test:format",
+    "test": "npm run test:unit",
     "test:flo": "jest test/unit/modules/flo",
     "test:unit": "jest test/unit --detectOpenHandles --verbose",
     "test:integration": "jest test/integration --detectOpenHandles --verbose",
@@ -13,8 +13,7 @@
     "prepublishOnly": "npm run test && npm run compile",
     "code-format": "standard --fix",
     "prepush": "npm run compile && npm run generate-docs",
-    "generate-docs": "node_modules/.bin/jsdoc --readme ./README.md -c jsdoc.json",
-    "postinstall": "npm run compile"
+    "generate-docs": "node_modules/.bin/jsdoc --readme ./README.md -c jsdoc.json"
   },
   "repository": {
     "type": "git",
@@ -63,8 +62,7 @@
     "wif": "^2.0.6"
   },
   "files": [
-    "lib",
-    "src"
+    "lib"
   ],
   "jest": {
     "testEnvironment": "node",

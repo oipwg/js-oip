@@ -207,6 +207,50 @@ class RPCWallet {
     }
   }
 
+  // This method checks the database
+  async checkAllUnconfirmed () {
+    let initialUnconfirmedCount = this.unconfirmedTxids.length
+    let confirmedTXIDs = []
+
+    let foundUnconfirmed = false
+
+    while (!foundUnconfirmed) {
+      let txidToCheck = this.unconfirmedTxids[0]
+
+      // Check to see if the utxo is still in the mempool and if it has ancestors
+      let getMempoolEntry = await this.rpcRequest('getmempoolentry', [ txidToCheck ])
+      // Check if we have an error and handle it
+      if (getMempoolEntry.error && getMempoolEntry.error !== null) {
+        // If the error 'Transaction not in mempool' occurs, that means that the most recent transaction
+        // has already recieved a confirmation, so it has no ancestors we need to worry about.
+
+        // If the error is different, than throw it up for further inspection.
+        if (getMempoolEntry.error.message === 'Transaction not in mempool' || getMempoolEntry.error.message === 'Transaction not in mempool.') {
+          // Grab the transaction and check the number of confirmations
+          let checkConfirmations = await this.rpcRequest('getrawtransaction', [ txidToCheck, true ])
+
+          // Ignore if there was an error, but set the number of confirmations if available
+          let confirmations
+          if (checkConfirmations.result && checkConfirmations.result.confirmations) { confirmations = checkConfirmations.result.confirmations }
+
+          // Check to make sure if it is not in the mempool, that it at least has one confirmation.
+          if (confirmations >= 1) {
+            // Since it has a confirmation, remove it from the list!
+            console.log(`Transaction was already Confirmed! Removing it from the list! ${txidToCheck}`)
+            this.unconfirmedTransactions.shift()
+            this.unconfirmedTxids.shift()
+          } else {
+            console.error(`TXID not in mempool AND not found! ${txidToCheck}`)
+            return
+          }
+        }
+      } else {
+        // Break out of the while loop once there is a transaciton that exists in the Mempool
+        foundUnconfirmed = true
+      }
+    }
+  }
+
   /**
    * Grab the latest unconfirmed tx and check how many ancestors it has
    * @return {Boolean} Returns true if the update was successful
@@ -243,6 +287,7 @@ class RPCWallet {
         } else {
           // If we have gotten here, that means the transaction has zero confirmations, and is not included in the mempool, and so we need to repair it's chain...
           console.log(`[RPC Wallet] [WARNING] The most recent unspent transaction has zero confirmations and is not in the mempool! Attempting to repair mempool by rebroadcasting transactions, please wait... (txid: ${mostRecentTXID}) ${JSON.stringify(checkConfirmations)}`)
+          await this.checkAllUnconfirmed()
           await this.rebroadcastTransactions()
 
           // Don't update anything, and return for now, so that `updateAncestorStatus` will run again
@@ -276,16 +321,14 @@ class RPCWallet {
    * @param {String} hex - The transaction hex to count
    * @return {Boolean} Returns true on success
    */
-  async addAncestor (hex) {
+  addAncestor (hex) {
     // Increase the ancestor count
     this.currentAncestorCount++
     // Increase the ancestor size (byte length)
     this.currentAncestorSize += Buffer.from(hex, 'hex').length
 
-    // Every 25 update the ancestor count
-    if (this.currentAncestorCount % 25 === 0) { 
-      await this.updateAncestorStatus()
-    }
+    // Log every 25
+    if (this.currentAncestorCount % 25 === 0) { console.log(`[RPC Wallet] Updated Ancestor Count: ${this.currentAncestorCount} - Updated Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`) }
 
     return true
   }
@@ -349,10 +392,11 @@ class RPCWallet {
       this.unconfirmedTxids.shift()
     }
 
+    console.log(`[RPC Wallet] ${numberConfirmed} Transactions Confirmed! (${((startAncestorSize - this.currentAncestorSize) / ONE_MB).toFixed(2)} MB)`)
+
+
     // Check to see how many transactions got confirmed
     if (startAncestorCount >= MAX_MEMPOOL_ANCESTORS || startAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE) {
-      console.log(`[RPC Wallet] ${numberConfirmed} Transactions Confirmed! (${((startAncestorSize - this.currentAncestorSize) / ONE_MB).toFixed(2)} MB)`)
-
       // If there are less confirmed than REPAIR_MIN_TX, then rebroadcast the transactions
       if (numberConfirmed < REPAIR_MIN_TX) {
         console.log(`[RPC Wallet] Detected low number of transactions confirmed, re-announcing transactions to make sure miners saw them.`)
