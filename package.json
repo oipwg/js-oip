@@ -13,7 +13,8 @@
     "prepublishOnly": "npm run test && npm run compile",
     "code-format": "standard --fix",
     "prepush": "npm run compile && npm run generate-docs",
-    "generate-docs": "node_modules/.bin/jsdoc --readme ./README.md -c jsdoc.json"
+    "generate-docs": "node_modules/.bin/jsdoc --readme ./README.md -c jsdoc.json",
+    "postinstall": "npm run compile"
   },
   "repository": {
     "type": "git",
@@ -62,7 +63,8 @@
     "wif": "^2.0.6"
   },
   "files": [
-    "lib"
+    "lib",
+    "src"
   ],
   "jest": {
     "testEnvironment": "node",
