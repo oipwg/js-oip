@@ -242,7 +242,7 @@ class RPCWallet {
           this.currentAncestorSize = 0
         } else {
           // If we have gotten here, that means the transaction has zero confirmations, and is not included in the mempool, and so we need to repair it's chain...
-          console.log('[RPC Wallet] [WARNING] The most recent unspent transaction has zero confirmations and is not in the mempool! Attempting to repair mempool by rebroadcasting transactions, please wait... (txid: ' + mostRecentTXID + ')')
+          console.log(`[RPC Wallet] [WARNING] The most recent unspent transaction has zero confirmations and is not in the mempool! Attempting to repair mempool by rebroadcasting transactions, please wait... (txid: ${mostRecentTXID}) ${JSON.stringify(checkConfirmations)}`)
           await this.rebroadcastTransactions()
 
           // Don't update anything, and return for now, so that `updateAncestorStatus` will run again
@@ -266,6 +266,8 @@ class RPCWallet {
       this.currentAncestorCount++
     }
 
+    console.log(`[RPC Wallet] Updated Ancestor Count: ${this.currentAncestorCount} - Updated Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`) 
+
     return true
   }
 
@@ -274,14 +276,16 @@ class RPCWallet {
    * @param {String} hex - The transaction hex to count
    * @return {Boolean} Returns true on success
    */
-  addAncestor (hex) {
+  async addAncestor (hex) {
     // Increase the ancestor count
     this.currentAncestorCount++
     // Increase the ancestor size (byte length)
     this.currentAncestorSize += Buffer.from(hex, 'hex').length
 
-    // Log every 50
-    if (this.currentAncestorCount % 50 === 0) { console.log(`[RPC Wallet] Updated Ancestor Count: ${this.currentAncestorCount} - Updated Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`) }
+    // Every 25 update the ancestor count
+    if (this.currentAncestorCount % 25 === 0) { 
+      await this.updateAncestorStatus()
+    }
 
     return true
   }
