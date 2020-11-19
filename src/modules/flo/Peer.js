@@ -78,7 +78,7 @@ class Peer {
     if (this.connected) {
       try {
         // Create an `fcoin` transaction from our tx hex
-        let mytx = TX().fromRaw(Buffer.from(hex, 'hex'))
+        let mytx = new TX().fromRaw(Buffer.from(hex, 'hex'))
 
         // Store the hash of the transaction in our txMap
         this.txMap[mytx.hash('hex')] = hex
@@ -131,7 +131,7 @@ class Peer {
         if (!this.txMap[item.hash]) { return }
 
         // Create an `fcoin` tx from the cached tx hex
-        let mytx = TX().fromRaw(Buffer.from(this.txMap[item.hash], 'hex'))
+        let mytx = new TX().fromRaw(Buffer.from(this.txMap[item.hash], 'hex'))
         // Include the transaction in a TXPacket to be sent to the Peer
         let txPacket = packets.TXPacket(mytx, segTX)
 
