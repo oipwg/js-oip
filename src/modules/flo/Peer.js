@@ -1,4 +1,5 @@
-import { peer, netaddress, packets, tx, logger, invitem } from 'fcoin'
+import { Peer as fPeer, TX, InvItem, net } from 'fcoin'
+const { NetAddress, packets } = net
 import Logger from 'blgr'
 
 /* Create a Flo p2p Peer */
@@ -32,7 +33,7 @@ class Peer {
   async connect () {
     let log = new Logger({ level: 'spam' })
     // Create the Fcoin Peer
-    this.peer = peer.fromOptions({
+    this.peer = fPeer.fromOptions({
       logger: log,
       network: this.settings.network,
       agent: this.settings.agent,
@@ -41,8 +42,8 @@ class Peer {
       }
     })
 
-    // Create a netaddress from our passed in IP address:port
-    let address = netaddress.fromHostname(this.settings.ip)
+    // Create a NetAddress from our passed in IP address:port
+    let address = NetAddress.fromHostname(this.settings.ip)
 
     // Fire off the initial connection attempt
     this.peer.connect(address)
@@ -77,7 +78,7 @@ class Peer {
     if (this.connected) {
       try {
         // Create an `fcoin` transaction from our tx hex
-        let mytx = tx().fromRaw(Buffer.from(hex, 'hex'))
+        let mytx = TX().fromRaw(Buffer.from(hex, 'hex'))
 
         // Store the hash of the transaction in our txMap
         this.txMap[mytx.hash('hex')] = hex
@@ -122,15 +123,15 @@ class Peer {
     // Loop through each requested item in the getData packet
     for (let item of getDataPacket.items) {
       // We only care about responding if they are requesting a transction
-      let regTX = (item.type === invitem.types.TX)
-      let segTX = (item.type === invitem.types.WITNESS_TX)
+      let regTX = (item.type === InvItem.types.TX)
+      let segTX = (item.type === InvItem.types.WITNESS_TX)
       // If we are a regular tx, or a segwit tx, then continue
       if (regTX || segTX) {
         // Check to see if we have this transction in our txMap, and if not, skip it (ignore transactions that are not our own)
         if (!this.txMap[item.hash]) { return }
 
         // Create an `fcoin` tx from the cached tx hex
-        let mytx = tx().fromRaw(Buffer.from(this.txMap[item.hash], 'hex'))
+        let mytx = TX().fromRaw(Buffer.from(this.txMap[item.hash], 'hex'))
         // Include the transaction in a TXPacket to be sent to the Peer
         let txPacket = packets.TXPacket(mytx, segTX)
 
