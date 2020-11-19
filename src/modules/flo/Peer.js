@@ -30,7 +30,7 @@ class Peer {
    * @return {Boolean} Returns the connection status
    */
   async connect () {
-    let log = Logger({ level: 'spam' })
+    let log = new Logger({ level: 'spam' })
     // Create the Fcoin Peer
     this.peer = peer.fromOptions({
       logger: log,
