@@ -247,6 +247,7 @@ class RPCWallet {
       } else {
         // Break out of the while loop once there is a transaciton that exists in the Mempool
         foundUnconfirmed = true
+        console.log(`Oldest TX in mempool ${txidToCheck}`)
       }
     }
   }
