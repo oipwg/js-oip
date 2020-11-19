@@ -162,6 +162,7 @@ class RPCWallet {
 
     // Repair mode tracker
     this.repairMode = false
+    this.rebroadcasting = false
   }
 
   /**
@@ -419,6 +420,12 @@ class RPCWallet {
    * Rebroadcast out all transactions on our local mempool
    */
   async rebroadcastTransactions () {
+    // Lock rebroadcasting; Only perform a single rebroadcast at a time!!
+    if (this.rebroadcasting) { 
+      console.log(`[RPC Wallet] Already rebroadcasting transactions...`)
+      return 
+    }
+    this.rebroadcasting = true
     // Announce that we are starting
     console.log(`[RPC Wallet] Announcing ${this.unconfirmedTransactions.length} transactions to Peers...`)
 
@@ -444,6 +451,8 @@ class RPCWallet {
 
     // Destroy the peers we connected too
     this.destroyPeers()
+    // Unlock rebroadcasting
+    this.rebroadcasting = false
   }
 
   /**
