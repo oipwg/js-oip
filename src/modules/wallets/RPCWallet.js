@@ -27,11 +27,11 @@ const MAX_MEMPOOL_ANCESTORS = 1250
 const MAX_MEMPOOL_ANCESTOR_SIZE = 1.75 * ONE_MB
 
 // Timer lengths used to track and fix the Ancestor chain
-const UPDATE_ANCESTOR_STATUS = 1 * ONE_SECOND
+const UPDATE_ANCESTOR_STATUS = 5 * ONE_SECOND
 const REPAIR_ANCESTORS_AFTER = 1 * ONE_MINUTE
-const PEER_CONNECT_LENGTH = 2 * ONE_SECOND
-const REBROADCAST_LENGTH = 10 * ONE_SECOND
-const CONFIRMATION_CHECK_LENGTH = 2 * ONE_SECOND
+const PEER_CONNECT_LENGTH = 5 * ONE_SECOND
+const REBROADCAST_LENGTH = 30 * ONE_SECOND
+const CONFIRMATION_CHECK_LENGTH = 20 * ONE_SECOND
 const CONFIRMATION_REBROADCAST_DELAY = 1 * ONE_MINUTE
 const REPAIR_MIN_TX = 100
 
@@ -163,6 +163,7 @@ class RPCWallet {
     // Repair mode tracker
     this.repairMode = false
     this.rebroadcasting = false
+    this.checkingAncestorCount = false
   }
 
   /**
@@ -342,6 +343,8 @@ class RPCWallet {
    * @return {Boolean} Returns `true` once it is safe to continue sending transactions
    */
   async checkAncestorCount (forceUpdateAncestor) {
+    if (this.checkingAncestorCount) { return }
+    this.checkingAncestorCount = true
     // Store our starting count
     let startAncestorCount = this.currentAncestorCount
     let startAncestorSize = this.currentAncestorSize
@@ -411,6 +414,7 @@ class RPCWallet {
 
     // If we enabled repair mode, then
     this.repairMode = false
+    this.checkingAncestorCount = false
 
     // There are fewer ancestors than the maximum, so we can send the next transaction!
     return true
