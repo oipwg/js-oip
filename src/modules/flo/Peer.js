@@ -46,9 +46,9 @@ class Peer {
     this.peer.connect(address)
 
     // When we recieve packets from peers, process them using the onPacket function
-    this.peer.on('packet', this.onPacket.bind(this))
+    this.peer.parser.on('packet', this.onPacket.bind(this))
     // Handle/log errors
-    this.peer.on('error', (e) => {
+    this.peer.parser.on('error', (e) => {
       console.log('Peer Error: ' + e)
     })
 
