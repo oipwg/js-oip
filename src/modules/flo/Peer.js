@@ -1,6 +1,6 @@
 import { Peer as fPeer, TX, InvItem, net } from 'fcoin'
 const { NetAddress, packets } = net
-import Logger from 'blgr'
+import blgr from 'blgr'
 
 /* Create a Flo p2p Peer */
 class Peer {
@@ -31,7 +31,7 @@ class Peer {
    * @return {Boolean} Returns the connection status
    */
   async connect () {
-    let log = new Logger({ level: 'spam' })
+    let log = blgr.logger('spam');
     // Create the Fcoin Peer
     this.peer = fPeer.fromOptions({
       logger: log,
