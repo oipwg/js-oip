@@ -437,18 +437,10 @@ class RPCWallet {
     await this.connectToPeers()
 
     // Announce all of our local unconfirmed transactions
-    let numAnnounced = 0
-    for (let txHex of this.unconfirmedTransactions) {
-      // Loop through all peers and announce TX individually to each (if we have connected to them\
-      for (let peer of this.peers) {
-        if (peer.connected) { await peer.announceTX(txHex) }
-      }
-
-      // Log every 50 transactions
-      numAnnounced++
-      if (numAnnounced % 50 === 0) { console.log(`[RPC Wallet] Announced ${numAnnounced}/${this.unconfirmedTransactions.length} transactions so far...`) }
+    // Loop through all peers and announce TXs to each (if we have connected to them)
+    for (let peer of this.peers) {
+      await peer.announceTXs(this.unconfirmedTransactions)
     }
-    console.log(`[RPC Wallet] Announced ${numAnnounced} transactions!`)
 
     // Wait for REBROADCAST_LENGTH in order to give some time for transactions to be requested, and sent out.
     await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, REBROADCAST_LENGTH) })

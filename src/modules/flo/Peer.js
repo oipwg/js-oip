@@ -68,23 +68,30 @@ class Peer {
 
   /**
    * Announce the availability of a Transaction to the Peer
-   * @param  {String} hex - The hex string of the transaction
+   * @param  {Array.<String>} hex - The hex string of the transaction
    */
-  announceTX (hex) {
+  announceTXs (hexArray) {
     // First, check if we are connected before attempting to broadcast out
     if (this.connected) {
       try {
-        // Create an `fcoin` transaction from our tx hex
-        let mytx = new TX().fromRaw(Buffer.from(hex, 'hex'))
+        let txArray = []
+        for (let hex of hexArray) {
+          // Create an `fcoin` transaction from our tx hex
+          let mytx = new TX().fromRaw(Buffer.from(hex, 'hex'))
 
-        // Store the hash of the transaction in our txMap
-        this.txMap[mytx.hash('hex')] = hex
+          // Store the hash of the transaction in our txMap
+          this.txMap[mytx.hash('hex')] = hex
 
-        // Announce the Transaction to the peer
-        this.peer.announceTX(mytx)
+          // Add it to our array to announce
+          txArray.push(mytx)
+        }
+
+        // Announce the Transactions to the peer
+        this.peer.announceTX(txArray)
+        this.peer.flushInv()
       } catch (e) {
         // Throw an error if one happened
-        console.error('Announce TX Error: ' + e)
+        console.error('Announce TXs Error: ' + e)
       }
     }
   }
