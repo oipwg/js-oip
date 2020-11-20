@@ -36,10 +36,7 @@ class Peer {
     this.peer = fPeer.fromOptions({
       logger: log,
       network: this.settings.network,
-      agent: this.settings.agent,
-      hasWitness: () => {
-        return false
-      }
+      agent: this.settings.agent
     })
 
     // Create a NetAddress from our passed in IP address:port
