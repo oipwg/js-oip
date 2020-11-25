@@ -32,6 +32,8 @@ class Peer {
    */
   async connect () {
     let log = new Logger({ level: 'spam' })
+    // Open up the logger
+    await log.open()
     // Create the Fcoin Peer
     this.peer = fPeer.fromOptions({
       logger: log,
@@ -124,15 +126,23 @@ class Peer {
     // If the peer is requesting more than one transaction, or if they have not met the singlelog maximum, then log the request
     if (getDataPacket.items.length > 1 || this.singleLog < 5) { console.log(`[RPC Wallet] Peer ${this.settings.ip} requested ${getDataPacket.items.length} items...`) }
 
+    let loggedYet = false
     // Loop through each requested item in the getData packet
     for (let item of getDataPacket.items) {
+      if (!loggedYet) {
+        console.log(item)
+        loggedYet = true
+      }
       // We only care about responding if they are requesting a transction
       let regTX = (item.type === InvItem.types.TX)
       let segTX = (item.type === InvItem.types.WITNESS_TX)
       // If we are a regular tx, or a segwit tx, then continue
       if (regTX || segTX) {
         // Check to see if we have this transction in our txMap, and if not, skip it (ignore transactions that are not our own)
-        if (!this.txMap[item.hash]) { return }
+        if (!this.txMap[item.hash]) { 
+          console.error(`Item Peer requested is NOT in our txMap`)
+          continue 
+        }
 
         // Create an `fcoin` tx from the cached tx hex
         let mytx = new TX().fromRaw(Buffer.from(this.txMap[item.hash], 'hex'))
@@ -155,10 +165,11 @@ class Peer {
 
       // If we only relayed a single transaction, then increase the "singleLog" counter
       if (txsRelayed === 1) { this.singleLog++ }
-
-      // Log information about the sent transactions
-      console.log(`[RPC Wallet] Relayed ${txsRelayed} requested transactions to ${this.settings.ip} (last txid ${lastHash})`)
     }
+
+    // Log information about the sent transactions
+    console.log(`[RPC Wallet] Relayed ${txsRelayed}/${getDataPacket.items.length} requested transactions to ${this.settings.ip} (last txid ${lastHash})`)
+    
   }
 }
 
