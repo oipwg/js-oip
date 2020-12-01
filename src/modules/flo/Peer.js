@@ -139,13 +139,13 @@ class Peer {
       // If we are a regular tx, or a segwit tx, then continue
       if (regTX || segTX) {
         // Check to see if we have this transction in our txMap, and if not, skip it (ignore transactions that are not our own)
-        if (!this.txMap[item.hash]) { 
+        if (!this.txMap[item.hash.toString('X')]) { 
           console.error(`Item Peer requested is NOT in our txMap`)
           continue 
         }
 
         // Create an `fcoin` tx from the cached tx hex
-        let mytx = new TX().fromRaw(Buffer.from(this.txMap[item.hash], 'hex'))
+        let mytx = new TX().fromRaw(Buffer.from(this.txMap[item.hash.toString('X')], 'hex'))
         // Include the transaction in a TXPacket to be sent to the Peer
         let txPacket = packets.TXPacket(mytx, segTX)
 

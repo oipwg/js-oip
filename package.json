@@ -1,6 +1,6 @@
 {
   "name": "js-oip",
-  "version": "2.4.6-beta.12",
+  "version": "2.4.6-beta.13",
   "description": "A Javascript Library to fully interact with the Open Index Protocol",
   "main": "lib/index.js",
   "scripts": {
