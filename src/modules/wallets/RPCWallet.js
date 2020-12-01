@@ -219,7 +219,7 @@ class RPCWallet {
     let foundUnconfirmed = false
 
     let numberConfirmed = 0
-    while (!foundUnconfirmed) {
+    while (!foundUnconfirmed || this.unconfirmedTxids.length === 0) {
       let txidToCheck = this.unconfirmedTxids[0]
 
       // Check to see if the utxo is still in the mempool and if it has ancestors
