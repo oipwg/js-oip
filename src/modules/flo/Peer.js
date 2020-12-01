@@ -51,7 +51,10 @@ class Peer {
     this.peer.parser.on('packet', this.onPacket.bind(this))
     // Handle/log errors
     this.peer.parser.on('error', (e) => {
-      console.log('Peer Error: ' + e)
+      console.error(e)
+    })
+    this.peer.on('error', (e) => {
+      console.error(e)
     })
 
     try {
