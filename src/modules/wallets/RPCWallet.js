@@ -28,9 +28,9 @@ const MAX_MEMPOOL_ANCESTOR_SIZE = 1.75 * ONE_MB
 
 // Timer lengths used to track and fix the Ancestor chain
 const UPDATE_ANCESTOR_STATUS = 5 * ONE_SECOND
-const REPAIR_ANCESTORS_AFTER = 1 * ONE_MINUTE
-const PEER_CONNECT_LENGTH = 5 * ONE_SECOND
-const REBROADCAST_LENGTH = 30 * ONE_SECOND
+const REPAIR_ANCESTORS_AFTER = 10 * ONE_SECOND
+const PEER_CONNECT_LENGTH = 2 * ONE_SECOND
+const REBROADCAST_LENGTH = 10 * ONE_SECOND
 const CONFIRMATION_CHECK_INTERVAL = 20 * ONE_SECOND
 const CONFIRMATION_CHECK_UPDATE_ANCESTORS_AFTER = 5 * ONE_MINUTE
 const CONFIRMATION_REBROADCAST_DELAY = 2 * ONE_MINUTE
@@ -838,7 +838,9 @@ class RPCWallet {
       return 
     }
 
-    console.log(`[RPC Wallet] Checking ${this.getConfirmationSubscriptionCount()} transations for confirmations...`)
+    // Note: Occasionally this will log a lower number than the Ancestor Count, this occurs
+    // when a Multipart record is subscribed to using the onConfirmation subscription.
+    console.log(`[RPC Wallet] Checking ${this.getConfirmationSubscriptionCount()} confirmation subscriptions...`)
     for (let subscription in this.onConfirmationSubscriptions) {
       let { txids, record, options } = this.onConfirmationSubscriptions[subscription]
 
