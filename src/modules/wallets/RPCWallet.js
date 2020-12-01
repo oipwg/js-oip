@@ -30,6 +30,7 @@ const MAX_MEMPOOL_ANCESTOR_SIZE = 1.50 * ONE_MB
 const UPDATE_ANCESTOR_STATUS = 5 * ONE_SECOND
 const REPAIR_ANCESTORS_AFTER = 40 * ONE_SECOND // One FLO Block on average
 const PEER_CONNECT_LENGTH = 2 * ONE_SECOND
+const PEER_DESTROY_LENGTH = 5 * ONE_SECOND
 const REBROADCAST_LENGTH = 10 * ONE_SECOND
 const CONFIRMATION_CHECK_INTERVAL = 20 * ONE_SECOND
 const CONFIRMATION_CHECK_UPDATE_ANCESTORS_AFTER = 5 * ONE_MINUTE
@@ -361,8 +362,6 @@ class RPCWallet {
    * @return {Boolean} Returns `true` once it is safe to continue sending transactions
    */
   async checkAncestorCount (forceUpdateAncestor) {
-    if (this.checkingAncestorCount) { return }
-    this.checkingAncestorCount = true
     // Store our starting count
     let startAncestorCount = this.currentAncestorCount
     let startAncestorSize = this.currentAncestorSize
@@ -376,6 +375,7 @@ class RPCWallet {
     // Check if we have too many ancestors, and if we do, wait for the ancestor count to decrease (aka, some transactions to get confirmed in a block)
     let forceFirstLoopUpdate = forceUpdateAncestor
     while (this.currentAncestorCount >= MAX_MEMPOOL_ANCESTORS || this.currentAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE || forceFirstLoopUpdate) {
+      this.checkingAncestorCount = true
       // Only force an update for the first loop, then disable to prevent looping forever
       forceFirstLoopUpdate = false
       // Wait for UPDATE_ANCESTOR_STATUS seconds (don't run on the first loop through)
@@ -406,6 +406,7 @@ class RPCWallet {
 
       firstLoop = false
     }
+    this.checkingAncestorCount = false
 
     // Count the number of confirmed
     // let numberConfirmed = startAncestorCount - this.currentAncestorCount
@@ -430,7 +431,6 @@ class RPCWallet {
 
     // If we enabled repair mode, then
     this.repairMode = false
-    this.checkingAncestorCount = false
 
     // There are fewer ancestors than the maximum, so we can send the next transaction!
     return true
@@ -818,7 +818,7 @@ class RPCWallet {
       this.onConfirmationInterval = setInterval((async () => {
         // Only run the checkAncestorCount function IF if has been at least CONFIRMATION_CHECK_UPDATE_ANCESTORS_AFTER
         // since the last transaction was sent
-        if (Date.now() - this.lastTXTime > CONFIRMATION_CHECK_UPDATE_ANCESTORS_AFTER) { 
+        if (Date.now() - this.lastTXTime > CONFIRMATION_CHECK_UPDATE_ANCESTORS_AFTER && !this.checkingAncestorCount) { 
           this.lastTXTime = Date.now()
           await this.checkAncestorCount(true)
         }
