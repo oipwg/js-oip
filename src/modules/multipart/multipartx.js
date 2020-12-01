@@ -32,9 +32,18 @@ class MultipartX {
   fromString (jsonString) {
     let chunks = []
     // ToDo:: FLODATA_MAX_LEN vs CHOP_MAX_LEN
-    while (jsonString.length > CHOP_MAX_LEN) {
-      chunks.push(jsonString.slice(0, CHOP_MAX_LEN))
-      jsonString = jsonString.slice(CHOP_MAX_LEN)
+    let maximumLength = CHOP_MAX_LEN
+    while (jsonString.length > maximumLength) {
+      // If we have between 100 and 999 parts, our max length needs to be reduced by one
+      if (chunks.length >= 99) { maximumLength = CHOP_MAX_LEN - 1 }
+      // If we have between 1000 and 9999 parts, our max length needs to be reduced by one
+      if (chunks.length >= 999) { maximumLength = CHOP_MAX_LEN - 2 }
+      // If we have between 10000 and 99999 parts, our max length needs to be reduced by one
+      if (chunks.length >= 9999) { maximumLength = CHOP_MAX_LEN - 3 }
+      // If we have a 100,000 part multipart transaction, we really need to be rethinking our plan...
+      
+      chunks.push(jsonString.slice(0, maximumLength))
+      jsonString = jsonString.slice(maximumLength)
     }
     chunks.push(jsonString)
 
