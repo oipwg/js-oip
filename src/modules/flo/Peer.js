@@ -129,13 +129,8 @@ class Peer {
     // If the peer is requesting more than one transaction, or if they have not met the singlelog maximum, then log the request
     if (getDataPacket.items.length > 1 || this.singleLog < 5) { console.log(`[RPC Wallet] Peer ${this.settings.ip} requested ${getDataPacket.items.length} items...`) }
 
-    let loggedYet = false
     // Loop through each requested item in the getData packet
     for (let item of getDataPacket.items) {
-      if (!loggedYet) {
-        console.log(item)
-        loggedYet = true
-      }
       // We only care about responding if they are requesting a transction
       let regTX = (item.type === InvItem.types.TX)
       let segTX = (item.type === InvItem.types.WITNESS_TX)
