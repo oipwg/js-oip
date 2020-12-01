@@ -23,12 +23,12 @@ const SAT_PER_FLO = 100000000
 const MIN_UTXO_AMOUNT = 0.0001
 
 // Prevent chaining over ancestor limit
-const MAX_MEMPOOL_ANCESTORS = 1250
-const MAX_MEMPOOL_ANCESTOR_SIZE = 1.75 * ONE_MB
+const MAX_MEMPOOL_ANCESTORS = 1225
+const MAX_MEMPOOL_ANCESTOR_SIZE = 1.50 * ONE_MB
 
 // Timer lengths used to track and fix the Ancestor chain
 const UPDATE_ANCESTOR_STATUS = 5 * ONE_SECOND
-const REPAIR_ANCESTORS_AFTER = 10 * ONE_SECOND
+const REPAIR_ANCESTORS_AFTER = 40 * ONE_SECOND // One FLO Block on average
 const PEER_CONNECT_LENGTH = 2 * ONE_SECOND
 const REBROADCAST_LENGTH = 10 * ONE_SECOND
 const CONFIRMATION_CHECK_INTERVAL = 20 * ONE_SECOND
@@ -346,10 +346,7 @@ class RPCWallet {
     // Increase the ancestor count
     this.currentAncestorCount++
     // Increase the ancestor size (byte length)
-    this.currentAncestorSize += Buffer.from(hex, 'hex').length
-
-    // Every 100 force update the current ancestor status
-    if (this.currentAncestorCount % 100 === 0) { await this.checkAncestorCount(true) }
+    this.currentAncestorSize += hex.length
 
     // Log every 25
     if (this.currentAncestorCount % 25 === 0) { console.log(`[RPC Wallet] Updated Ancestor Count: ${this.currentAncestorCount} - Updated Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`) }
@@ -452,6 +449,8 @@ class RPCWallet {
     // Announce that we are starting
     console.log(`[RPC Wallet] Announcing ${this.unconfirmedTransactions.length} transactions to Peers...`)
 
+    // Destroy any peers we have currently connected to to get a "clean" rebroadcast
+    await this.destroyPeers()
     // Connect to Peers to use for the rebroadcast
     await this.connectToPeers()
 
@@ -464,8 +463,6 @@ class RPCWallet {
     // Wait for REBROADCAST_LENGTH in order to give some time for transactions to be requested, and sent out.
     await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, REBROADCAST_LENGTH) })
 
-    // Destroy the peers we connected too
-    this.destroyPeers()
     // Unlock rebroadcasting
     this.rebroadcasting = false
   }
@@ -594,11 +591,17 @@ class RPCWallet {
   /**
    * Destroy peers created in rebroadcastTransactions
    */
-  destroyPeers () {
+  async destroyPeers () {
     // Destroy each `fcoin` peer
     for (let peer of this.peers) {
       peer.peer.destroy()
     }
+
+    if (this.peers.length > 0) {
+      // Wait for PEER_DESTROY_LENGTH in order to allow peers to destroy and be cleared outt
+      await new Promise((resolve, reject) => { setTimeout(() => { resolve() }, PEER_DESTROY_LENGTH) })
+    }
+
     // Wipe out the array
     this.peers = []
   }
