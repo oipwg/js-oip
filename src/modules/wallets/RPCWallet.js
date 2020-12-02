@@ -349,6 +349,9 @@ class RPCWallet {
     // Increase the ancestor size (byte length)
     this.currentAncestorSize += hex.length
 
+    // Every 100 update our count
+    if (this.currentAncestorCount % 100 === 0) { await this.updateAncestorStatus() }
+
     // Log every 25
     if (this.currentAncestorCount % 25 === 0) { console.log(`[RPC Wallet] Updated Ancestor Count: ${this.currentAncestorCount} - Updated Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`) }
 
