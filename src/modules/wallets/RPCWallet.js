@@ -28,7 +28,7 @@ const MAX_MEMPOOL_ANCESTOR_SIZE = 1.50 * ONE_MB
 
 // Timer lengths used to track and fix the Ancestor chain
 const UPDATE_ANCESTOR_STATUS = 5 * ONE_SECOND
-const REPAIR_ANCESTORS_AFTER = 40 * ONE_SECOND // One FLO Block on average
+const REPAIR_ANCESTORS_AFTER = 1 * ONE_MINUTE // One FLO Block on average
 const PEER_CONNECT_LENGTH = 2 * ONE_SECOND
 const PEER_DESTROY_LENGTH = 5 * ONE_SECOND
 const REBROADCAST_LENGTH = 10 * ONE_SECOND
@@ -415,16 +415,16 @@ class RPCWallet {
     //   this.unconfirmedTransactions.shift()
     //   this.unconfirmedTxids.shift()
     // }
-    let numberConfirmed = await this.checkAllUnconfirmed()
+    // let numberConfirmed = await this.checkAllUnconfirmed()
 
-    // Check to see how many transactions got confirmed
-    if (startAncestorCount >= MAX_MEMPOOL_ANCESTORS || startAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE) {
-      // If there are less confirmed than REPAIR_MIN_TX, then rebroadcast the transactions
-      if (numberConfirmed < REPAIR_MIN_TX) {
-        console.log(`[RPC Wallet] Detected low number of transactions confirmed, re-announcing transactions to make sure miners saw them.`)
-        await this.rebroadcastTransactions()
-      }
-    }
+    // // Check to see how many transactions got confirmed
+    // if (startAncestorCount >= MAX_MEMPOOL_ANCESTORS || startAncestorSize >= MAX_MEMPOOL_ANCESTOR_SIZE) {
+    //   // If there are less confirmed than REPAIR_MIN_TX, then rebroadcast the transactions
+    //   if (numberConfirmed < REPAIR_MIN_TX) {
+    //     console.log(`[RPC Wallet] Detected low number of transactions confirmed, re-announcing transactions to make sure miners saw them.`)
+    //     await this.rebroadcastTransactions()
+    //   }
+    // }
 
     // If we had started with maximum ancestors, then log the status
     if (hadMaxAncestors) { console.log(`[RPC Wallet] Unconfirmed count has decreased, resuming sending transactions! | Ancestor Count: ${this.currentAncestorCount} - Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`) }
