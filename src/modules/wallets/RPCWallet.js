@@ -20,7 +20,7 @@ const TX_AVG_BYTE_SIZE = 200
 const SAT_PER_FLO = 100000000
 
 // The minimum amount a utxo is allowed to be for us to use
-const MIN_UTXO_AMOUNT = 0.0001
+const MIN_UTXO_AMOUNT = 1
 
 // Prevent chaining over ancestor limit
 const MAX_MEMPOOL_ANCESTORS = 1225
@@ -859,7 +859,8 @@ class RPCWallet {
         try {
           await options.onConfirmation(record, txids, options.onConfirmationRef)
         } catch (e) {
-          console.warning(`[RPC Wallet] Error when running onConfirmation function in subscription: `, e)
+          console.error(`[RPC Wallet] Error when running onConfirmation function in subscription: `)
+          console.error(e)
         }
         delete this.onConfirmationSubscriptions[subscription]
       }
