@@ -13,7 +13,8 @@
     "prepublishOnly": "npm run test && npm run compile",
     "code-format": "standard --fix",
     "prepush": "npm run compile && npm run generate-docs",
-    "generate-docs": "node_modules/.bin/jsdoc --readme ./README.md -c jsdoc.json"
+    "generate-docs": "node_modules/.bin/jsdoc --readme ./README.md -c jsdoc.json",
+    "examples:registerPublisher": "npm run compile && node examples/registerPublisher.js"
   },
   "repository": {
     "type": "git",
