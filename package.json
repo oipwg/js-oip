@@ -54,7 +54,7 @@
     "bitcoinjs-message": "2.0.0",
     "blgr": "^0.1.8",
     "coinselect": "^3.1.11",
-    "fcoin": "git+https://github.com/mediciland/fcoin.git#fix-bfilter-bug",
+    "fcoin": "1.1.5",
     "insight-explorer": "^1.0.10",
     "ipfs-http-client": "^28.0.0",
     "node-localstorage": "^1.3.1",
