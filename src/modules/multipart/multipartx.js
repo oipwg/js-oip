@@ -34,8 +34,8 @@ class MultipartX {
     // ToDo:: FLODATA_MAX_LEN vs CHOP_MAX_LEN
     let maximumLength = CHOP_MAX_LEN
     while (jsonString.length > maximumLength) {
-      // If we have between 100 and 999 parts, our max length needs to be reduced by one
-      if (chunks.length >= 99) { maximumLength = CHOP_MAX_LEN - 1 }
+      // If we have between 100 and 999 parts, our max length needs to be reduced by two
+      if (chunks.length >= 99) { maximumLength = CHOP_MAX_LEN - 2 }
       // If we have a 1,000 part multipart transaction, we really need to be rethinking our plan and instead store
       // data inside IPFS or something else...
       
