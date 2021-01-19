@@ -1,4 +1,6 @@
-import { peer, netaddress, packets, tx, logger, invitem } from 'fcoin'
+import { Peer as fPeer, TX, InvItem, net } from 'fcoin'
+const { NetAddress, packets } = net
+import Logger from 'blgr'
 
 /* Create a Flo p2p Peer */
 class Peer {
@@ -29,28 +31,30 @@ class Peer {
    * @return {Boolean} Returns the connection status
    */
   async connect () {
-    let log = logger({ level: 'spam' })
+    let log = new Logger({ level: 'spam' })
+    // Open up the logger
+    await log.open()
     // Create the Fcoin Peer
-    this.peer = peer.fromOptions({
+    this.peer = fPeer.fromOptions({
       logger: log,
       network: this.settings.network,
-      agent: this.settings.agent,
-      hasWitness: () => {
-        return false
-      }
+      agent: this.settings.agent
     })
 
-    // Create a netaddress from our passed in IP address:port
-    let address = netaddress.fromHostname(this.settings.ip)
+    // Create a NetAddress from our passed in IP address:port
+    let address = NetAddress.fromHostname(this.settings.ip)
 
     // Fire off the initial connection attempt
     this.peer.connect(address)
 
     // When we recieve packets from peers, process them using the onPacket function
-    this.peer.on('packet', this.onPacket.bind(this))
+    this.peer.parser.on('packet', this.onPacket.bind(this))
     // Handle/log errors
+    this.peer.parser.on('error', (e) => {
+      console.error(e)
+    })
     this.peer.on('error', (e) => {
-      console.log('Peer Error: ' + e)
+      console.error(e)
     })
 
     try {
@@ -69,23 +73,30 @@ class Peer {
 
   /**
    * Announce the availability of a Transaction to the Peer
-   * @param  {String} hex - The hex string of the transaction
+   * @param  {Array.<String>} hex - The hex string of the transaction
    */
-  announceTX (hex) {
+  announceTXs (hexArray) {
     // First, check if we are connected before attempting to broadcast out
     if (this.connected) {
       try {
-        // Create an `fcoin` transaction from our tx hex
-        let mytx = tx().fromRaw(Buffer.from(hex, 'hex'))
+        let txArray = []
+        for (let hex of hexArray) {
+          // Create an `fcoin` transaction from our tx hex
+          let mytx = new TX().fromRaw(Buffer.from(hex, 'hex'))
 
-        // Store the hash of the transaction in our txMap
-        this.txMap[mytx.hash('hex')] = hex
+          // Store the hash of the transaction in our txMap
+          this.txMap[mytx.hash('hex')] = hex
 
-        // Announce the Transaction to the peer
-        this.peer.announceTX(mytx)
+          // Add it to our array to announce
+          txArray.push(mytx)
+        }
+
+        // Announce the Transactions to the peer
+        this.peer.announceTX(txArray)
+        this.peer.flushInv()
       } catch (e) {
         // Throw an error if one happened
-        console.error('Announce TX Error: ' + e)
+        console.error('Announce TXs Error: ' + e)
       }
     }
   }
@@ -121,17 +132,20 @@ class Peer {
     // Loop through each requested item in the getData packet
     for (let item of getDataPacket.items) {
       // We only care about responding if they are requesting a transction
-      let regTX = (item.type === invitem.types.TX)
-      let segTX = (item.type === invitem.types.WITNESS_TX)
+      let regTX = (item.type === InvItem.types.TX)
+      let segTX = (item.type === InvItem.types.WITNESS_TX)
       // If we are a regular tx, or a segwit tx, then continue
       if (regTX || segTX) {
         // Check to see if we have this transction in our txMap, and if not, skip it (ignore transactions that are not our own)
-        if (!this.txMap[item.hash]) { return }
+        if (!this.txMap[item.hash.toString('hex')]) { 
+          console.error(`Item Peer requested is NOT in our txMap`)
+          continue 
+        }
 
         // Create an `fcoin` tx from the cached tx hex
-        let mytx = tx().fromRaw(Buffer.from(this.txMap[item.hash], 'hex'))
+        let mytx = new TX().fromRaw(Buffer.from(this.txMap[item.hash.toString('hex')], 'hex'))
         // Include the transaction in a TXPacket to be sent to the Peer
-        let txPacket = packets.TXPacket(mytx, segTX)
+        let txPacket = new packets.TXPacket(mytx, segTX)
 
         // Send out the TXPacket to the Peer
         this.peer.send(txPacket)
@@ -149,10 +163,11 @@ class Peer {
 
       // If we only relayed a single transaction, then increase the "singleLog" counter
       if (txsRelayed === 1) { this.singleLog++ }
-
-      // Log information about the sent transactions
-      console.log(`[RPC Wallet] Relayed ${txsRelayed} requested transactions to ${this.settings.ip} (last txid ${lastHash})`)
     }
+
+    // Log information about the sent transactions
+    console.log(`[RPC Wallet] Relayed ${txsRelayed}/${getDataPacket.items.length} requested transactions to ${this.settings.ip} (last txid ${lastHash})`)
+    
   }
 }
 
