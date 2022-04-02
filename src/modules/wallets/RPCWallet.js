@@ -20,7 +20,7 @@ const TX_AVG_BYTE_SIZE = 200
 const SAT_PER_FLO = 100000000
 
 // The minimum amount a utxo is allowed to be for us to use
-const MIN_UTXO_AMOUNT = 1
+const MIN_UTXO_AMOUNT = .001
 
 // Prevent chaining over ancestor limit
 const MAX_MEMPOOL_ANCESTORS = 1225
@@ -688,25 +688,26 @@ class RPCWallet {
    * @param  {String} floData - The data you wish to be placed into the `floData` of the transaction.
    * @return {String} Returns the TXID of the transaction if sent successfully
    */
-  async sendDataToChain (floData) {
+  async sendDataToChain (floData, previousTransactionOutput) {
     // Grab the unspent outputs for our address
     let utxos = await this.getUTXOs()
 
     // Select the first input (since we have already sorted and filtered)
-    let input = utxos[0]
+    let input = (previousTransactionOutput !== undefined) ? previousTransactionOutput[0] : utxos[0];
+    let inputAmount = (previousTransactionOutput !== undefined) ? previousTransactionOutput[0].amount : utxos[0].amount;
 
     // Calculate the minimum Transaction fee for our transaction by counting the size of the inputs, outputs, and floData
     let myTxFee = (this.options.txFeePerByte || TX_FEE_PER_BYTE) * (TX_AVG_BYTE_SIZE + varIntBuffer(floData.length).toString('hex').length + Buffer.from(floData).length)
 
     // Create an output to send the funds to
     let output = {}
-    output[this.publicAddress] = parseFloat((input.amount - myTxFee).toFixed(8))
+    output[this.publicAddress] = parseFloat((inputAmount - myTxFee).toFixed(8))
 
     // Send the transaction
-    let txid = await this.sendTX([ input ], output, floData)
+    let transactionOutput = await this.sendTX([ input ], output, floData)
 
     // Returns the TXID of the transaction if sent successfully
-    return txid
+    return transactionOutput
   }
 
   /**
