@@ -54,7 +54,7 @@ export default class Publisher extends OIPRecord {
     return { success: true }
   }
 
-  toJSON() {
+  toJSON () {
     return JSON.parse(JSON.stringify({ pub: this._publisher }))
   }
 

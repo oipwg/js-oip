@@ -1,6 +1,6 @@
 import { Peer as fPeer, TX, InvItem, net } from 'fcoin'
-const { NetAddress, packets } = net
 import Logger from 'blgr'
+const { NetAddress, packets } = net
 
 /* Create a Flo p2p Peer */
 class Peer {
@@ -137,9 +137,9 @@ class Peer {
       // If we are a regular tx, or a segwit tx, then continue
       if (regTX || segTX) {
         // Check to see if we have this transction in our txMap, and if not, skip it (ignore transactions that are not our own)
-        if (!this.txMap[item.hash.toString('hex')]) { 
+        if (!this.txMap[item.hash.toString('hex')]) {
           console.error(`Item Peer requested is NOT in our txMap`)
-          continue 
+          continue
         }
 
         // Create an `fcoin` tx from the cached tx hex
@@ -167,7 +167,6 @@ class Peer {
 
     // Log information about the sent transactions
     console.log(`[RPC Wallet] Relayed ${txsRelayed}/${getDataPacket.items.length} requested transactions to ${this.settings.ip} (last txid ${lastHash})`)
-    
   }
 }
 

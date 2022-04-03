@@ -22,4 +22,4 @@ const main = async () => {
   console.log(response)
 }
 
-main().then(()=>{}).catch((e)=>{console.error(e)})
+main().then(() => {}).catch((e) => { console.error(e) })

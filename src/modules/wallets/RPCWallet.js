@@ -20,7 +20,7 @@ const TX_AVG_BYTE_SIZE = 200
 const SAT_PER_FLO = 100000000
 
 // The minimum amount a utxo is allowed to be for us to use
-const MIN_UTXO_AMOUNT = .001
+const MIN_UTXO_AMOUNT = 0.001
 
 // Prevent chaining over ancestor limit
 const MAX_MEMPOOL_ANCESTORS = 1225
@@ -333,7 +333,7 @@ class RPCWallet {
     //   this.currentAncestorCount++
     // }
 
-    console.log(`[RPC Wallet] Updated Ancestor Count: ${this.currentAncestorCount} - Updated Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`) 
+    console.log(`[RPC Wallet] Updated Ancestor Count: ${this.currentAncestorCount} - Updated Ancestor Size: ${(this.currentAncestorSize / ONE_MB).toFixed(2)}MB`)
 
     return true
   }
@@ -444,9 +444,9 @@ class RPCWallet {
    */
   async rebroadcastTransactions () {
     // Lock rebroadcasting; Only perform a single rebroadcast at a time!!
-    if (this.rebroadcasting) { 
+    if (this.rebroadcasting) {
       console.log(`[RPC Wallet] Already rebroadcasting transactions...`)
-      return 
+      return
     }
     this.rebroadcasting = true
     // Announce that we are starting
@@ -693,8 +693,8 @@ class RPCWallet {
     let utxos = await this.getUTXOs()
 
     // Select the first input (since we have already sorted and filtered)
-    let input = (previousTransactionOutput !== undefined) ? previousTransactionOutput[0] : utxos[0];
-    let inputAmount = (previousTransactionOutput !== undefined) ? previousTransactionOutput[0].amount : utxos[0].amount;
+    let input = (previousTransactionOutput !== undefined) ? previousTransactionOutput[0] : utxos[0]
+    let inputAmount = (previousTransactionOutput !== undefined) ? previousTransactionOutput[0].amount : utxos[0].amount
 
     // Calculate the minimum Transaction fee for our transaction by counting the size of the inputs, outputs, and floData
     let myTxFee = (this.options.txFeePerByte || TX_FEE_PER_BYTE) * (TX_AVG_BYTE_SIZE + varIntBuffer(floData.length).toString('hex').length + Buffer.from(floData).length)
@@ -819,15 +819,15 @@ class RPCWallet {
 
     // If we do not already have a loop going to make sure confirmations get fired off, create one
     if (!this.onConfirmationInterval) {
-      this.onConfirmationInterval = setInterval((async () => {
+      this.onConfirmationInterval = setInterval(async () => {
         // Only run the checkAncestorCount function IF if has been at least CONFIRMATION_CHECK_UPDATE_ANCESTORS_AFTER
         // since the last transaction was sent
-        if (Date.now() - this.lastTXTime > CONFIRMATION_CHECK_UPDATE_ANCESTORS_AFTER && !this.checkingAncestorCount) { 
+        if (Date.now() - this.lastTXTime > CONFIRMATION_CHECK_UPDATE_ANCESTORS_AFTER && !this.checkingAncestorCount) {
           this.lastTXTime = Date.now()
           await this.checkAncestorCount(true)
         }
-        await this.checkForConfirmations() 
-      }).bind(this), CONFIRMATION_CHECK_INTERVAL)
+        await this.checkForConfirmations()
+      }, CONFIRMATION_CHECK_INTERVAL)
     }
   }
 
@@ -836,13 +836,13 @@ class RPCWallet {
    * @return {Promise} Returns a promise that resolves once all of the available confirmation callbacks have been run
    */
   async checkForConfirmations () {
-    if (this.getConfirmationSubscriptionCount() === 0) { 
+    if (this.getConfirmationSubscriptionCount() === 0) {
       // Sanity check to clear out the interval if for whatever reason it currently exists.
       if (this.onConfirmationInterval) {
         clearInterval(this.onConfirmationInterval)
         this.onConfirmationInterval = undefined
       }
-      return 
+      return
     }
 
     // Note: Occasionally this will log a lower number than the Ancestor Count, this occurs
