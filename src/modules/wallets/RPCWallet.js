@@ -14,7 +14,7 @@ const ONE_SECOND = 1000
 const ONE_MINUTE = 60 * ONE_SECOND
 
 // 1 satoshis per byte (1000 satoshi per kb) (100 million satoshi in 1 FLO)
-const TX_FEE_PER_BYTE = 0.00000001
+const TX_FEE_PER_BYTE = 0.0000001
 // Average size of tx data (without floData) to calculate min txFee
 const TX_AVG_BYTE_SIZE = 200
 const SAT_PER_FLO = 100000000
@@ -788,7 +788,8 @@ class RPCWallet {
     this.lastTXTime = Date.now()
 
     // Return the TXID of the transaction
-    return broadcastTX.result
+    //return broadcastTX.result
+    return this.previousTXOutput
   }
 
   /**
