@@ -714,13 +714,18 @@ class RPCWallet {
     // console.log('[RPC Wallet] Preparing signed transaction for chain with this data: ', floData, previousTransactionOutput);
     // Grab the unspent outputs for our address
     let utxos = await this.getUTXOs(); // Select the first input (since we have already sorted and filtered)
-    let input = previousTransactionOutput !== undefined ? previousTransactionOutput[0] : utxos[0];
+    let input = previousTransactionOutput !== undefined ? previousTransactionOutput : utxos[0];
     let inputAmount = previousTransactionOutput !== undefined ? previousTransactionOutput[0].amount : utxos[0].amount; // Calculate the minimum Transaction fee for our transaction by counting the size of the inputs, outputs, and floData
     let myTxFee = (this.options.txFeePerByte || TX_FEE_PER_BYTE) * (TX_AVG_BYTE_SIZE + (0, _util.varIntBuffer)(floData.length).toString('hex').length + Buffer.from(floData).length); // Create an output to send the funds to
     let output = {};
     output[this.publicAddress] = parseFloat((inputAmount - myTxFee).toFixed(8));
+    let transactionOutput = {
+      vout: 0,
+      address: this.publicAddress,
+      amount: output[this.publicAddress]
+    }
     let signedTxHex = await this.makeTX([input], output, floData);
-    return ({output, signedTxHex});
+    return ({output, signedTxHex, transactionOutput});
   }
 
   /**
