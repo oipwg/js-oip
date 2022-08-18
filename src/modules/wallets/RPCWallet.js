@@ -710,17 +710,22 @@ class RPCWallet {
     return transactionOutput
   }
 
-  async prepSignedTXforChain(floData, previousTransactionOutput) {
+  async prepSignedTXforChain(floData, prev_txo) {
     // console.log('[RPC Wallet] Preparing signed transaction for chain with this data: ', floData, previousTransactionOutput);
     // Grab the unspent outputs for our address
     let utxos = await this.getUTXOs(); // Select the first input (since we have already sorted and filtered)
-    let input = previousTransactionOutput !== undefined ? previousTransactionOutput[0] : utxos[0];
-    let inputAmount = previousTransactionOutput !== undefined ? previousTransactionOutput[0].amount : utxos[0].amount; // Calculate the minimum Transaction fee for our transaction by counting the size of the inputs, outputs, and floData
+    let input = prev_txo !== undefined ? prev_txo : utxos[0];
+    let inputAmount = prev_txo !== undefined ? prev_txo.amount : utxos[0].amount; // Calculate the minimum Transaction fee for our transaction by counting the size of the inputs, outputs, and floData
     let myTxFee = (this.options.txFeePerByte || TX_FEE_PER_BYTE) * (TX_AVG_BYTE_SIZE + (0, _util.varIntBuffer)(floData.length).toString('hex').length + Buffer.from(floData).length); // Create an output to send the funds to
     let output = {};
     output[this.publicAddress] = parseFloat((inputAmount - myTxFee).toFixed(8));
     let signedTxHex = await this.makeTX([input], output, floData);
-    return ({output, signedTxHex});
+    let txo = {
+      amount: parseFloat((inputAmount - myTxFee).toFixed(8)),
+      address: this.publicAddress,
+      vout: 0
+    };
+    return ({txo, signedTxHex});
   }
 
   /**
